@@ -31,9 +31,9 @@
   --shadow-acc:0 4px 16px rgba(122,170,106,.2),0 1px 3px rgba(0,0,0,.06);
   --radius:16px;--radius-sm:10px;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--text);}
-body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;}
-.sbar{background:linear-gradient(135deg,var(--hdr2) 0%,var(--hdr) 100%);padding:env(safe-area-inset-top,10px) 20px 0;display:flex;justify-content:center;flex-shrink:0;border-bottom:1px solid rgba(201,168,76,.25);}
+html,body{height:100%;overflow:hidden;background:#1e3020;font-family:'Inter',system-ui,sans-serif;color:var(--text);}
+body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;background:#1e3020;}
+.sbar{background:linear-gradient(135deg,var(--hdr2) 0%,var(--hdr) 100%);padding:env(safe-area-inset-top,10px) 20px 0;display:flex;justify-content:center;flex-shrink:0;}
 .sbar span{color:rgba(255,255,255,.5);font-size:10px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;padding-bottom:6px;}
 .screen{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
@@ -138,7 +138,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .heatmap{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;}
 .hm-cell{width:calc((100% - 6*3px)/7);aspect-ratio:1;border-radius:3px;background:var(--bg3);}
 .hm-cell.done{background:var(--acc);}
-.timer-display{font-size:52px;font-weight:700;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;margin:16px 0;}
+.timer-display{font-size:38px;font-weight:700;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1;}
 .timer-btn-row{display:flex;gap:10px;justify-content:center;margin-top:8px;}
 .timer-btn{padding:12px 28px;border-radius:var(--radius-sm);border:none;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;min-height:48px;}
 .timer-btn-primary{background:var(--hdr);color:white;}
@@ -552,7 +552,8 @@ function applyTheme(key,dark){var t=THEMES[key];if(!t)return;DB.theme=key;if(dar
   // Update gradient stops in stylesheet dynamically
   var styleEl=document.getElementById('dynamic-theme-style');if(!styleEl){styleEl=document.createElement('style');styleEl.id='dynamic-theme-style';document.head.appendChild(styleEl);}
   styleEl.textContent='.sbar{background:linear-gradient(135deg,'+h2+' 0%,'+t.hdr+' 100%) !important;}.ph{background:linear-gradient(160deg,'+h2+' 0%,'+t.hdr+' 55%,'+h3+' 100%) !important;}.card-hdr{background:linear-gradient(145deg,'+h2+' 0%,'+t.hdr+' 50%,'+h3+' 100%) !important;}.fab,.sd-btn{background:linear-gradient(145deg,'+h3+' 0%,'+t.hdr+' 100%) !important;}.btn-save,.btn-full{background:linear-gradient(135deg,'+h3+' 0%,'+t.hdr+' 100%) !important;}.tab-btn.active{background:'+t.hdr+' !important;}.theme-dot{background-image:radial-gradient(circle at 35% 35%,'+t.acc2+' 0%,'+t.acc+' 100%) !important;}';
-  var mc=document.getElementById('meta-theme-color');if(mc)mc.setAttribute('content',t.hdr);renderSwatches();sv();}
+  document.body.style.background=h2;
+  var mc=document.getElementById('meta-theme-color');if(mc)mc.setAttribute('content',h2);renderSwatches();sv();}
 function cycleTheme(){var keys=Object.keys(THEMES);var i=keys.indexOf(DB.theme);applyTheme(keys[(i+1)%keys.length],DB.darkMode);}
 function setupDots(){document.querySelectorAll('.theme-dot').forEach(function(dot){var pt=null;dot.addEventListener('pointerdown',function(){pt=setTimeout(function(){applyTheme(DB.theme,!DB.darkMode);showToast(DB.darkMode?'Dark mode on':'Light mode on');},500);});dot.addEventListener('pointerup',function(){clearTimeout(pt);});dot.addEventListener('pointerleave',function(){clearTimeout(pt);});dot.addEventListener('click',function(){cycleTheme();});});}
 function renderSwatches(){var el=document.getElementById('swatch-grid');if(!el)return;el.innerHTML=Object.keys(THEMES).map(function(k){var t=THEMES[k];return'<div class="swatch'+(DB.theme===k?' active':'')+'" onclick="applyTheme(\''+k+'\',DB.darkMode)"><div class="swatch-dot" style="background:'+t.hdr+';border:3px solid '+t.acc+';"></div><div class="swatch-name">'+t.name+'</div></div>';}).join('');}
