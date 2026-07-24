@@ -1,24 +1,15 @@
 {
-  "name": "Baby Tracker — Mobile First Studio",
-  "short_name": "Baby Tracker",
-  "description": "A complete baby tracker for new parents. Built for your phone.",
-  "start_url": "/baby-tracker/",
+  "name": "Student Planner Pro — Mobile First Studio",
+  "short_name": "Student Planner Pro",
+  "description": "Smart dashboard, Pomodoro timer, habit tracker, multi-semester planner, and advanced exam prep",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#fdf8f2",
-  "theme_color": "#94b79f",
+  "background_color": "#3d5a3e",
+  "theme_color": "#3d5a3e",
   "orientation": "portrait",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
   ]
 }
