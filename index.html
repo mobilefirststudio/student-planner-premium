@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Baby Tracker"/>
+<meta name="theme-color" id="meta-theme-color" content="#94b79f"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Lato:wght@300;400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<title>Baby Tracker — Mobile First Studio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#fdf8f2;--bg2:#ffffff;--bg3:#f5faf7;
+  --text:#3d4a42;--text2:#7a8e85;--text3:#b0c4b8;
+  --green:#edf4f0;--green-text:#3d6b52;--green-border:#94b79f;
+  --gold:#fdf3e4;--gold-text:#8a6020;--gold-border:#d4a843;
+  --purple:#f5eef8;--purple-text:#5a3d7a;--purple-border:#9b7ab5;
+  --accent:#94b79f;--accent2:#3d6b52;
+  --red:#fdf0ee;--red-text:#c0392b;
+  --border:#dde8e2;--border2:#eaf0ec;
+  --fs-base:16px;--fs-sm:14px;--fs-xs:12px;--fs-label:12px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Lato',sans-serif;font-size:var(--fs-base);}
+body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;}
+.sbar{background:var(--accent);padding:env(safe-area-inset-top,10px) 20px 8px;display:flex;justify-content:center;flex-shrink:0;}
+.sbar span{color:white;font-size:13px;letter-spacing:.06em;font-weight:700;}
+.screen{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
+.page.active{display:flex;}
+.ph{background:var(--accent);padding:10px 20px 16px;flex-shrink:0;}
+.ph .ey{font-size:var(--fs-label);letter-spacing:.14em;color:rgba(255,255,255,.75);text-transform:uppercase;margin-bottom:3px;font-weight:600;}
+.ph h1{font-size:24px;font-weight:300;color:white;}
+.ps{flex:1;overflow-y:auto;padding:16px;min-height:0;-webkit-overflow-scrolling:touch;background:var(--bg);}
+.ps::-webkit-scrollbar{width:2px;}
+.ps::-webkit-scrollbar-thumb{background:var(--border);}
+.sl{font-size:var(--fs-label);letter-spacing:.12em;color:var(--text2);text-transform:uppercase;margin-bottom:10px;margin-top:6px;font-weight:700;}
+.nav{background:white;border-top:.5px solid var(--border);padding:8px 0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 8px;border-radius:10px;background:none;border:none;min-width:44px;min-height:44px;justify-content:center;}
+.ni i{font-size:20px;color:var(--text3);}
+.ni span{font-size:10px;letter-spacing:.04em;color:var(--text3);text-transform:uppercase;font-family:'Lato',sans-serif;font-weight:700;}
+.ni.active i,.ni.active span{color:var(--accent2);}
+.fab{width:48px;height:48px;border-radius:50%;background:var(--accent2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:fixed;bottom:calc(72px + env(safe-area-inset-bottom,0px));right:calc(50% - 220px + 16px);z-index:10;}
+@media(max-width:480px){.fab{right:16px;}}
+.fab i{font-size:22px;color:white;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:none;align-items:flex-end;max-width:480px;margin:0 auto;}
+.modal-bg.open{display:flex;}
+.modal{background:white;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto;border-top:.5px solid var(--border);padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
+.modal h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.field{margin-bottom:13px;}
+.field label{font-size:var(--fs-label);letter-spacing:.1em;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;font-weight:700;}
+.field input,.field select{width:100%;background:var(--bg3);border:.5px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Lato',sans-serif;font-size:var(--fs-base);outline:none;-webkit-appearance:none;}
+.field input::placeholder{color:var(--text3);}
+.field select option{background:white;color:var(--text);}
+.btn-row{display:flex;gap:10px;margin-top:10px;}
+.btn-save{flex:1;background:var(--accent2);border:none;border-radius:10px;padding:13px;color:white;font-family:'Lato',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;min-height:48px;}
+.btn-cancel{flex:1;background:transparent;border:.5px solid var(--border);border-radius:10px;padding:13px;color:var(--text2);font-family:'Lato',sans-serif;font-size:var(--fs-base);cursor:pointer;min-height:48px;}
+.btn-delete{width:100%;background:var(--red);border:none;border-radius:10px;padding:13px;color:var(--red-text);font-family:'Lato',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;margin-top:8px;min-height:48px;}
+.btn-full{width:100%;background:var(--accent2);border:none;border-radius:10px;padding:13px;color:white;font-family:'Lato',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;margin-bottom:14px;min-height:48px;}
+.tab-row{display:flex;gap:5px;margin-bottom:14px;}
+.tab-btn{flex:1;background:var(--bg3);border:none;border-radius:9px;padding:9px 4px;color:var(--text2);font-family:'Lato',sans-serif;font-size:var(--fs-sm);font-weight:700;cursor:pointer;min-height:40px;}
+.tab-btn.active{background:var(--accent2);color:white;}
+.empty{text-align:center;padding:28px 0;color:var(--text2);font-size:var(--fs-base);line-height:1.7;}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.dc{border-radius:13px;padding:14px 16px;border:.5px solid;}
+.dc.green{background:var(--green);border-color:var(--green-border);}
+.dc.gold{background:var(--gold);border-color:var(--gold-border);}
+.dc.purple{background:var(--purple);border-color:var(--purple-border);}
+.dc.plain{background:white;border-color:var(--border);}
+.dc .dl{font-size:var(--fs-label);letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.dc.green .dl{color:var(--green-text);}
+.dc.gold .dl{color:var(--gold-text);}
+.dc.purple .dl{color:var(--purple-text);}
+.dc.plain .dl{color:var(--text2);}
+.dc .dv{font-size:28px;font-weight:300;line-height:1;font-variant-numeric:lining-nums tabular-nums;}
+.dc.green .dv{color:var(--green-text);}
+.dc.gold .dv{color:var(--gold-text);}
+.dc.purple .dv{color:var(--purple-text);}
+.dc.plain .dv{color:var(--text);}
+.dc .ds{font-size:var(--fs-sm);margin-top:3px;}
+.dc.green .ds{color:var(--green-text);}
+.dc.gold .ds{color:var(--gold-text);}
+.dc.purple .ds{color:var(--purple-text);}
+.dc.plain .ds{color:var(--text2);}
+.quick-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.qb{background:white;border:.5px solid var(--border);border-radius:12px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+.qb i{font-size:24px;color:var(--accent2);}
+.qb span{font-size:var(--fs-label);color:var(--text2);font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:'Lato',sans-serif;}
+.date-group{margin-bottom:16px;}
+.date-group-label{font-size:var(--fs-label);letter-spacing:.12em;color:var(--accent2);text-transform:uppercase;font-weight:700;padding:8px 0 6px;border-bottom:.5px solid var(--border2);margin-bottom:2px;}
+.log-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.log-item:active{opacity:.7;}
+.log-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.log-icon.g{background:var(--green);}
+.log-icon.g i{color:var(--green-text);font-size:16px;}
+.log-icon.d{background:var(--gold);}
+.log-icon.d i{color:var(--gold-text);font-size:16px;}
+.log-icon.s{background:var(--purple);}
+.log-icon.s i{color:var(--purple-text);font-size:16px;}
+.log-info{flex:1;}
+.log-title{font-size:var(--fs-base);color:var(--text);font-weight:600;}
+.log-sub{font-size:var(--fs-sm);color:var(--text2);margin-top:2px;}
+.log-time{font-size:var(--fs-sm);color:var(--text3);white-space:nowrap;}
+.log-edit-hint{font-size:10px;color:var(--text3);white-space:nowrap;margin-top:2px;}
+.ms-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border2);}
+.ms-check{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--green-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:white;}
+.ms-check.done{background:var(--accent2);border-color:var(--accent2);}
+.ms-check.done i{font-size:13px;color:white;}
+.ms-info{flex:1;cursor:pointer;}
+.ms-name{font-size:var(--fs-sm);color:var(--text);font-weight:600;}
+.ms-name.done{opacity:.6;}
+.ms-meta{font-size:var(--fs-xs);color:var(--text2);margin-top:2px;}
+.ms-age{font-size:var(--fs-xs);color:var(--text3);white-space:nowrap;}
+.cat-pill{display:inline-block;font-size:var(--fs-xs);padding:2px 7px;border-radius:20px;font-weight:700;margin-right:4px;}
+.cat-pill.Physical{background:#eaf3de;color:#27500a;}
+.cat-pill.Social{background:#eeedfe;color:#3c3489;}
+.cat-pill.Language{background:#e6f1fb;color:#0c447c;}
+.cat-pill.Cognitive{background:#faeeda;color:#633806;}
+.food-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border2);}
+.food-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--green-border);flex-shrink:0;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.food-check.tried{background:var(--accent2);border-color:var(--accent2);}
+.food-check.tried i{font-size:11px;color:white;}
+.food-name{flex:1;font-size:var(--fs-sm);color:var(--text);font-weight:600;}
+.food-date-edit{font-size:var(--fs-xs);color:var(--accent2);font-weight:700;background:var(--green);border:none;border-radius:6px;padding:3px 8px;font-family:'Lato',sans-serif;outline:none;cursor:pointer;}
+.food-group{font-size:var(--fs-xs);padding:2px 7px;border-radius:20px;font-weight:700;}
+.food-group.Vegetable{background:#eaf3de;color:#27500a;}
+.food-group.Fruit{background:#faece7;color:#712b13;}
+.food-group.Grain{background:#faeeda;color:#633806;}
+.food-group.Protein{background:#eeedfe;color:#3c3489;}
+.food-group.Dairy{background:#e6f1fb;color:#0c447c;}
+.food-group.Other{background:#f1efe8;color:#444441;}
+.vacc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border2);}
+.vacc-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--green-border);flex-shrink:0;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.vacc-check.given{background:var(--accent2);border-color:var(--accent2);}
+.vacc-check.given i{font-size:11px;color:white;}
+.vacc-info{flex:1;}
+.vacc-name{font-size:var(--fs-sm);color:var(--text);font-weight:600;}
+.vacc-age{font-size:var(--fs-xs);color:var(--text2);margin-top:2px;}
+.vacc-date-input{margin-top:6px;width:100%;background:var(--bg3);border:.5px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--accent2);font-family:'Lato',sans-serif;font-size:var(--fs-xs);font-weight:700;outline:none;display:none;}
+.vacc-date-input.show{display:block;}
+.visit-card{background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:8px;border:.5px solid var(--border);cursor:pointer;}
+.visit-card:active{opacity:.7;}
+.visit-date{font-size:var(--fs-sm);color:var(--accent2);font-weight:700;}
+.visit-type{font-size:var(--fs-base);color:var(--text);font-weight:600;margin-top:2px;}
+.visit-detail{font-size:var(--fs-sm);color:var(--text2);margin-top:3px;}
+.age-banner{background:var(--accent2);border-radius:13px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.age-big{font-size:36px;font-weight:300;color:white;line-height:1;font-variant-numeric:lining-nums tabular-nums;}
+.age-unit{font-size:var(--fs-xs);color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+.age-name{font-size:19px;color:white;font-weight:600;}
+.setup-field{margin-bottom:14px;}
+.setup-field label{font-size:var(--fs-label);letter-spacing:.1em;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;font-weight:700;}
+.setup-field input,.setup-field select{width:100%;background:var(--bg3);border:.5px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Lato',sans-serif;font-size:var(--fs-base);outline:none;-webkit-appearance:none;}
+.section-div{height:.5px;background:var(--border);margin:16px 0;}
+.feed-badge{display:inline-block;background:var(--green);color:var(--green-text);font-size:var(--fs-sm);font-weight:700;padding:4px 11px;border-radius:20px;margin-bottom:12px;}
+.contact-card{background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:8px;border:.5px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;}
+.contact-card:active{opacity:.7;}
+.contact-icon{width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.contact-icon i{font-size:16px;color:var(--green-text);}
+.contact-info{flex:1;}
+.contact-label{font-size:var(--fs-xs);color:var(--text2);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.contact-value{font-size:var(--fs-sm);color:var(--text);font-weight:600;margin-top:2px;}
+.contact-hint{font-size:10px;color:var(--text3);margin-top:1px;}
+.chart-wrap{background:white;border-radius:12px;border:.5px solid var(--border);padding:14px;margin-bottom:12px;}
+.chart-empty{text-align:center;padding:20px 0;color:var(--text3);font-size:var(--fs-sm);font-style:italic;}
+.modal-divider{height:.5px;background:var(--border);margin:16px 0;}
+
+.lang-btn{transition:all .2s;}
+.lang-btn.active{background:var(--accent2)!important;color:white!important;border-color:var(--accent2)!important;}
+</style>
+</head>
+<body>
+<div class="sbar"><span>Mobile First Studio</span></div>
+<div class="screen">
+
+<!-- DASHBOARD -->
+<div class="page active" id="pg-dash">
+<div class="ph"><div class="ey" id="dash-date">Wednesday, June 24</div><h1 id="dash-title">Good morning</h1></div>
+<div class="ps">
+<div class="age-banner">
+<div><div class="age-big" id="age-display">—</div><div class="age-unit" id="age-unit"></div></div>
+<div><div class="age-name" id="baby-name-display"></div><div style="font-size:15px;color:rgba(255,255,255,.7);margin-top:3px;" id="dob-display"></div></div>
+</div>
+<div class="stat-row">
+<div class="dc green"><div class="dl" id="stat-feeds-lbl"></div><div class="dv" id="d-feeds">0</div><div class="ds" id="d-feeds-sub">last: —</div></div>
+<div class="dc gold"><div class="dl" id="stat-diapers-lbl"></div><div class="dv" id="d-diapers">0</div><div class="ds" id="d-diapers-sub">0 wet · 0 dirty</div></div>
+<div class="dc purple"><div class="dl" id="stat-sleep-lbl"></div><div class="dv" id="d-sleep">0h</div><div class="ds" id="d-sleep-sub">0 naps today</div></div>
+<div class="dc plain"><div class="dl" id="d-measure-label"></div><div class="dv" id="d-oz">0</div><div class="ds" id="d-oz-sub">goal: — oz</div></div>
+</div>
+<div class="sl">Quick Log</div>
+<div class="quick-row">
+<button class="qb" onclick="openFeedModal(null)"><i class="ti ti-droplet"></i><span>Feed</span></button>
+<button class="qb" onclick="openDiaperModal(null)"><i class="ti ti-wind"></i><span>Diaper</span></button>
+<button class="qb" onclick="openSleepModal(null)"><i class="ti ti-moon"></i><span>Sleep</span></button>
+</div>
+<div class="sl">Recent Activity</div>
+<div id="recent-log"></div>
+<div style="height:20px;"></div>
+</div>
+</div>
+
+<!-- BABY CARE LOG -->
+<div class="page" id="pg-log">
+<div class="ph"><div class="ey">Baby Care Log</div><h1>All Entries</h1></div>
+<div class="ps">
+<div class="tab-row">
+<button class="tab-btn active" onclick="filterLog('all',this)">All</button>
+<button class="tab-btn" onclick="filterLog('feed',this)">Feeds</button>
+<button class="tab-btn" onclick="filterLog('diaper',this)">Diapers</button>
+<button class="tab-btn" onclick="filterLog('sleep',this)">Sleep</button>
+</div>
+<div id="log-list"></div>
+<div style="height:70px;"></div>
+</div>
+<button class="fab" id="log-fab" onclick="openLogFab()"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- MILESTONES -->
+<div class="page" id="pg-milestones">
+<div class="ph"><div class="ey">Milestones + First Foods</div><h1>Growing Up</h1></div>
+<div class="ps">
+<div class="tab-row">
+<button class="tab-btn active" onclick="filterMS('milestones',this)">Milestones</button>
+<button class="tab-btn" onclick="filterMS('foods',this)">First Foods</button>
+</div>
+<div id="ms-list"></div>
+<div style="height:70px;"></div>
+</div>
+<button class="fab" onclick="openMSOrFoodModal()"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- HEALTH -->
+<div class="page" id="pg-health">
+<div class="ph"><div class="ey">Health</div><h1>Growth + Records</h1></div>
+<div class="ps">
+<div class="tab-row">
+<button class="tab-btn active" onclick="filterHealth('vaccines',this)">Vaccines</button>
+<button class="tab-btn" onclick="filterHealth('visits',this)">Visits</button>
+</div>
+<div id="health-content"></div>
+<div style="height:70px;"></div>
+</div>
+<button class="fab" id="health-fab" onclick="openVisitModal(null)"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- SETUP -->
+<div class="page" id="pg-setup">
+<div class="ph"><div class="ey">Setup</div><h1>Profile</h1></div>
+<div class="ps">
+<div class="sl">Your Info</div>
+<div class="setup-field"><label>Your Name (Mom / Dad)</label><input id="s-parent" placeholder="e.g. Jessica"/></div>
+<div class="section-div"></div>
+<div class="sl">Baby Info</div>
+<div class="setup-field"><label>Baby's Name</label><input id="s-name" placeholder="e.g. Olivia"/></div>
+<div class="setup-field"><label id="lbl-dob">Date of Birth</label><input type="date" id="s-dob" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="setup-field"><label>Blood Type</label><input id="s-blood" placeholder="e.g. A+"/></div>
+<div class="setup-field">
+<label id="lbl-feedmethod">Feeding Method</label>
+<select id="s-feedmethod" onchange="onFeedMethodChange()">
+<option value="formula">Formula</option>
+<option value="breast">Breast Milk</option>
+<option value="both">Both (Formula + Breast)</option>
+</select>
+</div>
+<div id="s-oz-wrap" class="setup-field"><label id="lbl-oz-goal">Daily Oz Goal</label><input type="number" id="s-oz" placeholder="e.g. 24"/></div>
+<div id="s-min-wrap" class="setup-field" style="display:none;"><label id="lbl-min-goal">Daily Nursing Goal (min)</label><input type="number" id="s-min" placeholder="e.g. 120"/></div>
+<div class="section-div"></div>
+<div class="sl">Font Style</div>
+<div class="setup-field"><select id="s-font" onchange="applyBTFont(this.value)">
+<option value="Cormorant Garamond">Cormorant Garamond — refined serif</option>
+<option value="EB Garamond">EB Garamond — classic serif</option>
+<option value="Playfair Display">Playfair Display — elegant serif</option>
+<option value="Libre Baskerville">Libre Baskerville — book serif</option>
+<option value="Lato">Lato — modern sans-serif</option>
+<option value="Nunito">Nunito — friendly rounded</option>
+</select></div>
+<div class="section-div"></div>
+<div class="sl">Theme Color</div>
+<div id="bt-theme-swatches"></div>
+<div class="section-div"></div><button class="btn-full" onclick="saveProfile()">Save Profile</button>
+<div class="section-div"></div>
+<div class="sl">Emergency Contacts</div>
+<div class="setup-field"><label>Pediatrician</label><input id="s-ped" placeholder="Dr. Name · (555) 000-0000"/></div>
+<div class="setup-field"><label>Contact 2</label><input id="s-c2" placeholder="Name · relationship · phone"/></div>
+<div class="setup-field"><label>Contact 3</label><input id="s-c3" placeholder="Name · relationship · phone"/></div>
+<button class="btn-full" onclick="saveContacts()">Save Contacts</button>
+<div class="section-div"></div>
+<div class="sl" id="baby-share-label">Family Sharing</div>
+<div id="baby-share-section" style="margin-bottom:14px;"></div>
+<div class="section-div"></div>
+<div class="sl">Local Backup (recommended)</div>
+<div id="baby-localbackup-section" style="margin-bottom:14px;"></div>
+<input type="file" id="baby-restore-file-input" accept="application/json" style="display:none" onchange="handleRestoreFileSelect(event)"/>
+<div class="section-div"></div>
+<div class="sl" id="baby-gdrive-label">Cloud Backup (Google Drive)</div>
+<div id="baby-gdrive-section" style="margin-bottom:14px;"></div>
+<div class="section-div"></div>
+<div class="sl">Language / Idioma</div>
+<div style="display:flex;gap:10px;margin-bottom:14px;">
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')" style="flex:1;padding:12px;border-radius:10px;border:.5px solid var(--border);font-family:'Lato',sans-serif;font-size:16px;font-weight:700;cursor:pointer;background:var(--bg3);color:var(--text2);">🇺🇸 English</button>
+  <button class="lang-btn" data-lang="es" onclick="setLang('es')" style="flex:1;padding:12px;border-radius:10px;border:.5px solid var(--border);font-family:'Lato',sans-serif;font-size:16px;font-weight:700;cursor:pointer;background:var(--bg3);color:var(--text2);">🇪🇸 Español</button>
+</div>
+<div id="contacts-display"></div>
+<div style="height:20px;"></div>
+</div>
+</div>
+
+</div>
+
+<nav class="nav">
+<button class="ni active" onclick="go('dash',this)"><i class="ti ti-layout-dashboard"></i><span>Home</span></button>
+<button class="ni" onclick="go('log',this)"><i class="ti ti-book"></i><span>Care Log</span></button>
+<button class="ni" onclick="go('milestones',this)"><i class="ti ti-star"></i><span>Milest.</span></button>
+<button class="ni" onclick="go('health',this)"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
+<button class="ni" onclick="go('setup',this)"><i class="ti ti-settings"></i><span>Setup</span></button>
+</nav>
+
+<!-- FEED MODAL -->
+<div class="modal-bg" id="feed-modal">
+<div class="modal">
+<h2 id="feed-modal-title">Log Feed</h2>
+<div class="feed-badge" id="feed-badge">Formula</div>
+<div class="field" id="feed-type-field" style="display:none;">
+<label>Feed Type</label>
+<select id="f-feedtype" onchange="onFeedTypeChange()"><option value="bottle">Bottle</option><option value="breast">Breast</option></select>
+</div>
+<div class="field" id="feed-side-field" style="display:none;">
+<label>Side</label>
+<select id="f-side"><option value="left">Left</option><option value="right">Right</option><option value="both">Both</option></select>
+</div>
+<div class="field" id="feed-oz-field">
+<label>Amount (oz)</label>
+<input type="number" id="f-oz" placeholder="e.g. 4" min="0" max="16" step="0.5"/>
+</div>
+<div class="field" id="feed-min-field" style="display:none;">
+<label>Duration (minutes)</label>
+<input type="number" id="f-min" placeholder="e.g. 15" min="0" max="90"/>
+</div>
+<div class="field"><label>Date</label><input type="date" id="f-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Time</label><input type="time" id="f-time" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Notes</label><input id="f-notes" placeholder="Optional"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('feed-modal')">Cancel</button><button class="btn-save" onclick="saveFeed()">Save</button></div>
+<button class="btn-delete" id="feed-delete-btn" style="display:none;" onclick="deleteFeed()">Delete Entry</button>
+</div>
+</div>
+
+<!-- DIAPER MODAL -->
+<div class="modal-bg" id="diaper-modal">
+<div class="modal">
+<h2 id="diaper-modal-title">Log Diaper</h2>
+<div class="field"><label>Type</label><select id="dp-type"><option value="wet">Wet</option><option value="dirty">Dirty</option><option value="both">Both</option><option value="dry">Dry</option></select></div>
+<div class="field"><label>Date</label><input type="date" id="dp-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Time</label><input type="time" id="dp-time" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Notes</label><input id="dp-notes" placeholder="Color, consistency, etc."/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('diaper-modal')">Cancel</button><button class="btn-save" onclick="saveDiaper()">Save</button></div>
+<button class="btn-delete" id="diaper-delete-btn" style="display:none;" onclick="deleteDiaper()">Delete Entry</button>
+</div>
+</div>
+
+<!-- SLEEP MODAL -->
+<div class="modal-bg" id="sleep-modal">
+<div class="modal">
+<h2 id="sleep-modal-title">Log Sleep</h2>
+<div class="field"><label>Type</label><select id="sl-type"><option value="nap">Nap</option><option value="night">Night Sleep</option></select></div>
+<div class="field"><label>Date</label><input type="date" id="sl-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Start Time</label><input type="time" id="sl-start" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>End Time</label><input type="time" id="sl-end" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('sleep-modal')">Cancel</button><button class="btn-save" onclick="saveSleep()">Save</button></div>
+<button class="btn-delete" id="sleep-delete-btn" style="display:none;" onclick="deleteSleep()">Delete Entry</button>
+</div>
+</div>
+
+<!-- MILESTONE MODAL -->
+<div class="modal-bg" id="ms-modal">
+<div class="modal">
+<h2 id="ms-modal-title">Add Milestone</h2>
+<div class="field"><label>Name</label><input id="ms-name" placeholder="e.g. First laugh"/></div>
+<div class="field" id="ms-cat-field"><label>Category</label><select id="ms-cat"><option>Physical</option><option>Social</option><option>Language</option><option>Cognitive</option></select></div>
+<div class="field"><label>Date Achieved</label><input type="date" id="ms-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('ms-modal')">Cancel</button><button class="btn-save" onclick="saveMS()">Save</button></div>
+<button class="btn-delete" id="ms-delete-btn" style="display:none;" onclick="deleteMS()">Delete Milestone</button>
+</div>
+</div>
+
+<!-- FOOD MODAL -->
+<div class="modal-bg" id="food-modal">
+<div class="modal">
+<h2>Add First Food</h2>
+<div class="field"><label>Food Name</label><input id="food-name" placeholder="e.g. Blueberries"/></div>
+<div class="field"><label>Group</label><select id="food-group">
+<option value="Vegetable">Vegetable</option><option value="Fruit">Fruit</option>
+<option value="Grain">Grain</option><option value="Protein">Protein</option>
+<option value="Dairy">Dairy</option><option value="Other">Other</option>
+</select></div>
+<div class="field"><label>Date Tried</label><input type="date" id="food-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('food-modal')">Cancel</button><button class="btn-save" onclick="saveCustomFood()">Save</button></div>
+</div>
+</div>
+
+<!-- VISIT MODAL -->
+<div class="modal-bg" id="visit-modal">
+<div class="modal">
+<h2 id="visit-modal-title">Log Doctor Visit</h2>
+<div class="field"><label>Date of Visit</label><input type="date" id="v-date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/></div>
+<div class="field"><label>Type</label><select id="v-type"><option>Well visit</option><option>Sick visit</option><option>Follow-up</option><option>Emergency</option><option>Specialist</option></select></div>
+<div class="field"><label>Weight (lbs)</label><input type="number" id="v-weight" placeholder="e.g. 14.5" step="0.1"/></div>
+<div class="field"><label>Height (in)</label><input type="number" id="v-height" placeholder="e.g. 24.5" step="0.1"/></div>
+<div class="field"><label>Reason / Notes</label><input id="v-reason" placeholder="e.g. 2 month well visit"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('visit-modal')">Cancel</button><button class="btn-save" onclick="saveVisit()">Save</button></div>
+<button class="btn-delete" id="visit-delete-btn" style="display:none;" onclick="deleteVisit()">Delete Visit</button>
+</div>
+</div>
+
+<!-- CONTACT EDIT MODAL -->
+<div class="modal-bg" id="contact-modal">
+<div class="modal">
+<h2 id="contact-modal-title">Edit Contact</h2>
+<div class="field"><label>Name · Role · Phone</label><input id="contact-value" placeholder="Dr. Name · (555) 000-0000"/></div>
+<div class="btn-row"><button class="btn-cancel" onclick="closeModal('contact-modal')">Cancel</button><button class="btn-save" onclick="saveContact()">Save</button></div>
+<button class="btn-delete" onclick="deleteContact()">Remove Contact</button>
+</div>
+</div>
+
+<script>
+var DB={profile:{feedMethod:'formula'},contacts:{},logs:[],milestones:[],vaccines:{},visits:[],foods:{}};
+var logFilter='all',msFilter='milestones',healthFilter='vaccines';
+var editingLogId=null,editingVisitId=null,editingMSId=null,editingContactKey=null;
+
+var MILESTONES=[
+  {id:'m1',name:'Lifts head briefly when on tummy',cat:'Physical',age:'0-1 mo'},
+  {id:'m2',name:'Moves arms and legs equally',cat:'Physical',age:'0-1 mo'},
+  {id:'m3',name:'Holds head up during tummy time',cat:'Physical',age:'2 mo'},
+  {id:'m4',name:'Follows object with eyes',cat:'Physical',age:'2 mo'},
+  {id:'m5',name:'Smiles at faces',cat:'Social',age:'2 mo'},
+  {id:'m6',name:'Coos and makes sounds',cat:'Language',age:'2 mo'},
+  {id:'m7',name:'Brings hands to mouth',cat:'Physical',age:'3 mo'},
+  {id:'m8',name:'Opens and shuts hands',cat:'Physical',age:'4 mo'},
+  {id:'m9',name:'Holds head steady unsupported',cat:'Physical',age:'4 mo'},
+  {id:'m10',name:'Rolls from tummy to back',cat:'Physical',age:'4-5 mo'},
+  {id:'m11',name:'Reaches for dangling objects',cat:'Physical',age:'4-5 mo'},
+  {id:'m12',name:'Laughs and squeals',cat:'Social',age:'4-5 mo'},
+  {id:'m13',name:'Recognises familiar faces',cat:'Social',age:'4-5 mo'},
+  {id:'m14',name:'Rolls from back to tummy',cat:'Physical',age:'5-6 mo'},
+  {id:'m15',name:'Passes objects between hands',cat:'Physical',age:'6 mo'},
+  {id:'m16',name:'Sits with support',cat:'Physical',age:'6 mo'},
+  {id:'m17',name:'Babbles — consonant sounds',cat:'Language',age:'6 mo'},
+  {id:'m18',name:'Responds to own name',cat:'Social',age:'6 mo'},
+  {id:'m19',name:'Explores objects with mouth',cat:'Physical',age:'6-7 mo'},
+  {id:'m20',name:'Sits without support',cat:'Physical',age:'7-8 mo'},
+  {id:'m21',name:'Stands with support',cat:'Physical',age:'8-9 mo'},
+  {id:'m22',name:'Crawls',cat:'Physical',age:'8-9 mo'},
+  {id:'m23',name:'Waves bye-bye',cat:'Social',age:'9 mo'},
+  {id:'m24',name:'Picks up objects with pincer grip',cat:'Physical',age:'9-10 mo'},
+  {id:'m25',name:'Says mama and dada (not specifically)',cat:'Language',age:'9-10 mo'},
+  {id:'m26',name:'Pulls to stand',cat:'Physical',age:'9-10 mo'},
+  {id:'m27',name:'Plays peek-a-boo',cat:'Social',age:'9-10 mo'},
+  {id:'m28',name:'Bangs objects together',cat:'Physical',age:'10-11 mo'},
+  {id:'m29',name:'Cruises along furniture',cat:'Physical',age:'10-11 mo'},
+  {id:'m30',name:'Understands "no"',cat:'Language',age:'10-11 mo'},
+  {id:'m31',name:'First steps',cat:'Physical',age:'9-12 mo'},
+  {id:'m32',name:'Says first word meaningfully',cat:'Language',age:'12 mo'},
+  {id:'m33',name:'Points to objects',cat:'Social',age:'13 mo'},
+  {id:'m34',name:'Drinks from cup with help',cat:'Physical',age:'14 mo'},
+  {id:'m35',name:'Says 3+ words',cat:'Language',age:'15 mo'},
+  {id:'m36',name:'Stacks 2 blocks',cat:'Physical',age:'16 mo'},
+  {id:'m37',name:'Points to body parts when asked',cat:'Language',age:'18 mo'},
+  {id:'m38',name:'Says 10+ words',cat:'Language',age:'18 mo'},
+  {id:'m39',name:'Runs (stiffly)',cat:'Physical',age:'18 mo'},
+  {id:'m40',name:'Climbs onto furniture',cat:'Physical',age:'18 mo'},
+  {id:'m41',name:'Says 2-word phrases',cat:'Language',age:'18-24 mo'},
+  {id:'m42',name:'Kicks a ball',cat:'Physical',age:'18-24 mo'},
+  {id:'m43',name:'Sorts shapes and colours',cat:'Cognitive',age:'18-24 mo'},
+  {id:'m44',name:'Follows 2-step instructions',cat:'Cognitive',age:'24 mo'},
+  {id:'m45',name:'Says 50+ words',cat:'Language',age:'24 mo'},
+  {id:'m46',name:'Jumps with both feet',cat:'Physical',age:'24 mo'},
+  {id:'m47',name:'Plays alongside other children',cat:'Social',age:'24 mo'},
+  {id:'m48',name:'Names objects in a book',cat:'Language',age:'24 mo'},
+  {id:'m49',name:'Builds tower of 4+ blocks',cat:'Physical',age:'24 mo'},
+  {id:'m50',name:'Says 3-word sentences',cat:'Language',age:'24-30 mo'},
+  {id:'m51',name:'Pedals tricycle',cat:'Physical',age:'30 mo'},
+  {id:'m52',name:'Draws a circle',cat:'Physical',age:'30 mo'},
+  {id:'m53',name:'Says first name when asked',cat:'Language',age:'30 mo'},
+  {id:'m54',name:'Follows 3-step instructions',cat:'Cognitive',age:'36 mo'},
+  {id:'m55',name:'Gets dressed with help',cat:'Physical',age:'36 mo'},
+  {id:'m56',name:'Climbs stairs alternating feet',cat:'Physical',age:'36 mo'},
+  {id:'m57',name:'Plays make-believe',cat:'Social',age:'36 mo'},
+  {id:'m58',name:'Speaks in sentences 4-5 words',cat:'Language',age:'36 mo'},
+  {id:'m59',name:'Names a friend',cat:'Social',age:'36 mo'}
+];
+
+var MILESTONES_ES={
+  m1:'Levanta la cabeza brevemente boca abajo',
+  m2:'Mueve brazos y piernas por igual',
+  m3:'Sostiene la cabeza durante el tiempo boca abajo',
+  m4:'Sigue objetos con los ojos',
+  m5:'Sonríe a las caras',
+  m6:'Gorjea y hace sonidos',
+  m7:'Lleva las manos a la boca',
+  m8:'Abre y cierra las manos',
+  m9:'Sostiene la cabeza firme sin apoyo',
+  m10:'Rueda de boca abajo a boca arriba',
+  m11:'Alcanza objetos colgantes',
+  m12:'Ríe y chilla',
+  m13:'Reconoce caras familiares',
+  m14:'Rueda de boca arriba a boca abajo',
+  m15:'Pasa objetos de mano en mano',
+  m16:'Se sienta con apoyo',
+  m17:'Balbucea — sonidos consonánticos',
+  m18:'Responde a su propio nombre',
+  m19:'Explora objetos con la boca',
+  m20:'Se sienta sin apoyo',
+  m21:'Se para con apoyo',
+  m22:'Gatea',
+  m23:'Dice adiós con la mano',
+  m24:'Recoge objetos con pinza',
+  m25:'Dice mamá y papá (sin especificar)',
+  m26:'Se jala para pararse',
+  m27:'Juega al cucú',
+  m28:'Golpea objetos entre sí',
+  m29:'Camina apoyándose en muebles',
+  m30:'Entiende el "no"',
+  m31:'Primeros pasos',
+  m32:'Dice su primera palabra con significado',
+  m33:'Señala objetos',
+  m34:'Bebe de un vaso con ayuda',
+  m35:'Dice 3+ palabras',
+  m36:'Apila 2 bloques',
+  m37:'Señala partes del cuerpo cuando se le pide',
+  m38:'Dice 10+ palabras',
+  m39:'Corre (de forma rígida)',
+  m40:'Se trepa a los muebles',
+  m41:'Dice frases de 2 palabras',
+  m42:'Patea una pelota',
+  m43:'Clasifica formas y colores',
+  m44:'Sigue instrucciones de 2 pasos',
+  m45:'Dice 50+ palabras',
+  m46:'Salta con los dos pies',
+  m47:'Juega junto a otros niños',
+  m48:'Nombra objetos en un libro',
+  m49:'Construye una torre de 4+ bloques',
+  m50:'Dice oraciones de 3 palabras',
+  m51:'Pedalea un triciclo',
+  m52:'Dibuja un círculo',
+  m53:'Dice su nombre cuando se le pregunta',
+  m54:'Sigue instrucciones de 3 pasos',
+  m55:'Se viste con ayuda',
+  m56:'Sube escaleras alternando los pies',
+  m57:'Juega al juego de simulación',
+  m58:'Habla en oraciones de 4-5 palabras',
+  m59:'Nombra a un amigo'
+};
+
+var FOODS_ES={
+  f1:'Zanahoria',f2:'Calabaza butternut',f3:'Chícharo',f4:'Brócoli',
+  f5:'Camote',f6:'Aguacate',f7:'Plátano',f8:'Pera',
+  f9:'Manzana',f10:'Durazno',f11:'Mango',f12:'Cereal de arroz para bebé',
+  f13:'Avena',f14:'Lentejas en puré',f15:'Pollo en puré',f16:'Yema de huevo',
+  f17:'Res en puré',f18:'Yogur griego',f19:'Requesón',f20:'Mantequilla de maní (diluida)'
+};
+
+
+var FOODS=[
+  {id:'f1',name:'Carrot',group:'Vegetable'},{id:'f2',name:'Butternut squash',group:'Vegetable'},
+  {id:'f3',name:'Pea',group:'Vegetable'},{id:'f4',name:'Broccoli',group:'Vegetable'},
+  {id:'f5',name:'Sweet potato',group:'Vegetable'},{id:'f6',name:'Avocado',group:'Fruit'},
+  {id:'f7',name:'Banana',group:'Fruit'},{id:'f8',name:'Pear',group:'Fruit'},
+  {id:'f9',name:'Apple',group:'Fruit'},{id:'f10',name:'Peach',group:'Fruit'},
+  {id:'f11',name:'Mango',group:'Fruit'},{id:'f12',name:'Baby rice cereal',group:'Grain'},
+  {id:'f13',name:'Oatmeal',group:'Grain'},{id:'f14',name:'Pureed lentils',group:'Protein'},
+  {id:'f15',name:'Pureed chicken',group:'Protein'},{id:'f16',name:'Egg yolk',group:'Protein'},
+  {id:'f17',name:'Pureed beef',group:'Protein'},{id:'f18',name:'Greek yogurt',group:'Dairy'},
+  {id:'f19',name:'Cottage cheese',group:'Dairy'},{id:'f20',name:'Peanut butter (thinned)',group:'Protein'}
+];
+
+var VACCINES=[
+  {id:'v1',name:'Hepatitis B (HepB) #1',age:'Birth'},
+  {id:'v2',name:'Hepatitis B (HepB) #2',age:'1-2 mo'},
+  {id:'v3',name:'Hepatitis B (HepB) #3',age:'6-18 mo'},
+  {id:'v4',name:'DTaP #1',age:'2 mo'},{id:'v5',name:'DTaP #2',age:'4 mo'},
+  {id:'v6',name:'DTaP #3',age:'6 mo'},{id:'v7',name:'DTaP #4',age:'15-18 mo'},
+  {id:'v8',name:'DTaP #5',age:'4-6 yrs'},
+  {id:'v9',name:'Hib #1',age:'2 mo'},{id:'v10',name:'Hib #2',age:'4 mo'},
+  {id:'v11',name:'Hib #3',age:'6 mo'},{id:'v12',name:'Hib #4',age:'12-15 mo'},
+  {id:'v13',name:'IPV (Polio) #1',age:'2 mo'},{id:'v14',name:'IPV (Polio) #2',age:'4 mo'},
+  {id:'v15',name:'IPV (Polio) #3',age:'6 mo'},
+  {id:'v16',name:'PCV15/20 #1',age:'2 mo'},{id:'v17',name:'PCV15/20 #2',age:'4 mo'},
+  {id:'v18',name:'PCV15/20 #3',age:'6 mo'},{id:'v19',name:'PCV15/20 #4',age:'12-15 mo'},
+  {id:'v20',name:'RV #1',age:'2 mo'},{id:'v21',name:'RV #2',age:'4 mo'},{id:'v22',name:'RV #3',age:'6 mo'},
+  {id:'v23',name:'Influenza (yearly)',age:'6 mo+'},
+  {id:'v24',name:'MMR #1',age:'12-15 mo'},{id:'v25',name:'MMR #2',age:'4-6 yrs'},
+  {id:'v26',name:'Varicella #1',age:'12-15 mo'},{id:'v27',name:'Varicella #2',age:'4-6 yrs'},
+  {id:'v28',name:'HepA #1',age:'13-23 mo'},{id:'v29',name:'HepA #2',age:'6 mo after #1'},
+  {id:'v30',name:'COVID-19',age:'6 mo+'}
+];
+
+
+// ── LANGUAGE SYSTEM ──────────────────────────────────────────────
+var LANG = localStorage.getItem('mfs_baby_lang') || 'en';
+
+var T = {
+  en: {
+    // Status bar
+    sbar: 'Mobile First Studio',
+    // Nav
+    nav_home: 'Home', nav_log: 'Care Log', nav_milest: 'Milest.', nav_health: 'Health', nav_setup: 'Setup',
+    // Dashboard page header
+    dash_ey: 'Baby Care Dashboard',
+    greeting_morning: 'Good morning', greeting_afternoon: 'Good afternoon', greeting_evening: 'Good evening',
+    today_label: 'Today', yesterday_label: 'Yesterday',
+    add_baby_setup: 'Add baby info in Setup',
+    your_baby: 'Your Baby',
+    born_label: 'Born',
+    // Dash stat cards
+    stat_feeds: 'Feeds Today', stat_diapers: 'Diapers', stat_sleep: 'Sleep',
+    stat_total_oz: 'Total oz', stat_total_min: 'Total min', stat_oz_min: 'oz / min',
+    last_feed: 'last', wet: 'wet', dirty: 'dirty', naps: 'nap', naps_pl: 'naps', today_s: 'today',
+    goal_oz: 'goal', goal_min: 'goal', min_breast: 'min breast',
+    share_title: 'Family Sharing', share_desc: 'Stay in sync with your partner or caregiver. Everyone connected sees the same logs in real time.',
+    share_create: 'Create Family Code', share_or: 'or', share_enter: 'Enter code', share_join: 'Join', share_stop: 'Stop Sharing',
+    share_code_label: 'Family Code', share_code_hint: 'Share this code with your partner or caregiver',
+    gdrive_title: 'Cloud Backup (Google Drive)', gdrive_desc: 'Back up your baby data to your own Google Drive. Your data stays in your account — we never see it.',
+    gdrive_connect: 'Connect Google Drive', gdrive_connected: 'Connected to Google Drive', gdrive_backup: 'Back up now', gdrive_restore: 'Restore from Drive', gdrive_disconnect: 'Disconnect',
+    // Quick log
+    quick_log: 'Quick Log', recent_activity: 'Recent Activity',
+    qb_feed: 'Feed', qb_diaper: 'Diaper', qb_sleep: 'Sleep',
+    no_entries_today: 'No entries today yet.\nUse Quick Log above.',
+    // Log page
+    log_ey: 'Baby Care Log', log_h1: 'All Entries',
+    tab_all: 'All', tab_feeds: 'Feeds', tab_diapers: 'Diapers', tab_sleep: 'Sleep',
+    no_entries: 'No entries yet.\nUse Quick Log on the dashboard.',
+    tap_edit: 'tap to edit',
+    // Milestones page
+    ms_ey: 'Milestones + First Foods', ms_h1: 'Growing Up',
+    tab_milestones: 'Milestones', tab_foods: 'First Foods',
+    ms_count: 'milestones reached', ms_of: 'of',
+    foods_count: 'foods introduced',
+    your_milestones: 'Your Milestones',
+    tap_set_date: 'tap to set date',
+    // Health page
+    health_ey: 'Health', health_h1: 'Growth + Records',
+    tab_vaccines: 'Vaccines', tab_visits: 'Visits',
+    vacc_count: 'vaccines recorded', vacc_rec: 'Rec:',
+    no_visits: 'No visits logged yet.\nTap + to add a visit.',
+    visit_history: 'Visit History',
+    // Setup page
+    setup_ey: 'Setup', setup_h1: 'Profile',
+    your_info: 'Your Info', baby_info: 'Baby Info',
+    lbl_parent: 'Your Name (Mom / Dad)', ph_parent: 'e.g. Jessica',
+    lbl_babyname: "Baby's Name", ph_babyname: 'e.g. Olivia',
+    lbl_dob: 'Date of Birth',
+    lbl_blood: 'Blood Type', ph_blood: 'e.g. A+',
+    lbl_feedmethod: 'Feeding Method',
+    opt_formula: 'Formula', opt_breast: 'Breast Milk', opt_both: 'Both (Formula + Breast)',
+    lbl_oz_goal: 'Daily Oz Goal', ph_oz: 'e.g. 24',
+    lbl_min_goal: 'Daily Nursing Goal (min)', ph_min: 'e.g. 120',
+    font_style: 'Font Style', theme_color: 'Theme Color',
+    btn_save_profile: 'Save Profile',
+    emergency_contacts: 'Emergency Contacts',
+    lbl_ped: 'Pediatrician', ph_ped: 'Dr. Name · (555) 000-0000',
+    lbl_c2: 'Contact 2', ph_c2: 'Name · relationship · phone',
+    lbl_c3: 'Contact 3', ph_c3: 'Name · relationship · phone',
+    btn_save_contacts: 'Save Contacts',
+    saved_contacts: 'Saved Contacts',
+    contact_hint: 'tap to edit or delete',
+    language_setting: 'Language',
+    // Feed modal
+    feed_modal_add: 'Log Feed', feed_modal_edit: 'Edit Feed',
+    badge_formula: 'Formula', badge_breast: 'Breast Milk', badge_both: 'Formula + Breast',
+    lbl_feed_type: 'Feed Type', opt_bottle: 'Bottle', opt_breastf: 'Breast',
+    lbl_side: 'Side', opt_left: 'Left', opt_right: 'Right', opt_both_sides: 'Both',
+    lbl_amount_oz: 'Amount (oz)', ph_oz_feed: 'e.g. 4',
+    lbl_duration: 'Duration (minutes)', ph_min_feed: 'e.g. 15',
+    lbl_date: 'Date', lbl_time: 'Time', lbl_notes: 'Notes', ph_notes: 'Optional',
+    btn_cancel: 'Cancel', btn_save: 'Save', btn_delete_entry: 'Delete Entry',
+    // Diaper modal
+    diaper_modal_add: 'Log Diaper', diaper_modal_edit: 'Edit Diaper',
+    lbl_type: 'Type',
+    opt_wet: 'Wet', opt_dirty: 'Dirty', opt_both_dp: 'Both', opt_dry: 'Dry',
+    ph_diaper_notes: 'Color, consistency, etc.',
+    // Sleep modal
+    sleep_modal_add: 'Log Sleep', sleep_modal_edit: 'Edit Sleep',
+    opt_nap: 'Nap', opt_night: 'Night Sleep',
+    lbl_start: 'Start Time', lbl_end: 'End Time',
+    // Milestone modal
+    ms_modal_add: 'Add Milestone', ms_modal_edit: 'Edit Milestone',
+    lbl_ms_name: 'Name', ph_ms_name: 'e.g. First laugh',
+    lbl_ms_cat: 'Category',
+    opt_physical: 'Physical', opt_social: 'Social', opt_language: 'Language', opt_cognitive: 'Cognitive',
+    lbl_date_achieved: 'Date Achieved',
+    btn_delete_ms: 'Delete Milestone',
+    // Visit modal
+    visit_modal_add: 'Log Doctor Visit', visit_modal_edit: 'Edit Visit',
+    lbl_visit_date: 'Date of Visit', lbl_visit_type: 'Type',
+    opt_well: 'Well visit', opt_sick: 'Sick visit', opt_followup: 'Follow-up',
+    opt_emergency: 'Emergency', opt_specialist: 'Specialist',
+    lbl_weight: 'Weight (lbs)', ph_weight: 'e.g. 14.5',
+    lbl_height: 'Height (in)', ph_height: 'e.g. 24.5',
+    lbl_reason: 'Reason / Notes', ph_reason: 'e.g. 2 month well visit',
+    btn_delete_visit: 'Delete Visit',
+    // Contact modal
+    contact_modal_title_pre: 'Edit',
+    contact_labels: {ped:'Pediatrician',c2:'Contact 2',c3:'Contact 3'},
+    lbl_contact_val: 'Name · Role · Phone',
+    btn_remove_contact: 'Remove Contact',
+    // Confirm / Saved modals
+    confirm_title: 'Delete this entry?', confirm_sub: 'This cannot be undone.',
+    btn_keep: 'Keep it', btn_yes_delete: 'Yes, delete',
+    saved_msg_default: 'Saved!', saved_sub: 'Your changes have been saved.',
+    saved_profile: 'Profile Saved!', saved_contacts_msg: 'Contacts Saved!',
+    btn_done: 'Done',
+    // Log item text
+    diaper_suffix: 'diaper',
+    // Growth chart
+    chart_empty: 'Log visits with weight and height to see growth chart.',
+    chart_weight: 'Weight (lbs)', chart_height: 'Height (in)',
+    // Milestone categories
+    cat_Physical: 'Physical', cat_Social: 'Social', cat_Language: 'Language', cat_Cognitive: 'Cognitive',
+    // Months
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    // Age units
+    age_days: 'days old', age_months: 'months old',
+    // Food groups
+    food_Vegetable: 'Vegetable', food_Fruit: 'Fruit', food_Grain: 'Grain',
+    food_Protein: 'Protein', food_Dairy: 'Dairy', food_Other: 'Other',
+  },
+  es: {
+    sbar: 'Mobile First Studio',
+    nav_home: 'Inicio', nav_log: 'Registro', nav_milest: 'Hitos', nav_health: 'Salud', nav_setup: 'Config.',
+    dash_ey: 'Panel de Bebé',
+    greeting_morning: 'Buenos días', greeting_afternoon: 'Buenas tardes', greeting_evening: 'Buenas noches',
+    today_label: 'Hoy', yesterday_label: 'Ayer',
+    add_baby_setup: 'Agrega info del bebé en Config.',
+    your_baby: 'Tu Bebé',
+    born_label: 'Nacido',
+    stat_feeds: 'Tomas Hoy', stat_diapers: 'Pañales', stat_sleep: 'Sueño',
+    stat_total_oz: 'Onzas totales', stat_total_min: 'Min lactancia', stat_oz_min: 'oz por min',
+    last_feed: 'última', wet: 'mojado', dirty: 'sucio', naps: 'siesta', naps_pl: 'siestas', today_s: 'hoy',
+    goal_oz: 'meta', goal_min: 'meta', min_breast: 'min lactancia',
+    share_title: 'Compartir en Familia', share_desc: 'Mantente sincronizado con tu pareja o cuidador. Todos ven los mismos registros en tiempo real.',
+    share_create: 'Crear Código Familiar', share_or: 'o', share_enter: 'Ingresa el código', share_join: 'Unirse', share_stop: 'Dejar de Compartir',
+    share_code_label: 'Código Familiar', share_code_hint: 'Comparte este código con tu pareja o cuidador',
+    gdrive_title: 'Copia de Seguridad (Google Drive)', gdrive_desc: 'Guarda los datos de tu bebé en tu propio Google Drive. Solo tú tienes acceso — nunca nosotros.',
+    gdrive_connect: 'Conectar Google Drive', gdrive_connected: 'Conectado a Google Drive', gdrive_backup: 'Guardar ahora', gdrive_restore: 'Restaurar desde Drive', gdrive_disconnect: 'Desconectar',
+    quick_log: 'Registro Rápido', recent_activity: 'Actividad Reciente',
+    qb_feed: 'Toma', qb_diaper: 'Pañal', qb_sleep: 'Sueño',
+    no_entries_today: 'Sin entradas hoy.\nUsa Registro Rápido arriba.',
+    log_ey: 'Registro de Bebé', log_h1: 'Todas las Entradas',
+    tab_all: 'Todo', tab_feeds: 'Tomas', tab_diapers: 'Pañales', tab_sleep: 'Sueño',
+    no_entries: 'Sin entradas aún.\nUsa Registro Rápido en el panel.',
+    tap_edit: 'toca para editar',
+    ms_ey: 'Hitos + Primeros Alimentos', ms_h1: 'Creciendo',
+    tab_milestones: 'Hitos', tab_foods: 'Primeros Alimentos',
+    ms_count: 'hitos alcanzados', ms_of: 'de',
+    foods_count: 'alimentos introducidos',
+    your_milestones: 'Tus Hitos',
+    tap_set_date: 'toca para agregar fecha',
+    health_ey: 'Salud', health_h1: 'Crecimiento + Registros',
+    tab_vaccines: 'Vacunas', tab_visits: 'Visitas',
+    vacc_count: 'vacunas registradas', vacc_rec: 'Rec:',
+    no_visits: 'Sin visitas registradas.\nToca + para agregar.',
+    visit_history: 'Historial de Visitas',
+    setup_ey: 'Configuración', setup_h1: 'Perfil',
+    your_info: 'Tu Información', baby_info: 'Info del Bebé',
+    lbl_parent: 'Tu Nombre (Mamá / Papá)', ph_parent: 'ej. Jessica',
+    lbl_babyname: 'Nombre del Bebé', ph_babyname: 'ej. Olivia',
+    lbl_dob: 'Fecha de Nacimiento',
+    lbl_blood: 'Tipo de Sangre', ph_blood: 'ej. A+',
+    lbl_feedmethod: 'Método de Alimentación',
+    opt_formula: 'Fórmula', opt_breast: 'Leche Materna', opt_both: 'Ambas (Fórmula + Pecho)',
+    lbl_oz_goal: 'Meta Diaria de oz', ph_oz: 'ej. 24',
+    lbl_min_goal: 'Meta Diaria de Lactancia (min)', ph_min: 'ej. 120',
+    font_style: 'Estilo de Fuente', theme_color: 'Color del Tema',
+    btn_save_profile: 'Guardar Perfil',
+    emergency_contacts: 'Contactos de Emergencia',
+    lbl_ped: 'Pediatra', ph_ped: 'Dr. Nombre · (555) 000-0000',
+    lbl_c2: 'Contacto 2', ph_c2: 'Nombre · relación · teléfono',
+    lbl_c3: 'Contacto 3', ph_c3: 'Nombre · relación · teléfono',
+    btn_save_contacts: 'Guardar Contactos',
+    saved_contacts: 'Contactos Guardados',
+    contact_hint: 'toca para editar o eliminar',
+    language_setting: 'Idioma',
+    feed_modal_add: 'Registrar Toma', feed_modal_edit: 'Editar Toma',
+    badge_formula: 'Fórmula', badge_breast: 'Leche Materna', badge_both: 'Fórmula + Pecho',
+    lbl_feed_type: 'Tipo de Toma', opt_bottle: 'Biberón', opt_breastf: 'Pecho',
+    lbl_side: 'Lado', opt_left: 'Izquierdo', opt_right: 'Derecho', opt_both_sides: 'Ambos',
+    lbl_amount_oz: 'Cantidad (oz)', ph_oz_feed: 'ej. 4',
+    lbl_duration: 'Duración (minutos)', ph_min_feed: 'ej. 15',
+    lbl_date: 'Fecha', lbl_time: 'Hora', lbl_notes: 'Notas', ph_notes: 'Opcional',
+    btn_cancel: 'Cancelar', btn_save: 'Guardar', btn_delete_entry: 'Eliminar Entrada',
+    diaper_modal_add: 'Registrar Pañal', diaper_modal_edit: 'Editar Pañal',
+    lbl_type: 'Tipo',
+    opt_wet: 'Mojado', opt_dirty: 'Sucio', opt_both_dp: 'Ambos', opt_dry: 'Seco',
+    ph_diaper_notes: 'Color, consistencia, etc.',
+    sleep_modal_add: 'Registrar Sueño', sleep_modal_edit: 'Editar Sueño',
+    opt_nap: 'Siesta', opt_night: 'Sueño Nocturno',
+    lbl_start: 'Hora de Inicio', lbl_end: 'Hora de Fin',
+    ms_modal_add: 'Agregar Hito', ms_modal_edit: 'Editar Hito',
+    lbl_ms_name: 'Nombre', ph_ms_name: 'ej. Primera risa',
+    lbl_ms_cat: 'Categoría',
+    opt_physical: 'Físico', opt_social: 'Social', opt_language: 'Lenguaje', opt_cognitive: 'Cognitivo',
+    lbl_date_achieved: 'Fecha Logrado',
+    btn_delete_ms: 'Eliminar Hito',
+    visit_modal_add: 'Registrar Visita al Doctor', visit_modal_edit: 'Editar Visita',
+    lbl_visit_date: 'Fecha de Visita', lbl_visit_type: 'Tipo',
+    opt_well: 'Visita de rutina', opt_sick: 'Visita por enfermedad', opt_followup: 'Seguimiento',
+    opt_emergency: 'Emergencia', opt_specialist: 'Especialista',
+    lbl_weight: 'Peso (lbs)', ph_weight: 'ej. 14.5',
+    lbl_height: 'Talla (in)', ph_height: 'ej. 24.5',
+    lbl_reason: 'Motivo / Notas', ph_reason: 'ej. Visita de 2 meses',
+    btn_delete_visit: 'Eliminar Visita',
+    contact_modal_title_pre: 'Editar',
+    contact_labels: {ped:'Pediatra',c2:'Contacto 2',c3:'Contacto 3'},
+    lbl_contact_val: 'Nombre · Rol · Teléfono',
+    btn_remove_contact: 'Eliminar Contacto',
+    confirm_title: '¿Eliminar esta entrada?', confirm_sub: 'Esta acción no se puede deshacer.',
+    btn_keep: 'Conservar', btn_yes_delete: 'Sí, eliminar',
+    saved_msg_default: '¡Guardado!', saved_sub: 'Tus cambios han sido guardados.',
+    saved_profile: '¡Perfil Guardado!', saved_contacts_msg: '¡Contactos Guardados!',
+    btn_done: 'Listo',
+    diaper_suffix: 'pañal',
+    chart_empty: 'Registra visitas con peso y talla para ver el gráfico de crecimiento.',
+    chart_weight: 'Peso (lbs)', chart_height: 'Talla (in)',
+    cat_Physical: 'Físico', cat_Social: 'Social', cat_Language: 'Lenguaje', cat_Cognitive: 'Cognitivo',
+    months: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+    days: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+    age_days: 'días de vida', age_months: 'meses de vida',
+    food_Vegetable: 'Vegetal', food_Fruit: 'Fruta', food_Grain: 'Cereal', food_Protein: 'Proteína', food_Dairy: 'Lácteo', food_Other: 'Otro',
+  }
+};
+
+function t(key){ return (T[LANG]&&T[LANG][key]!==undefined) ? T[LANG][key] : (T.en[key]||key); }
+
+
+function setLang(lang){
+  LANG=lang;
+  localStorage.setItem('mfs_baby_lang',lang);
+  applyLangToDOM();
+  renderDash();renderLog();renderMS();renderHealth();renderSetup();
+}
+window.setLang=setLang;
+
+function applyLangToDOM(){
+  // Status bar
+  var sb=document.querySelector('.sbar span');if(sb)sb.textContent=t('sbar');
+  // Nav labels
+  var navLabels=['nav_home','nav_log','nav_milest','nav_health','nav_setup'];
+  document.querySelectorAll('.nav .ni span').forEach(function(el,i){if(navLabels[i])el.textContent=t(navLabels[i]);});
+  // Page headers - eyebrows and h1s
+  var pages=[
+    {ey:'dash_ey',h1:null,pid:'pg-dash'},
+    {ey:'log_ey',h1:'log_h1',pid:'pg-log'},
+    {ey:'ms_ey',h1:'ms_h1',pid:'pg-milestones'},
+    {ey:'health_ey',h1:'health_h1',pid:'pg-health'},
+    {ey:'setup_ey',h1:'setup_h1',pid:'pg-setup'},
+  ];
+  pages.forEach(function(p){
+    var pg=document.getElementById(p.pid);if(!pg)return;
+    var ey=pg.querySelector('.ey');if(ey&&p.ey)ey.textContent=t(p.ey);
+    var h1=pg.querySelector('h1');if(h1&&p.h1)h1.textContent=t(p.h1);
+  });
+  // Quick log buttons
+  var qbs=document.querySelectorAll('.qb span');
+  var qkeys=['qb_feed','qb_diaper','qb_sleep'];
+  qbs.forEach(function(el,i){if(qkeys[i])el.textContent=t(qkeys[i]);});
+  // Log page tabs
+  var logTabs=document.querySelectorAll('#pg-log .tab-btn');
+  var logTabKeys=['tab_all','tab_feeds','tab_diapers','tab_sleep'];
+  logTabs.forEach(function(el,i){if(logTabKeys[i])el.textContent=t(logTabKeys[i]);});
+  // Milestones tabs
+  var msTabs=document.querySelectorAll('#pg-milestones .tab-btn');
+  var msTabKeys=['tab_milestones','tab_foods'];
+  msTabs.forEach(function(el,i){if(msTabKeys[i])el.textContent=t(msTabKeys[i]);});
+  // Health tabs
+  var hTabs=document.querySelectorAll('#pg-health .tab-btn');
+  var hTabKeys=['tab_vaccines','tab_visits'];
+  hTabs.forEach(function(el,i){if(hTabKeys[i])el.textContent=t(hTabKeys[i]);});
+  // Setup page labels/placeholders
+  var setupMap=[
+    ['s-parent','lbl_parent','ph_parent'],['s-name','lbl_babyname','ph_babyname'],
+    ['s-blood','lbl_blood','ph_blood'],['s-oz','lbl_oz_goal','ph_oz'],['s-min','lbl_min_goal','ph_min'],
+    ['s-ped','lbl_ped','ph_ped'],['s-c2','lbl_c2','ph_c2'],['s-c3','lbl_c3','ph_c3'],
+  ];
+  setupMap.forEach(function(m){
+    var inp=document.getElementById(m[0]);if(!inp)return;
+    var lbl=inp.closest('.setup-field');if(!lbl)return;
+    var labelEl=lbl.querySelector('label');if(labelEl)labelEl.textContent=t(m[1]);
+    inp.placeholder=t(m[2]);
+  });
+  // Feed method select options
+  var fm=document.getElementById('s-feedmethod');
+  if(fm){fm.options[0].text=t('opt_formula');fm.options[1].text=t('opt_breast');fm.options[2].text=t('opt_both');}
+  // Section labels in setup
+  document.querySelectorAll('#pg-setup .sl').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Your Info'||txt==='Tu Información')el.textContent=t('your_info');
+    if(txt==='Baby Info'||txt==='Info del Bebé')el.textContent=t('baby_info');
+    if(txt==='Font Style'||txt==='Estilo de Fuente')el.textContent=t('font_style');
+    if(txt==='Theme Color'||txt==='Color del Tema')el.textContent=t('theme_color');
+    if(txt==='Emergency Contacts'||txt==='Contactos de Emergencia')el.textContent=t('emergency_contacts');
+    if(txt==='Language'||txt==='Idioma')el.textContent=t('language_setting');
+  });
+  // Setup buttons
+  var spBtn=document.querySelector('[onclick="saveProfile()"]');if(spBtn)spBtn.textContent=t('btn_save_profile');
+  var scBtn=document.querySelector('[onclick="saveContacts()"]');if(scBtn)scBtn.textContent=t('btn_save_contacts');
+  // Dashboard section labels
+  document.querySelectorAll('#pg-dash .sl').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Quick Log'||txt==='Registro Rápido')el.textContent=t('quick_log');
+    if(txt==='Recent Activity'||txt==='Actividad Reciente')el.textContent=t('recent_activity');
+  });
+  // Feed modal
+  applyModalLang();
+  // Confirm modal
+  var cm=document.getElementById('confirm-modal');
+  if(cm){
+    var ct=cm.querySelector('[style*="font-size:18px"]');if(ct)ct.textContent=t('confirm_title');
+    var cs=cm.querySelector('[style*="font-size:14px"]');if(cs)cs.textContent=t('confirm_sub');
+    var kb=cm.querySelector('.btn-cancel');if(kb)kb.textContent=t('btn_keep');
+    var yd=cm.querySelector('.btn-save');if(yd)yd.textContent=t('btn_yes_delete');
+  }
+  // Saved modal
+  var sm=document.getElementById('saved-modal');
+  if(sm){
+    var ss=sm.querySelector('[style*="font-size:14px"]');if(ss)ss.textContent=t('saved_sub');
+    var sd=sm.querySelector('.btn-full');if(sd)sd.textContent=t('btn_done');
+  }
+
+  // Stat card labels
+  var sfl=document.getElementById('stat-feeds-lbl');if(sfl)sfl.textContent=t('stat_feeds');
+  var sdl=document.getElementById('stat-diapers-lbl');if(sdl)sdl.textContent=t('stat_diapers');
+  var ssl=document.getElementById('stat-sleep-lbl');if(ssl)ssl.textContent=t('stat_sleep');
+  // Setup labels with IDs
+  var ldob=document.getElementById('lbl-dob');if(ldob)ldob.textContent=t('lbl_dob');
+  var lfm=document.getElementById('lbl-feedmethod');if(lfm)lfm.textContent=t('lbl_feedmethod');
+  var loz=document.getElementById('lbl-oz-goal');if(loz)loz.textContent=t('lbl_oz_goal');
+  var lmin=document.getElementById('lbl-min-goal');if(lmin)lmin.textContent=t('lbl_min_goal');
+  // Feed method select options
+  var fmSel=document.getElementById('s-feedmethod');
+  if(fmSel){fmSel.options[0].text=t('opt_formula');fmSel.options[1].text=t('opt_breast');fmSel.options[2].text=t('opt_both');}
+  // Dashboard age unit (in case renderDash hasn't run yet)
+  var au=document.getElementById('age-unit');if(au&&au.textContent==='months old'||au&&au.textContent==='meses de vida'){/* handled by renderDash */}
+  var bnd=document.getElementById('baby-name-display');if(bnd&&(bnd.textContent==='Your Baby'||bnd.textContent==='Tu Bebé'))bnd.textContent=t('your_baby');
+  // Language toggle buttons
+  document.querySelectorAll('.lang-btn').forEach(function(el){
+    el.classList.toggle('active', el.dataset.lang===LANG);
+  });
+}
+
+function applyModalLang(){
+  // Feed modal static labels
+  var fm=document.getElementById('feed-modal');if(!fm)return;
+  var fLabels=fm.querySelectorAll('.field label');
+  // feed type
+  var ftSel=document.getElementById('f-feedtype');
+  if(ftSel){ftSel.options[0].text=t('opt_bottle');ftSel.options[1].text=t('opt_breastf');}
+  var sideSel=document.getElementById('f-side');
+  if(sideSel){sideSel.options[0].text=t('opt_left');sideSel.options[1].text=t('opt_right');sideSel.options[2].text=t('opt_both_sides');}
+  document.getElementById('f-oz').placeholder=t('ph_oz_feed');
+  document.getElementById('f-min').placeholder=t('ph_min_feed');
+  document.getElementById('f-notes').placeholder=t('ph_notes');
+  fm.querySelectorAll('.field label').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Feed Type'||txt==='Tipo de Toma')el.textContent=t('lbl_feed_type');
+    if(txt==='Side'||txt==='Lado')el.textContent=t('lbl_side');
+    if(txt==='Amount (oz)'||txt==='Cantidad (oz)')el.textContent=t('lbl_amount_oz');
+    if(txt==='Duration (minutes)'||txt==='Duración (minutos)')el.textContent=t('lbl_duration');
+    if(txt==='Date'||txt==='Fecha')el.textContent=t('lbl_date');
+    if(txt==='Time'||txt==='Hora')el.textContent=t('lbl_time');
+    if(txt==='Notes'||txt==='Notas')el.textContent=t('lbl_notes');
+  });
+  var fcBtn=fm.querySelector('.btn-cancel');if(fcBtn)fcBtn.textContent=t('btn_cancel');
+  var fsBtn=fm.querySelector('.btn-save');if(fsBtn)fsBtn.textContent=t('btn_save');
+  var fdBtn=document.getElementById('feed-delete-btn');if(fdBtn)fdBtn.textContent=t('btn_delete_entry');
+  // Diaper modal
+  var dm=document.getElementById('diaper-modal');if(!dm)return;
+  var dpSel=document.getElementById('dp-type');
+  if(dpSel){dpSel.options[0].text=t('opt_wet');dpSel.options[1].text=t('opt_dirty');dpSel.options[2].text=t('opt_both_dp');dpSel.options[3].text=t('opt_dry');}
+  document.getElementById('dp-notes').placeholder=t('ph_diaper_notes');
+  dm.querySelectorAll('.field label').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Type'||txt==='Tipo')el.textContent=t('lbl_type');
+    if(txt==='Date'||txt==='Fecha')el.textContent=t('lbl_date');
+    if(txt==='Time'||txt==='Hora')el.textContent=t('lbl_time');
+    if(txt==='Notes'||txt==='Notas')el.textContent=t('lbl_notes');
+  });
+  dm.querySelectorAll('.btn-cancel').forEach(function(b){b.textContent=t('btn_cancel');});
+  dm.querySelectorAll('.btn-save').forEach(function(b){b.textContent=t('btn_save');});
+  var ddBtn=document.getElementById('diaper-delete-btn');if(ddBtn)ddBtn.textContent=t('btn_delete_entry');
+  // Sleep modal
+  var slm=document.getElementById('sleep-modal');if(!slm)return;
+  var slSel=document.getElementById('sl-type');
+  if(slSel){slSel.options[0].text=t('opt_nap');slSel.options[1].text=t('opt_night');}
+  slm.querySelectorAll('.field label').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Type'||txt==='Tipo')el.textContent=t('lbl_type');
+    if(txt==='Date'||txt==='Fecha')el.textContent=t('lbl_date');
+    if(txt==='Start Time'||txt==='Hora de Inicio')el.textContent=t('lbl_start');
+    if(txt==='End Time'||txt==='Hora de Fin')el.textContent=t('lbl_end');
+  });
+  slm.querySelectorAll('.btn-cancel').forEach(function(b){b.textContent=t('btn_cancel');});
+  slm.querySelectorAll('.btn-save').forEach(function(b){b.textContent=t('btn_save');});
+  var sdBtn=document.getElementById('sleep-delete-btn');if(sdBtn)sdBtn.textContent=t('btn_delete_entry');
+  // Milestone modal
+  var msm=document.getElementById('ms-modal');if(!msm)return;
+  var msCatSel=document.getElementById('ms-cat');
+  if(msCatSel){msCatSel.options[0].text=t('opt_physical');msCatSel.options[1].text=t('opt_social');msCatSel.options[2].text=t('opt_language');msCatSel.options[3].text=t('opt_cognitive');}
+  document.getElementById('ms-name').placeholder=t('ph_ms_name');
+  msm.querySelectorAll('.field label').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Name'||txt==='Nombre')el.textContent=t('lbl_ms_name');
+    if(txt==='Category'||txt==='Categoría')el.textContent=t('lbl_ms_cat');
+    if(txt==='Date Achieved'||txt==='Fecha Logrado')el.textContent=t('lbl_date_achieved');
+  });
+  msm.querySelectorAll('.btn-cancel').forEach(function(b){b.textContent=t('btn_cancel');});
+  msm.querySelectorAll('.btn-save').forEach(function(b){b.textContent=t('btn_save');});
+  var msdBtn=document.getElementById('ms-delete-btn');if(msdBtn)msdBtn.textContent=t('btn_delete_ms');
+  // Visit modal
+  var vm=document.getElementById('visit-modal');if(!vm)return;
+  var vtSel=document.getElementById('v-type');
+  if(vtSel){vtSel.options[0].text=t('opt_well');vtSel.options[1].text=t('opt_sick');vtSel.options[2].text=t('opt_followup');vtSel.options[3].text=t('opt_emergency');vtSel.options[4].text=t('opt_specialist');}
+  document.getElementById('v-weight').placeholder=t('ph_weight');
+  document.getElementById('v-height').placeholder=t('ph_height');
+  document.getElementById('v-reason').placeholder=t('ph_reason');
+  vm.querySelectorAll('.field label').forEach(function(el){
+    var txt=el.textContent.trim();
+    if(txt==='Date of Visit'||txt==='Fecha de Visita')el.textContent=t('lbl_visit_date');
+    if(txt==='Type'||txt==='Tipo')el.textContent=t('lbl_visit_type');
+    if(txt==='Weight (lbs)'||txt==='Peso (lbs)')el.textContent=t('lbl_weight');
+    if(txt==='Height (in)'||txt==='Talla (in)')el.textContent=t('lbl_height');
+    if(txt==='Reason / Notes'||txt==='Motivo / Notas')el.textContent=t('lbl_reason');
+  });
+  vm.querySelectorAll('.btn-cancel').forEach(function(b){b.textContent=t('btn_cancel');});
+  vm.querySelectorAll('.btn-save').forEach(function(b){b.textContent=t('btn_save');});
+  var vdBtn=document.getElementById('visit-delete-btn');if(vdBtn)vdBtn.textContent=t('btn_delete_visit');
+  // Contact modal
+  var contm=document.getElementById('contact-modal');if(!contm)return;
+  var cvLbl=contm.querySelector('.field label');if(cvLbl)cvLbl.textContent=t('lbl_contact_val');
+  document.getElementById('contact-value').placeholder=t('ph_ped');
+  contm.querySelectorAll('.btn-cancel').forEach(function(b){b.textContent=t('btn_cancel');});
+  contm.querySelectorAll('.btn-save').forEach(function(b){b.textContent=t('btn_save');});
+  var crdBtn=contm.querySelector('.btn-delete');if(crdBtn)crdBtn.textContent=t('btn_remove_contact');
+}
+function translateVaccAge(age){
+  if(LANG==='en')return age;
+  return age.replace(/\bBirth\b/g,'Nacimiento').replace(/(\d+)-(\d+) mo/g,'$1-$2 meses').replace(/(\d+) mo\+/g,'$1 meses+').replace(/(\d+) mo after/g,'$1 mes después del').replace(/(\d+) mo/g,'$1 meses');
+}
+// ── END LANGUAGE SYSTEM ──────────────────────────────────────────
+
+
+/* ── NOTIFICATIONS ── */
+var _bNotifTimers={};
+function bNotifSupported(){return 'Notification' in window;}
+function bNotifGranted(){return bNotifSupported()&&Notification.permission==='granted';}
+function requestBNotifPermission(cb){
+  if(!bNotifSupported()){if(cb)cb(false);return;}
+  Notification.requestPermission().then(function(p){if(cb)cb(p==='granted');});
+}
+function bSchedule(id,title,body,delayMs){
+  if(_bNotifTimers[id])clearTimeout(_bNotifTimers[id]);
+  if(!bNotifGranted()||delayMs<0||delayMs>86400000)return;
+  _bNotifTimers[id]=setTimeout(function(){new Notification(title,{body:body,icon:'/icons/icon-192.png'});},delayMs);
+}
+function bMsTill(timeStr){
+  var p=timeStr.split(':');var h=parseInt(p[0]),m=parseInt(p[1]);
+  var now=new Date();var tgt=new Date();tgt.setHours(h,m,0,0);
+  if(t<=now)t.setDate(t.getDate()+1);return t-now;
+}
+function scheduleAllBabyNotifs(){
+  if(!bNotifGranted())return;
+  var n=DB.notifications||{};
+  Object.keys(_bNotifTimers).forEach(function(k){clearTimeout(_bNotifTimers[k]);});
+  _bNotifTimers={};
+  var name=DB.profile&&DB.profile.name?DB.profile.name:'Baby';
+  // Feeding reminder
+  if(n.feedTime){
+    bSchedule('feed','Baby Tracker','Time to feed '+name+'! 🍼',bMsTill(n.feedTime));
+  }
+  // Medication reminder
+  if(n.medTime){
+    bSchedule('med','Baby Tracker',name+'s medication reminder 💊',bMsTill(n.medTime));
+  }
+  // Weekly milestone check-in (Sundays at 9am)
+  if(n.milestones){
+    var now=new Date();
+    var next=new Date();next.setHours(9,0,0,0);
+    var daysToSun=7-now.getDay();
+    if(daysToSun===7)daysToSun=0;
+    next.setDate(next.getDate()+daysToSun);
+    var ms=next-now;
+    if(ms>0)bSchedule('milestone','Baby Tracker','Check '+name+'s milestones this week!',ms);
+  }
+}
+
+
+function renderBabyNotifSection(){
+  var el=document.getElementById('baby-notif-section');if(!el)return;
+  var n=DB.notifications||{};
+  var name=DB.profile&&DB.profile.name?DB.profile.name:'Baby';
+  if(!bNotifSupported()){
+    el.innerHTML='<div style="font-size:14px;color:var(--text2);line-height:1.6;background:var(--bg3);border-radius:8px;padding:12px;">Notifications work on Android and on iPhone when installed to your home screen (iOS 16.4+).</div>';
+    return;
+  }
+  if(!bNotifGranted()){
+    el.innerHTML='<div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:10px;">Get reminded about feedings, medications, and weekly milestones.</div>'
+      +'<button class="btn-full" onclick="enableBabyNotifs()">Enable notifications</button>'
+      +'<div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.5;">Note: reminders only fire while the app is open.</div>';
+    return;
+  }
+  var h='<div style="font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:10px;">Note: reminders only fire while the app is open.</div>';
+  var rows=[
+    {key:'feedTime',label:'Feeding reminder',sub:n.feedTime?'Daily at '+n.feedTime:'Tap to enable',hasTime:true},
+    {key:'medTime',label:'Medication reminder',sub:n.medTime?'Daily at '+n.medTime:'Tap to enable',hasTime:true},
+    {key:'milestones',label:'Weekly milestone check-in',sub:'Every Sunday at 9am',hasTime:false},
+  ];
+  rows.forEach(function(r){
+    var on=r.hasTime?!!n[r.key]:!!n[r.key];
+    h+='<div style="padding:10px 0;border-bottom:.5px solid var(--border);">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;">'
+      +'<div><div style="font-size:15px;color:var(--text);">'+r.label+'</div>'
+      +'<div style="font-size:12px;color:var(--text2);">'+r.sub+'</div></div>'
+      +'<button id="bnotif_'+r.key+'" onclick="toggleBabyNotif(this)" style="background:'+(on?'var(--accent2)':'var(--bg3)')+';border:.5px solid var(--border);border-radius:20px;padding:6px 14px;color:'+(on?'#fff':'var(--text2)')+';font-size:13px;cursor:pointer;font-family:inherit;">'+(on?'On':'Off')+'</button>'
+      +'</div>';
+    if(on&&r.hasTime){
+      h+='<input type="time" value="'+n[r.key]+'" id="bnt_'+r.key+'" onchange="setBabyNotifTime_el(this)" style="margin-top:6px;width:140px;padding:6px 10px;border:.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;"/>';
+    }
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+function enableBabyNotifs(){
+  requestBNotifPermission(function(ok){
+    if(ok){if(!DB.notifications)DB.notifications={};sv();renderBabyNotifSection();}
+    else{showSaved('Permission denied. Check browser settings.');}
+  });
+}
+function toggleBabyNotif(btn){
+  var key=btn.id.replace('bnotif_','');
+  if(!DB.notifications)DB.notifications={};
+  var n=DB.notifications;
+  if(key==='milestones'){n.milestones=!n.milestones;}
+  else{n[key]=n[key]?null:'08:00';}
+  sv();scheduleAllBabyNotifs();renderBabyNotifSection();
+}
+function setBabyNotifTime_el(el){
+  var key=el.id.replace('bnt_','');
+  setBabyNotifTime(key,el.value);
+}
+function setBabyNotifTime(key,val){
+  if(!DB.notifications)DB.notifications={};
+  DB.notifications[key]=val;
+  sv();scheduleAllBabyNotifs();
+}
+
+
+// ── LOCAL FILE BACKUP (no account needed — the bedrock safety net) ──
+function dataSummary(db){
+  db = db || DB;
+  var n = 0;
+  if(db.logs) n += db.logs.length;
+  if(db.visits) n += db.visits.length;
+  if(db.milestones) n += db.milestones.length;
+  if(db.vaccines) n += Object.keys(db.vaccines).length;
+  if(db.foods) n += Object.keys(db.foods).length;
+  if(db.contacts) n += Object.keys(db.contacts).length;
+  return n;
+}
+
+function downloadBackup(){
+  var content = JSON.stringify(DB, null, 2);
+  var blob = new Blob([content], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var ts = today();
+  a.href = url; a.download = 'baby-tracker-backup-' + ts + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);}, 1000);
+  localStorage.setItem('mfs_baby_last_export', String(Date.now()));
+  showSaved('Backup downloaded!');
+}
+
+function triggerRestoreFromFile(){
+  document.getElementById('baby-restore-file-input').click();
+}
+
+function handleRestoreFileSelect(e){
+  var file = e.target.files[0]; if(!file){ return; }
+  var reader = new FileReader();
+  reader.onload = function(evt){
+    try{
+      var data = JSON.parse(evt.target.result);
+      if(!data || !data.profile){ showSaved("That file doesn't look like a valid backup."); return; }
+      openRestoreConfirm(data, 'the file "' + file.name + '"', null);
+    }catch(err){ showSaved('Could not read that file.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function renderLocalBackupSection(){
+  var el = document.getElementById('baby-localbackup-section'); if(!el) return;
+  var hasUndo = !!localStorage.getItem('mfs_baby_v1_prerestore');
+  var h = '<div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px">Download a backup file to your device anytime — no account needed. This is the safest option since nothing else can touch it.</div>';
+  h += '<button class="btn-full" onclick="downloadBackup()" style="margin-bottom:8px"><i class="ti ti-download"></i>&nbsp; Download Backup</button>';
+  h += '<button class="btn-full" onclick="triggerRestoreFromFile()" style="background:var(--bg3,#f2ede6);color:var(--text);border:.5px solid var(--border);"><i class="ti ti-upload"></i>&nbsp; Restore from File</button>';
+  if(hasUndo){
+    h += '<button class="btn-full" onclick="undoLastRestore()" style="background:none;color:#c0392b;border:.5px solid #c0392b;margin-top:8px">Undo Last Restore</button>';
+  }
+  el.innerHTML = h;
+}
+
+// ── RESTORE CONFIRMATION + ONE-STEP UNDO (applies to file AND Drive restores) ──
+var _pendingRestoreData = null;
+function openRestoreConfirm(data, sourceLabel, whenLabel){
+  _pendingRestoreData = data;
+  var incoming = dataSummary(data);
+  var current = dataSummary(DB);
+  var title = 'Restore from ' + sourceLabel + (whenLabel ? (' (' + whenLabel + ')') : '') + '?';
+  var detail = 'This backup has ' + incoming + ' entries. Your current data has ' + current + ' entries. Restoring replaces what you have now — but you can undo it right after if needed.';
+  if(incoming < current){
+    detail = '⚠ This backup has FEWER entries (' + incoming + ') than your current data (' + current + '). Double-check this is the right one before continuing.';
+  }
+  document.getElementById('restore-confirm-title').textContent = title;
+  document.getElementById('restore-confirm-detail').textContent = detail;
+  document.getElementById('restore-confirm-modal').classList.add('open');
+}
+function cancelRestore(){
+  _pendingRestoreData = null;
+  document.getElementById('restore-confirm-modal').classList.remove('open');
+}
+function confirmRestoreNow(){
+  if(!_pendingRestoreData){ document.getElementById('restore-confirm-modal').classList.remove('open'); return; }
+  try{ localStorage.setItem('mfs_baby_v1_prerestore', JSON.stringify({db:DB, ts:Date.now()})); }catch(e){}
+  DB = _pendingRestoreData;
+  _pendingRestoreData = null;
+  sv();
+  document.getElementById('restore-confirm-modal').classList.remove('open');
+  showSaved('Restored!');
+  setTimeout(function(){ location.reload(); }, 1200);
+}
+function undoLastRestore(){
+  try{
+    var raw = localStorage.getItem('mfs_baby_v1_prerestore');
+    if(!raw){ showSaved('Nothing to undo.'); return; }
+    var snap = JSON.parse(raw);
+    DB = snap.db;
+    localStorage.removeItem('mfs_baby_v1_prerestore');
+    sv();
+    showSaved('Restore undone!');
+    setTimeout(function(){ location.reload(); }, 1200);
+  }catch(e){ showSaved('Could not undo.'); }
+}
+
+// ── GOOGLE DRIVE BACKUP (versioned: 1 live copy + up to 7 daily snapshots) ──
+const GDRIVE_CLIENT_ID = '636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googleusercontent.com';
+const GDRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const GDRIVE_FILENAME = 'baby-tracker-backup.json';
+const GDRIVE_SNAPSHOT_PREFIX = 'baby-tracker-snapshot-';
+const GDRIVE_MAX_SNAPSHOTS = 7;
+var _gdriveToken = null;
+var _gdriveTokenClient = null;
+
+var _gdriveTokenWaiters = [];
+function gdriveInit() {
+  if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+    setTimeout(gdriveInit, 500);
+    return;
+  }
+  _gdriveTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GDRIVE_CLIENT_ID,
+    scope: GDRIVE_SCOPE,
+    callback: function(resp) {
+      if (resp.access_token) {
+        _gdriveToken = resp.access_token;
+        _gdriveLastSilentFail = 0;
+        localStorage.setItem('mfs_baby_gdrive_connected', '1');
+        renderGdriveSection();
+      }
+      var waiters = _gdriveTokenWaiters; _gdriveTokenWaiters = [];
+      waiters.forEach(function(fn){ fn(!!resp.access_token); });
+    }
+  });
+}
+
+function gdriveConnect() {
+  if (_gdriveTokenClient) { _gdriveTokenClient.requestAccessToken(); showSaved('Google Drive connected!'); return; }
+  var attempts = 0;
+  var waitForClient = setInterval(function(){
+    attempts++;
+    if (typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
+      clearInterval(waitForClient);
+      if (!_gdriveTokenClient) gdriveInit();
+      setTimeout(function(){ if (_gdriveTokenClient) { _gdriveTokenClient.requestAccessToken(); showSaved('Google Drive connected!'); } }, 100);
+    } else if (attempts > 40) {
+      clearInterval(waitForClient);
+      showSaved('Could not load Google Drive. Check your connection.');
+    }
+  }, 500);
+}
+
+function gdriveDisconnect() {
+  _gdriveToken = null;
+  localStorage.removeItem('mfs_baby_gdrive_connected');
+  showSaved('Google Drive disconnected.');
+  renderGdriveSection();
+}
+
+function gdriveIsConnected() { return !!_gdriveToken; }
+
+// Gets a working access token for an action that needs one right now. Tries a silent
+// refresh first; if Google doesn't respond within 3s (common when the browser blocks
+// third-party storage), falls back to a normal visible prompt instead of hanging forever.
+var _gdriveLastSilentFail = 0;
+var GDRIVE_SILENT_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+function gdriveEnsureToken(allowPrompt){
+  if (allowPrompt === undefined) allowPrompt = true;
+  return new Promise(function(resolve){
+    if (_gdriveToken) { resolve(true); return; }
+
+    // Background auto-backups shouldn't hammer Google (and pop account pickers)
+    // on every single edit — if a silent attempt recently failed, just skip
+    // quietly until either the cooldown passes or the person taps a real button.
+    if (!allowPrompt && _gdriveLastSilentFail && (Date.now() - _gdriveLastSilentFail) < GDRIVE_SILENT_COOLDOWN_MS) {
+      resolve(false);
+      return;
+    }
+
+    function proceedWithClient(){
+      var settled = false;
+      var waiter = function(ok){
+        if(settled) return; settled = true;
+        if (!ok && !allowPrompt) _gdriveLastSilentFail = Date.now();
+        resolve(ok);
+      };
+      _gdriveTokenWaiters.push(waiter);
+      _gdriveTokenClient.requestAccessToken({prompt:''});
+      setTimeout(function(){
+        if (settled) return;
+        var idx = _gdriveTokenWaiters.indexOf(waiter);
+        if (idx > -1) _gdriveTokenWaiters.splice(idx,1);
+        if (!allowPrompt) { waiter(false); return; }
+        _gdriveTokenWaiters.push(waiter);
+        _gdriveTokenClient.requestAccessToken(); // visible prompt if silent refresh didn't work
+      }, 3000);
+    }
+
+    if (_gdriveTokenClient) { proceedWithClient(); return; }
+
+    // Google's script/client may not have finished initializing yet — wait for it
+    // (up to ~10s) instead of failing immediately.
+    var attempts = 0;
+    var waitForClient = setInterval(function(){
+      attempts++;
+      if (_gdriveTokenClient) {
+        clearInterval(waitForClient);
+        proceedWithClient();
+      } else if (attempts > 20) {
+        clearInterval(waitForClient);
+        resolve(false);
+      }
+    }, 500);
+  });
+}
+
+async function gdriveApiGet(url){
+  var res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + _gdriveToken } });
+  var data;
+  try{ data = await res.json(); }catch(e){ data = null; }
+  if (!res.ok) {
+    var msg = data && data.error && data.error.message;
+    throw new Error('Drive API error ' + res.status + (msg ? (': ' + msg) : ''));
+  }
+  return data || {};
+}
+
+async function gdriveFindFileByName(name){
+  if (!_gdriveToken) return null;
+  var q = encodeURIComponent("name='" + name + "' and trashed=false");
+  var data = await gdriveApiGet('https://www.googleapis.com/drive/v3/files?q=' + q + '&spaces=drive&fields=files(id,name)');
+  return (data.files && data.files[0]) ? data.files[0].id : null;
+}
+
+async function gdriveUploadFile(name, content, existingId){
+  var metadata = { name: name, mimeType: 'application/json' };
+  var boundary = '-------mfs' + Date.now();
+  var body = '--' + boundary + '\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) +
+    '\r\n--' + boundary + '\r\nContent-Type: application/json\r\n\r\n' + content + '\r\n--' + boundary + '--';
+  var url = existingId
+    ? 'https://www.googleapis.com/upload/drive/v3/files/' + existingId + '?uploadType=multipart'
+    : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+  var method = existingId ? 'PATCH' : 'POST';
+  var res = await fetch(url, {
+    method: method,
+    headers: { 'Authorization': 'Bearer ' + _gdriveToken, 'Content-Type': 'multipart/related; boundary=' + boundary },
+    body: body
+  });
+  if (!res.ok) throw new Error('Drive upload failed (' + res.status + ')');
+}
+
+async function gdriveListSnapshots(){
+  if (!_gdriveToken) return [];
+  var q = encodeURIComponent("name contains '" + GDRIVE_SNAPSHOT_PREFIX + "' and trashed=false");
+  var data = await gdriveApiGet('https://www.googleapis.com/drive/v3/files?q=' + q + '&orderBy=' + encodeURIComponent('createdTime desc') + '&fields=' + encodeURIComponent('files(id,name,createdTime)') + '&spaces=drive');
+  return data.files || [];
+}
+
+async function gdrivePruneSnapshots(){
+  var files = await gdriveListSnapshots();
+  if (files.length <= GDRIVE_MAX_SNAPSHOTS) return;
+  var toDelete = files.slice(GDRIVE_MAX_SNAPSHOTS);
+  for (var i=0; i<toDelete.length; i++){
+    try{ await fetch('https://www.googleapis.com/drive/v3/files/' + toDelete[i].id, { method:'DELETE', headers:{ 'Authorization':'Bearer ' + _gdriveToken } }); }catch(e){}
+  }
+}
+
+async function gdriveBackupNow(interactive) {
+  // Background auto-backup never asks for a token, silently or otherwise — it only
+  // runs if a connection is already active in memory. Only an explicit tap (Back Up
+  // Now / Restore) is allowed to prompt for reconnection.
+  var ok = interactive ? await gdriveEnsureToken(true) : !!_gdriveToken;
+  if (!ok) { console.error('Drive backup skipped: no token available'); return {ok:false, error:'Could not connect to Google Drive'}; }
+  try {
+    var content = JSON.stringify(DB);
+    // 1) Always-current live copy (safe to overwrite — it's just the latest state).
+    var liveId = await gdriveFindFileByName(GDRIVE_FILENAME);
+    await gdriveUploadFile(GDRIVE_FILENAME, content, liveId);
+    // 2) One dated snapshot per day, never overwritten — this is the real safety net for point-in-time recovery.
+    var todayStr = today();
+    var snapName = GDRIVE_SNAPSHOT_PREFIX + todayStr + '.json';
+    var snapId = await gdriveFindFileByName(snapName);
+    if (!snapId) {
+      await gdriveUploadFile(snapName, content, null);
+      await gdrivePruneSnapshots();
+    }
+    return {ok:true};
+  } catch(e) { console.error('Drive backup failed:', e); return {ok:false, error: e.message || 'Unknown error'}; }
+}
+
+async function gdriveOpenRestorePicker(){
+  var connected = localStorage.getItem('mfs_baby_gdrive_connected')==='1';
+  if (!connected) { showSaved('Connect Google Drive first.'); return; }
+  var el = document.getElementById('gdrive-backup-list');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2);font-size:14px;">Loading backups…</div>';
+  document.getElementById('gdrive-restore-modal').classList.add('open');
+  try {
+    var ok = await gdriveEnsureToken();
+    if (!ok) { throw new Error('Could not connect to Google Drive'); }
+    var liveId = await gdriveFindFileByName(GDRIVE_FILENAME);
+    var snapshots = await gdriveListSnapshots();
+    var items = [];
+    if (liveId) items.push({id:liveId, label:'Most recent (auto-backup)', sub:'Always up to date'});
+    for (var i=0; i<snapshots.length; i++){
+      var f = snapshots[i];
+      var dateStr = f.name.replace(GDRIVE_SNAPSHOT_PREFIX,'').replace('.json','');
+      items.push({id:f.id, label:'Daily snapshot', sub:dateStr});
+    }
+    if (!items.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2);font-size:14px;">No backups found in your Google Drive yet. Try "Back up now" first.</div>'; return; }
+    var h = '';
+    for (var j=0; j<items.length; j++){
+      h += '<div style="cursor:pointer;padding:12px 14px;border-radius:10px;background:var(--bg2,#f7f5f1);border:1px solid var(--border);margin-bottom:8px;" onclick="gdriveSelectBackup(\'' + items[j].id + '\',\'' + items[j].label + ' · ' + items[j].sub + '\')">'
+        + '<div style="font-weight:600;font-size:14px;color:var(--text);">' + items[j].label + '</div>'
+        + '<div style="font-size:12px;color:var(--text2);">' + items[j].sub + '</div></div>';
+    }
+    el.innerHTML = h;
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--red-text,#c0392b);font-size:14px;">Couldn\'t load your backups.<br><span style="font-size:12px;color:var(--text2);">' + (e.message||'') + '</span></div>'
+      + '<button class="btn-full" onclick="gdriveOpenRestorePicker()" style="margin-top:10px;">Try Again</button>';
+  }
+}
+function closeGdriveRestorePicker(){ document.getElementById('gdrive-restore-modal').classList.remove('open'); }
+
+async function gdriveSelectBackup(fileId, label){
+  closeGdriveRestorePicker();
+  try {
+    var res = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', { headers: { 'Authorization': 'Bearer ' + _gdriveToken } });
+    if (!res.ok) throw new Error('Drive returned an error (' + res.status + ')');
+    var data = await res.json();
+    if (!data || !data.profile) { showSaved('That backup looks invalid.'); return; }
+    openRestoreConfirm(data, 'Google Drive', label);
+  } catch(e) { showSaved('Could not load that backup: ' + (e.message||'try again')); }
+}
+
+function renderGdriveSection(){
+  var el=document.getElementById('baby-gdrive-section');if(!el)return;
+  var connected = localStorage.getItem('mfs_baby_gdrive_connected')==='1';
+  if(!connected){
+    el.innerHTML='<div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px">'+t('gdrive_desc')+'</div>'
+      +'<button class="btn-full" onclick="gdriveConnect()">'+t('gdrive_connect')+'</button>';
+    return;
+  }
+  el.innerHTML='<div style="background:var(--accent3,#eaf3de);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--accent2,#3a6028);margin-bottom:10px;">&check; '+t('gdrive_connected')+'</div>'
+    +'<button class="btn-full" onclick="gdriveBackupNow(true).then(function(r){ showSaved(r.ok ? t(\'gdrive_backup\') : (\'Backup failed: \'+r.error)); })" style="margin-bottom:8px">'+t('gdrive_backup')+'</button>'
+    +'<button class="btn-full" onclick="gdriveOpenRestorePicker()" style="background:var(--bg3,#f2ede6);color:var(--text);border:.5px solid var(--border);margin-bottom:8px">'+t('gdrive_restore')+'</button>'
+    +'<button class="btn-full" onclick="gdriveDisconnect()" style="background:none;color:#c0392b;border:.5px solid #c0392b;">'+t('gdrive_disconnect')+'</button>';
+}
+
+
+
+// ── FIREBASE SHARING ──
+var FB_APP = null;
+var FB = null;
+var FB_LISTENER = null;
+
+function fbInit(){
+  if(FB_APP)return;
+  if(typeof firebase==='undefined')return;
+  FB_APP = firebase.initializeApp({
+    apiKey:"AIzaSyCS-6-cyja3CCNoBAv46nbPF3hGboan2ek",
+    authDomain:"baby-tracker-mfs.firebaseapp.com",
+    databaseURL:"https://baby-tracker-mfs-default-rtdb.firebaseio.com",
+    projectId:"baby-tracker-mfs",
+    storageBucket:"baby-tracker-mfs.firebasestorage.app",
+    messagingSenderId:"696663907388",
+    appId:"1:696663907388:web:31af5577461416e30bf739"
+  });
+  FB = firebase.database(FB_APP);
+}
+
+function fbSave(){
+  if(!DB.shareCode||!FB)return;
+  FB.ref('households/'+DB.shareCode).set(DB).catch(function(e){console.error('FB save:',e);});
+}
+
+function fbListen(code){
+  if(FB_LISTENER){FB_LISTENER.off();FB_LISTENER=null;}
+  if(!FB)return;
+  FB_LISTENER = FB.ref('households/'+code);
+  FB_LISTENER.on('value',function(snap){
+    var data=snap.val();
+    if(!data)return;
+    var code=DB.shareCode;var lang=DB.lang;
+    DB=data;
+    if(code)DB.shareCode=code;
+    if(lang)DB.lang=lang;
+    try{localStorage.setItem('mfs_baby_v1',JSON.stringify(DB));}catch(e){}
+    renderDash();
+  });
+}
+
+function genCode(){return Math.random().toString(36).substr(2,6).toUpperCase();}
+
+function joinHousehold(code){
+  if(!FB)return;
+  FB.ref('households/'+code).once('value',function(snap){
+    if(!snap.val()){showSaved('Household code not found.');return;}
+    var data=snap.val();
+    DB=data;DB.shareCode=code;
+    try{localStorage.setItem('mfs_baby_v1',JSON.stringify(DB));}catch(e){}
+    fbListen(code);
+    renderDash();renderSetup();
+    showSaved('Connected to family!');
+  });
+}
+
+function startSharing(){
+  if(!FB)return;
+  var code=genCode();
+  DB.shareCode=code;
+  fbSave();
+  try{localStorage.setItem('mfs_baby_v1',JSON.stringify(DB));}catch(e){}
+  fbListen(code);
+  renderSetup();
+  showSaved('Family code created: '+code);
+}
+
+function stopSharing(){
+  if(FB_LISTENER){FB_LISTENER.off();FB_LISTENER=null;}
+  delete DB.shareCode;
+  try{localStorage.setItem('mfs_baby_v1',JSON.stringify(DB));}catch(e){}
+  renderSetup();
+  showSaved('Sharing stopped.');
+}
+
+function buildSharingSection(){
+  var h='';
+  if(DB.shareCode){
+    h+='<div style="background:var(--accent3,#eaf3de);border-radius:10px;padding:12px 16px;margin-bottom:12px;">'
+      +'<div style="font-size:11px;letter-spacing:.1em;color:var(--text2);text-transform:uppercase;margin-bottom:6px;">'+t('share_code_label')+'</div>'
+      +'<div style="font-size:28px;font-family:monospace;letter-spacing:.2em;color:var(--accent2,#3a6028);font-weight:700;">'+DB.shareCode+'</div>'
+      +'<div style="font-size:13px;color:var(--text2);margin-top:6px;">'+t('share_code_hint')+'</div>'
+      +'</div>'
+      +'<button class="btn-full" onclick="stopSharing()" style="background:var(--bg3,#f2ede6);color:var(--text);border:.5px solid var(--border);">'+t('share_stop')+'</button>';
+  } else {
+    h+='<div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px;">'+t('share_desc')+'</div>'
+      +'<button class="btn-full" onclick="startSharing()">'+t('share_create')+'</button>'
+      +'<div style="font-size:13px;color:var(--text2);text-align:center;margin:10px 0;">'+t('share_or')+'</div>'
+      +'<div style="display:flex;gap:8px;">'
+      +'<input id="join-code-input" placeholder="'+t('share_enter')+'" style="flex:1;background:var(--bg3);border:.5px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:16px;font-family:monospace;letter-spacing:.1em;text-transform:uppercase;outline:none;"/>'
+      +'<button class="btn-save" style="flex:0 0 auto;padding:10px 16px;" onclick="joinHousehold(document.getElementById(&quot;join-code-input&quot;).value.trim().toUpperCase())">'+t('share_join')+'</button>'
+      +'</div>';
+  }
+  return h;
+}
+
+var _gdriveBackupTimer=null;
+function sv(){
+  try{localStorage.setItem('mfs_baby_v1',JSON.stringify(DB));}catch(e){}
+  if(DB.shareCode)fbSave();
+  if(localStorage.getItem('mfs_baby_gdrive_connected')==='1'){
+    clearTimeout(_gdriveBackupTimer);
+    _gdriveBackupTimer=setTimeout(function(){gdriveBackupNow(false);},3000);
+  }
+}
+function ld(){try{var d=localStorage.getItem('mfs_baby_v1');if(d)DB=JSON.parse(d);}catch(e){}}
+ld();
+setTimeout(function(){if(typeof gdriveInit==='function')gdriveInit();},500);
+try{ fbInit(); }catch(e){}
+if(DB.shareCode){ try{ fbListen(DB.shareCode); }catch(e){} }
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').then(function(reg){reg.update();}).catch(function(){});});}
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('pg-'+id).classList.add('active');el.classList.add('active');
+  if(id==='dash')renderDash();if(id==='log')renderLog();
+  if(id==='milestones')renderMS();if(id==='health')renderHealth();if(id==='setup')renderSetup();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openLogFab(){if(logFilter==='diaper')openDiaperModal(null);else if(logFilter==='sleep')openSleepModal(null);else openFeedModal(null);}
+function getFeedMethod(){return DB.profile.feedMethod||'formula';}
+
+// FEED MODAL
+function openFeedModal(id){
+  editingLogId=id;
+  var now=new Date();var h=now.getHours(),m=now.getMinutes();
+  var log=id?DB.logs.find(function(l){return l.id===id;}):null;
+  document.getElementById('feed-modal-title').textContent=id?t('feed_modal_edit'):t('feed_modal_add');
+  document.getElementById('feed-delete-btn').style.display=id?'block':'none';
+  document.getElementById('f-date').value=log?log.date:today();
+  document.getElementById('f-time').value=log?log.time:(h+':'+(m<10?'0'+m:m));
+  document.getElementById('f-notes').value=log?(log.notes||''):'';
+  var method=getFeedMethod();
+  var badge=document.getElementById('feed-badge');
+  var typeF=document.getElementById('feed-type-field');
+  var sideF=document.getElementById('feed-side-field');
+  var ozF=document.getElementById('feed-oz-field');
+  var minF=document.getElementById('feed-min-field');
+  if(method==='formula'){
+    badge.textContent=t('badge_formula');typeF.style.display='none';sideF.style.display='none';
+    ozF.style.display='block';minF.style.display='none';
+    document.getElementById('f-oz').value=log?log.oz:'';
+  } else if(method==='breast'){
+    badge.textContent=t('badge_breast');typeF.style.display='none';sideF.style.display='block';
+    ozF.style.display='none';minF.style.display='block';
+    document.getElementById('f-min').value=log?log.mins:'';
+    if(log&&log.side)document.getElementById('f-side').value=log.side;
+  } else {
+    badge.textContent=t('badge_both');typeF.style.display='block';
+    var ft=log?log.feedType:'bottle';
+    document.getElementById('f-feedtype').value=ft;
+    sideF.style.display=ft==='breast'?'block':'none';
+    ozF.style.display=ft==='bottle'?'block':'none';
+    minF.style.display=ft==='breast'?'block':'none';
+    document.getElementById('f-oz').value=log?log.oz:'';
+    document.getElementById('f-min').value=log?log.mins:'';
+    if(log&&log.side)document.getElementById('f-side').value=log.side;
+  }
+  document.getElementById('feed-modal').classList.add('open');
+}
+
+function onFeedTypeChange(){
+  var ft=document.getElementById('f-feedtype').value;
+  document.getElementById('feed-side-field').style.display=ft==='breast'?'block':'none';
+  document.getElementById('feed-oz-field').style.display=ft==='bottle'?'block':'none';
+  document.getElementById('feed-min-field').style.display=ft==='breast'?'block':'none';
+}
+
+function saveFeed(){
+  var method=getFeedMethod();
+  var ft=method==='both'?document.getElementById('f-feedtype').value:method==='formula'?'bottle':'breast';
+  var entry={id:editingLogId||('l'+Date.now()),type:'feed',feedType:ft,
+    oz:ft==='bottle'?parseFloat(document.getElementById('f-oz').value)||0:0,
+    mins:ft==='breast'?parseFloat(document.getElementById('f-min').value)||0:0,
+    side:ft==='breast'?document.getElementById('f-side').value:'',
+    time:document.getElementById('f-time').value,
+    notes:document.getElementById('f-notes').value,
+    date:document.getElementById('f-date').value||today()};
+  if(editingLogId){var i=DB.logs.findIndex(function(l){return l.id===editingLogId;});if(i>-1)DB.logs[i]=entry;}
+  else DB.logs.push(entry);
+  sv();closeModal('feed-modal');renderDash();renderLog();
+}
+
+function deleteFeed(){
+  showConfirm(function(){
+  DB.logs=DB.logs.filter(function(l){return l.id!==editingLogId;});
+  sv();closeModal('feed-modal');renderDash();renderLog();
+});
+}
+
+// DIAPER MODAL
+function openDiaperModal(id){
+  editingLogId=id;
+  var now=new Date();var h=now.getHours(),m=now.getMinutes();
+  var log=id?DB.logs.find(function(l){return l.id===id;}):null;
+  document.getElementById('diaper-modal-title').textContent=id?t('diaper_modal_edit'):t('diaper_modal_add');
+  document.getElementById('diaper-delete-btn').style.display=id?'block':'none';
+  document.getElementById('dp-type').value=log?log.subtype:'wet';
+  document.getElementById('dp-date').value=log?log.date:today();
+  document.getElementById('dp-time').value=log?log.time:(h+':'+(m<10?'0'+m:m));
+  document.getElementById('dp-notes').value=log?(log.notes||''):'';
+  document.getElementById('diaper-modal').classList.add('open');
+}
+
+function saveDiaper(){
+  var entry={id:editingLogId||('l'+Date.now()),type:'diaper',
+    subtype:document.getElementById('dp-type').value,
+    date:document.getElementById('dp-date').value||today(),
+    time:document.getElementById('dp-time').value,
+    notes:document.getElementById('dp-notes').value};
+  if(editingLogId){var i=DB.logs.findIndex(function(l){return l.id===editingLogId;});if(i>-1)DB.logs[i]=entry;}
+  else DB.logs.push(entry);
+  sv();closeModal('diaper-modal');renderDash();renderLog();
+}
+
+function deleteDiaper(){
+  showConfirm(function(){
+  DB.logs=DB.logs.filter(function(l){return l.id!==editingLogId;});
+  sv();closeModal('diaper-modal');renderDash();renderLog();
+});
+}
+
+// SLEEP MODAL
+function openSleepModal(id){
+  editingLogId=id;
+  var now=new Date();var h=now.getHours(),m=now.getMinutes();
+  var log=id?DB.logs.find(function(l){return l.id===id;}):null;
+  document.getElementById('sleep-modal-title').textContent=id?t('sleep_modal_edit'):t('sleep_modal_add');
+  document.getElementById('sleep-delete-btn').style.display=id?'block':'none';
+  document.getElementById('sl-type').value=log?log.subtype:'nap';
+  document.getElementById('sl-date').value=log?log.date:today();
+  document.getElementById('sl-start').value=log?log.start:(h+':'+(m<10?'0'+m:m));
+  document.getElementById('sl-end').value=log?log.end:'';
+  document.getElementById('sleep-modal').classList.add('open');
+}
+
+function saveSleep(){
+  var s=document.getElementById('sl-start').value,e=document.getElementById('sl-end').value;
+  var mins=0;
+  if(s&&e){var sp=s.split(':'),ep=e.split(':');mins=(+ep[0]*60+ +ep[1])-(+sp[0]*60+ +sp[1]);if(mins<0)mins+=1440;}
+  var entry={id:editingLogId||('l'+Date.now()),type:'sleep',
+    subtype:document.getElementById('sl-type').value,
+    date:document.getElementById('sl-date').value||today(),
+    start:s,end:e,mins:mins};
+  if(editingLogId){var i=DB.logs.findIndex(function(l){return l.id===editingLogId;});if(i>-1)DB.logs[i]=entry;}
+  else DB.logs.push(entry);
+  sv();closeModal('sleep-modal');renderDash();renderLog();
+}
+
+function deleteSleep(){
+  showConfirm(function(){
+  DB.logs=DB.logs.filter(function(l){return l.id!==editingLogId;});
+  sv();closeModal('sleep-modal');renderDash();renderLog();
+});
+}
+
+// VISIT MODAL
+function openVisitModal(id){
+  editingVisitId=id;
+  var v=id?DB.visits.find(function(x){return x.id===id;}):null;
+  document.getElementById('visit-modal-title').textContent=id?t('visit_modal_edit'):t('visit_modal_add');
+  document.getElementById('visit-delete-btn').style.display=id?'block':'none';
+  document.getElementById('v-date').value=v?v.date:today();
+  document.getElementById('v-type').value=v?v.type:'Well visit';
+  document.getElementById('v-weight').value=v?v.weight:'';
+  document.getElementById('v-height').value=v?v.height:'';
+  document.getElementById('v-reason').value=v?v.reason:'';
+  document.getElementById('visit-modal').classList.add('open');
+}
+
+function saveVisit(){
+  var entry={id:editingVisitId||('vis'+Date.now()),
+    date:document.getElementById('v-date').value,
+    type:document.getElementById('v-type').value,
+    weight:document.getElementById('v-weight').value,
+    height:document.getElementById('v-height').value,
+    reason:document.getElementById('v-reason').value};
+  if(editingVisitId){var i=DB.visits.findIndex(function(x){return x.id===editingVisitId;});if(i>-1)DB.visits[i]=entry;}
+  else DB.visits.push(entry);
+  sv();closeModal('visit-modal');renderHealth();
+}
+
+function deleteVisit(){
+  showConfirm(function(){
+  DB.visits=DB.visits.filter(function(x){return x.id!==editingVisitId;});
+  sv();closeModal('visit-modal');renderHealth();
+});
+}
+
+// MILESTONE MODAL
+function openMSModal(id){
+  editingMSId=id||null;
+  var m=id?DB.milestones.find(function(x){return x.id===id;}):null;
+  var preset=id?MILESTONES.find(function(x){return x.id===id;}):null;
+  document.getElementById('ms-modal-title').textContent=id?t('ms_modal_edit'):t('ms_modal_add');
+  document.getElementById('ms-delete-btn').style.display=id?'block':'none';
+  document.getElementById('ms-cat-field').style.display=(m&&m.custom)||!id?'block':'none';
+  if(preset){
+    document.getElementById('ms-name').value=(LANG==='es'&&MILESTONES_ES[preset.id])||preset.name;
+    document.getElementById('ms-name').readOnly=true;
+  } else {
+    document.getElementById('ms-name').value=m?m.name:'';
+    document.getElementById('ms-name').readOnly=false;
+  }
+  if(m&&m.cat)document.getElementById('ms-cat').value=m.cat;
+  document.getElementById('ms-date').value=m?m.date:'';
+  document.getElementById('ms-modal').classList.add('open');
+}
+
+function saveMS(){
+  var date=document.getElementById('ms-date').value;
+  if(editingMSId){
+    var existing=DB.milestones.find(function(x){return x.id===editingMSId;});
+    if(existing){existing.date=date;existing.done=!!date;}
+    else{DB.milestones.push({id:editingMSId,done:!!date,date:date});}
+  } else {
+    var name=document.getElementById('ms-name').value.trim();if(!name)return;
+    DB.milestones.push({id:'cm'+Date.now(),name:name,cat:document.getElementById('ms-cat').value,date:date,custom:true,done:!!date});
+  }
+  sv();closeModal('ms-modal');renderMS();
+}
+
+function deleteMS(){
+  showConfirm(function(){
+  DB.milestones=DB.milestones.filter(function(x){return x.id!==editingMSId;});
+  sv();closeModal('ms-modal');renderMS();
+});
+}
+
+// CONTACT MODAL
+function openContactModal(key){
+  editingContactKey=key;
+  var labels=t('contact_labels');
+  document.getElementById('contact-modal-title').textContent=t('contact_modal_title_pre')+' '+t('contact_labels')[key];
+  document.getElementById('contact-value').value=DB.contacts[key]||'';
+  document.getElementById('contact-modal').classList.add('open');
+}
+
+function saveContact(){
+  DB.contacts[editingContactKey]=document.getElementById('contact-value').value.trim();
+  sv();closeModal('contact-modal');renderSetup();
+}
+
+function deleteContact(){
+  showConfirm(function(){
+  DB.contacts[editingContactKey]='';
+  sv();closeModal('contact-modal');renderSetup();
+});
+}
+
+function onFeedMethodChange(){
+  var m=document.getElementById('s-feedmethod').value;
+  document.getElementById('s-oz-wrap').style.display=(m==='formula'||m==='both')?'block':'none';
+  document.getElementById('s-min-wrap').style.display=(m==='breast'||m==='both')?'block':'none';
+}
+
+function saveProfile(){
+  DB.profile={parent:document.getElementById('s-parent').value.trim(),name:document.getElementById('s-name').value.trim(),dob:document.getElementById('s-dob').value,blood:document.getElementById('s-blood').value.trim(),feedMethod:document.getElementById('s-feedmethod').value,oz:parseFloat(document.getElementById('s-oz').value)||0,minGoal:parseFloat(document.getElementById('s-min').value)||0};
+  sv();renderDash();showSaved(t('saved_profile'));
+}
+
+function saveContacts(){
+  DB.contacts={ped:document.getElementById('s-ped').value.trim(),c2:document.getElementById('s-c2').value.trim(),c3:document.getElementById('s-c3').value.trim()};
+  sv();renderContactsDisplay();showSaved(t('saved_contacts_msg'));
+}
+
+function toggleVacc(id){if(!DB.vaccines[id]){DB.vaccines[id]={given:true,date:today()};}else{delete DB.vaccines[id];}sv();renderHealth();}
+function updateVaccDate(id,val){if(DB.vaccines[id])DB.vaccines[id].date=val;sv();}
+function updateFoodDate(id,val){if(DB.foods[id])DB.foods[id].date=val;sv();}
+function toggleFood(id){if(!DB.foods[id]){DB.foods[id]={tried:true,date:today()};}else{delete DB.foods[id];}sv();renderMS();}
+
+function openMSOrFoodModal(){
+  if(msFilter==='foods'){openFoodModal();}else{openMSModal();}
+}
+function openFoodModal(){
+  document.getElementById('food-name').value='';
+  document.getElementById('food-group').value='Vegetable';
+  document.getElementById('food-date').value=today();
+  document.getElementById('food-modal').classList.add('open');
+}
+function saveCustomFood(){
+  var name=document.getElementById('food-name').value.trim();
+  if(!name){showSaved('Please enter a food name.');return;}
+  var group=document.getElementById('food-group').value;
+  var date=document.getElementById('food-date').value||today();
+  var id='cf'+Date.now();
+  if(!DB.customFoods)DB.customFoods=[];
+  DB.customFoods.push({id:id,name:name,group:group});
+  DB.foods[id]={tried:true,date:date};
+  sv();closeModal('food-modal');renderMS();
+  showSaved('Food added!');
+}
+
+function localDateStr(d){d=d||new Date();var y=d.getFullYear();var m=String(d.getMonth()+1).padStart(2,'0');var day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
+function today(){return localDateStr();}
+function fmtTime(t){if(!t)return'';var p=t.split(':');var h=+p[0],m=p[1];var s=h>=12?'PM':'AM';h=h%12||12;return h+':'+m+' '+s;}
+function fmtDate(d){if(!d)return'';var p=d.split('-');return(+p[1])+'/'+(+p[2])+'/'+(p[0].slice(2));}
+
+function fmtDateLabel(d){
+  if(!d)return'';
+  var tod=today();
+  var yest=new Date();yest.setDate(yest.getDate()-1);var yesterdayStr=localDateStr(yest);
+  if(d===tod)return t('today_label');if(d===yesterdayStr)return t('yesterday_label');
+  var p=d.split('-');
+  var months=t('months');
+  return months[+p[1]-1]+' '+parseInt(p[2])+', '+p[0];
+}
+
+function calcAge(){
+  if(!DB.profile.dob)return null;
+  var dob=new Date(DB.profile.dob);var now=new Date();
+  var diffDays=Math.floor((now-dob)/(1000*60*60*24));
+  if(diffDays<30)return{val:diffDays,unit:t('age_days')};
+  var months=(now.getFullYear()-dob.getFullYear())*12+(now.getMonth()-dob.getMonth());
+  return{val:Math.max(0,months),unit:t('age_months')};
+}
+
+function feedTitle(l){
+  var sideMap={left:'opt_left',right:'opt_right',both:'opt_both_sides'};
+  if(l.feedType==='bottle')return t('opt_bottle')+(l.oz?' · '+l.oz+' oz':'');
+  return t('opt_breastf')+(l.side&&sideMap[l.side]?' · '+t(sideMap[l.side]):'')+(l.mins?' · '+l.mins+' min':'');
+}
+
+function logItemHTML(l){
+  var ic=l.type==='feed'?'g':l.type==='diaper'?'d':'s';
+  var icon=l.type==='feed'?'ti-droplet':l.type==='diaper'?'ti-wind':'ti-moon';
+  var diaperMap={wet:'opt_wet',dirty:'opt_dirty',both:'opt_both_dp',dry:'opt_dry'};
+  var sleepMap={nap:'opt_nap',night:'opt_night'};
+  var title=l.type==='feed'?feedTitle(l):l.type==='diaper'?(t(diaperMap[l.subtype])||l.subtype)+' '+t('diaper_suffix'):(t(sleepMap[l.subtype])||l.subtype)+' · '+(l.mins?Math.floor(l.mins/60)+'h'+(l.mins%60)+'m':'');
+  var timeStr=l.type==='sleep'?fmtTime(l.start)+(l.end?' – '+fmtTime(l.end):''):fmtTime(l.time);
+  var fn=l.type==='feed'?'openFeedModal':l.type==='diaper'?'openDiaperModal':'openSleepModal';
+  return'<div class="log-item" onclick="'+fn+'(\''+l.id+'\')">'+
+    '<div class="log-icon '+ic+'"><i class="ti '+icon+'"></i></div>'+
+    '<div class="log-info"><div class="log-title">'+title+'</div>'+(l.notes?'<div class="log-sub">'+l.notes+'</div>':'')+'</div>'+
+    '<div style="text-align:right;"><div class="log-time">'+timeStr+'</div><div class="log-edit-hint">'+t('tap_edit')+'</div></div>'+
+    '</div>';
+}
+
+function renderDash(){
+  var now=new Date();
+  var days=t('days');
+  var months=t('months');
+  document.getElementById('dash-date').textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate();
+  var h=now.getHours();
+  document.getElementById('dash-title').textContent=(h<12?t('greeting_morning'):h<17?t('greeting_afternoon'):t('greeting_evening'))+(DB.profile.parent?', '+DB.profile.parent:'');
+  var age=calcAge();
+  document.getElementById('age-display').textContent=age?age.val:'—';
+  document.getElementById('age-unit').textContent=age?age.unit:'months old';
+  document.getElementById('baby-name-display').textContent=DB.profile.name||t('your_baby');
+  document.getElementById('dob-display').textContent=DB.profile.dob?t('born_label')+' '+fmtDate(DB.profile.dob):t('add_baby_setup');
+  var tod=today();
+  var tl=DB.logs.filter(function(l){return l.date===tod;});
+  var feeds=tl.filter(function(l){return l.type==='feed';});
+  var diapers=tl.filter(function(l){return l.type==='diaper';});
+  var sleeps=tl.filter(function(l){return l.type==='sleep';});
+  var totalOz=feeds.filter(function(l){return l.feedType==='bottle';}).reduce(function(s,l){return s+(l.oz||0);},0);
+  var totalMins=feeds.filter(function(l){return l.feedType==='breast';}).reduce(function(s,l){return s+(l.mins||0);},0);
+  var wet=diapers.filter(function(d){return d.subtype==='wet'||d.subtype==='both';}).length;
+  var dirty=diapers.filter(function(d){return d.subtype==='dirty'||d.subtype==='both';}).length;
+  var sleepMins=sleeps.reduce(function(s,l){return s+(l.mins||0);},0);
+  var naps=sleeps.filter(function(l){return l.subtype==='nap';}).length;
+  var lastFeed=feeds.length?feeds[feeds.length-1]:null;
+  document.getElementById('d-feeds').textContent=feeds.length;
+  document.getElementById('d-feeds-sub').textContent=lastFeed?t('last_feed')+': '+fmtTime(lastFeed.time):t('last_feed')+': —';
+  document.getElementById('d-diapers').textContent=diapers.length;
+  document.getElementById('d-diapers-sub').textContent=wet+' '+t('wet')+' · '+dirty+' '+t('dirty');
+  var sh=Math.floor(sleepMins/60),sm=sleepMins%60;
+  document.getElementById('d-sleep').textContent=sh+'h'+(sm>0?sm+'m':'');
+  document.getElementById('d-sleep-sub').textContent=naps+' '+(naps!==1?t('naps_pl'):t('naps'))+' '+t('today_s');
+  var method=getFeedMethod();
+  if(method==='breast'){
+    document.getElementById('d-measure-label').textContent=t('stat_total_min');
+    document.getElementById('d-oz').textContent=totalMins;
+    document.getElementById('d-oz-sub').textContent=t('goal_min')+': '+(DB.profile.minGoal||'—')+' min';
+  } else if(method==='both'){
+    document.getElementById('d-measure-label').textContent=t('stat_oz_min');
+    document.getElementById('d-oz').textContent=totalOz.toFixed(1);
+    document.getElementById('d-oz-sub').textContent=totalMins+' '+t('min_breast');
+  } else {
+    document.getElementById('d-measure-label').textContent=t('stat_total_oz');
+    document.getElementById('d-oz').textContent=totalOz.toFixed(1);
+    document.getElementById('d-oz-sub').textContent=t('goal_oz')+': '+(DB.profile.oz||'—')+' oz';
+  }
+  var recent=tl.slice(-5).reverse();
+  var rl=document.getElementById('recent-log');
+  if(!recent.length){rl.innerHTML='<div class="empty">'+t('no_entries_today').replace('\n','<br>')+'</div>';return;}
+  rl.innerHTML=recent.map(logItemHTML).join('');
+}
+
+function renderLog(){
+  var items=DB.logs.filter(function(l){return logFilter==='all'||l.type===logFilter;});
+  items=items.slice().sort(function(a,b){var dc=b.date.localeCompare(a.date);if(dc!==0)return dc;var at=a.type==='sleep'?a.start:a.time;var bt=b.type==='sleep'?b.start:b.time;return(bt||'').localeCompare(at||'');});
+  var ll=document.getElementById('log-list');
+  if(!items.length){ll.innerHTML='<div class="empty">'+t('no_entries').replace('\n','<br>')+'</div>';return;}
+  var grouped={};var order=[];
+  items.forEach(function(l){if(!grouped[l.date]){grouped[l.date]=[];order.push(l.date);}grouped[l.date].push(l);});
+  ll.innerHTML=order.map(function(date){
+    return'<div class="date-group"><div class="date-group-label">'+fmtDateLabel(date)+'</div>'+grouped[date].map(logItemHTML).join('')+'</div>';
+  }).join('');
+}
+
+function renderMS(){
+  var ml=document.getElementById('ms-list');
+  if(msFilter==='milestones'){
+    var done=0;
+    var html=MILESTONES.map(function(m){
+      var state=DB.milestones.find(function(x){return x.id===m.id;});var isDone=state&&state.done;if(isDone)done++;
+      return'<div class="ms-row">'+
+        '<div class="ms-check'+(isDone?' done':'')+'" onclick="toggleMSCheck(\''+m.id+'\')">'+
+        (isDone?'<i class="ti ti-check"></i>':'')+
+        '</div>'+
+        '<div class="ms-info" onclick="openMSModal(\''+m.id+'\')">'+
+        '<div class="ms-name'+(isDone?' done':'')+'">'+((LANG==='es'&&MILESTONES_ES[m.id])||m.name)+'</div>'+
+        '<div class="ms-meta"><span class="cat-pill '+m.cat+'">'+t('cat_'+m.cat)+'</span>'+
+        (state&&state.date?'<span style="font-size:12px;color:var(--accent2);font-weight:600;">'+fmtDate(state.date)+'</span>':'<span style="font-size:11px;color:var(--text3);">'+t('tap_set_date')+'</span>')+
+        '</div></div>'+
+        '<div class="ms-age">'+translateVaccAge(m.age)+'</div></div>';
+    }).join('');
+    var custom=DB.milestones.filter(function(m){return m.custom;});
+    if(custom.length){html+='<div class="sl" style="margin-top:14px;">'+t('your_milestones')+'</div>'+custom.map(function(m){
+      return'<div class="ms-row">'+
+        '<div class="ms-check'+(m.done?' done':'')+'" onclick="toggleMSCheck(\''+m.id+'\')">'+
+        (m.done?'<i class="ti ti-check"></i>':'')+
+        '</div>'+
+        '<div class="ms-info" onclick="openMSModal(\''+m.id+'\')">'+
+        '<div class="ms-name'+(m.done?' done':'')+'">'+m.name+'</div>'+
+        '<div class="ms-meta"><span class="cat-pill '+m.cat+'">'+t('cat_'+m.cat)+'</span>'+
+        (m.date?'<span style="font-size:12px;color:var(--accent2);font-weight:600;">'+fmtDate(m.date)+'</span>':'<span style="font-size:11px;color:var(--text3);">'+t('tap_set_date')+'</span>')+
+        '</div></div>'+
+        '<div class="ms-age">custom</div></div>';
+    }).join('');}
+    ml.innerHTML='<div style="font-size:14px;color:var(--text2);margin-bottom:12px;">'+done+' '+t('ms_of')+' '+MILESTONES.length+' '+t('ms_count')+'</div>'+html;
+  } else {
+    var tried=Object.keys(DB.foods).length;
+    ml.innerHTML='<div style="font-size:14px;color:var(--text2);margin-bottom:12px;">'+tried+' '+t('ms_of')+' '+FOODS.length+' '+t('foods_count')+'</div>'+
+    FOODS.map(function(f){
+      var isTried=!!DB.foods[f.id];var fd=DB.foods[f.id];
+      return'<div class="food-row">'+
+        '<div class="food-check'+(isTried?' tried':'')+'" onclick="toggleFood(\''+f.id+'\')">'+
+        (isTried?'<i class="ti ti-check"></i>':'')+
+        '</div>'+
+        '<div class="food-name">'+((LANG==='es'&&FOODS_ES[f.id])||f.name)+'</div>'+
+        '<span class="food-group '+f.group+'">'+t('food_'+f.group)+'</span>'+
+        (isTried?'<input type="date" class="food-date-edit" value="'+(fd.date||'')+'" onchange="updateFoodDate(\''+f.id+'\',this.value)" title="Edit intro date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/>':'')+'</div>';
+    }).join('');
+    var customFoods=DB.customFoods||[];
+    if(customFoods.length){
+      ml.innerHTML+='<div class="sl" style="margin-top:14px;">Your Foods</div>'+customFoods.map(function(f){
+        var isTried=!!DB.foods[f.id];var fd=DB.foods[f.id];
+        return'<div class="food-row">'+
+          '<div class="food-check'+(isTried?' tried':'')+'" onclick="toggleFood(\''+f.id+'\')">'+
+          (isTried?'<i class="ti ti-check"></i>':'')+
+          '</div>'+
+          '<div class="food-name">'+f.name+'</div>'+
+          '<span class="food-group '+f.group+'">'+t('food_'+f.group)+'</span>'+
+          (isTried?'<input type="date" class="food-date-edit" value="'+(fd.date||'')+'" onchange="updateFoodDate(\''+f.id+'\',this.value)" title="Edit intro date" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/>':'')+'</div>';
+      }).join('');
+    }
+  }
+}
+
+function toggleMSCheck(id){
+  var m=DB.milestones.find(function(x){return x.id===id;});
+  if(m){m.done=!m.done;if(!m.done)m.date='';sv();renderMS();return;}
+  DB.milestones.push({id:id,done:true,date:today()});sv();renderMS();
+}
+
+function renderGrowthChart(visits){
+  var withData=visits.filter(function(v){return v.weight||v.height;}).sort(function(a,b){return a.date.localeCompare(b.date);});
+  if(!withData.length)return'<div class="chart-empty">'+t('chart_empty')+'</div>';
+  var html='';
+  var wPoints=withData.filter(function(v){return v.weight;});
+  var hPoints=withData.filter(function(v){return v.height;});
+  if(wPoints.length){
+    var weights=wPoints.map(function(v){return parseFloat(v.weight);});
+    var minW=Math.min.apply(null,weights)-1,maxW=Math.max.apply(null,weights)+1;
+    var W=260,H=100,pad=28,xpad=24;
+    html+='<div style="font-size:12px;letter-spacing:.1em;color:var(--text2);text-transform:uppercase;font-weight:700;margin-bottom:10px;">'+t('chart_weight')+'</div>';
+    html+='<svg width="100%" viewBox="0 0 '+W+' '+(H+pad)+'" style="display:block;margin-bottom:18px;overflow:visible;">';
+    html+='<line x1="'+xpad+'" y1="0" x2="'+xpad+'" y2="'+H+'" stroke="#dde8e2" stroke-width="1"/><line x1="'+xpad+'" y1="'+H+'" x2="'+(W-xpad)+'" y2="'+H+'" stroke="#dde8e2" stroke-width="1"/>';
+    var pts=wPoints.map(function(v,i){var x=xpad+(wPoints.length===1?(W-xpad*2)/2:i*((W-xpad*2)/(wPoints.length-1)));var y=H-((parseFloat(v.weight)-minW)/(maxW-minW||1))*(H-18)-9;return{x:x,y:y,w:v.weight,d:fmtDate(v.date)};});
+    if(pts.length>1){var path='M'+pts[0].x+','+pts[0].y;pts.slice(1).forEach(function(p){path+=' L'+p.x+','+p.y;});html+='<path d="'+path+'" stroke="#94b79f" stroke-width="2" fill="none"/>';}
+    pts.forEach(function(p){html+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#3d6b52"/><text x="'+p.x+'" y="'+(p.y-8)+'" text-anchor="middle" font-size="11" fill="#3d6b52" font-family="Lato,sans-serif" font-weight="600">'+p.w+'</text><text x="'+p.x+'" y="'+(H+pad-2)+'" text-anchor="middle" font-size="9" fill="#b0c4b8" font-family="Lato,sans-serif">'+p.d+'</text>';});
+    html+='</svg>';
+  }
+  if(hPoints.length){
+    var heights=hPoints.map(function(v){return parseFloat(v.height);});
+    var minH=Math.min.apply(null,heights)-1,maxH=Math.max.apply(null,heights)+1;
+    var W2=260,H2=100,pad2=28,xpad2=24;
+    html+='<div style="font-size:12px;letter-spacing:.1em;color:var(--text2);text-transform:uppercase;font-weight:700;margin-bottom:10px;">'+t('chart_height')+'</div>';
+    html+='<svg width="100%" viewBox="0 0 '+W2+' '+(H2+pad2)+'" style="display:block;overflow:visible;">';
+    html+='<line x1="'+xpad2+'" y1="0" x2="'+xpad2+'" y2="'+H2+'" stroke="#dde8e2" stroke-width="1"/><line x1="'+xpad2+'" y1="'+H2+'" x2="'+(W2-xpad2)+'" y2="'+H2+'" stroke="#dde8e2" stroke-width="1"/>';
+    var pts2=hPoints.map(function(v,i){var x=xpad2+(hPoints.length===1?(W2-xpad2*2)/2:i*((W2-xpad2*2)/(hPoints.length-1)));var y=H2-((parseFloat(v.height)-minH)/(maxH-minH||1))*(H2-18)-9;return{x:x,y:y,h:v.height,d:fmtDate(v.date)};});
+    if(pts2.length>1){var path2='M'+pts2[0].x+','+pts2[0].y;pts2.slice(1).forEach(function(p){path2+=' L'+p.x+','+p.y;});html+='<path d="'+path2+'" stroke="#9b7ab5" stroke-width="2" fill="none"/>';}
+    pts2.forEach(function(p){html+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#5a3d7a"/><text x="'+p.x+'" y="'+(p.y-8)+'" text-anchor="middle" font-size="11" fill="#5a3d7a" font-family="Lato,sans-serif" font-weight="600">'+p.h+'"</text><text x="'+p.x+'" y="'+(H2+pad2-2)+'" text-anchor="middle" font-size="9" fill="#b0c4b8" font-family="Lato,sans-serif">'+p.d+'</text>';});
+    html+='</svg>';
+  }
+  return html;
+}
+
+function renderHealth(){
+  var hc=document.getElementById('health-content');
+  if(healthFilter==='vaccines'){
+    var given=Object.keys(DB.vaccines).length;
+    hc.innerHTML='<div style="font-size:14px;color:var(--text2);margin-bottom:12px;">'+given+' '+t('ms_of')+' '+VACCINES.length+' '+t('vacc_count')+'</div>'+
+    VACCINES.map(function(v){
+      var isGiven=!!DB.vaccines[v.id];var vaccData=DB.vaccines[v.id]||{};
+      return'<div class="vacc-row"><div class="vacc-check'+(isGiven?' given':'')+'" onclick="toggleVacc(\''+v.id+'\')">'+
+        (isGiven?'<i class="ti ti-check"></i>':'')+
+        '</div><div class="vacc-info"><div class="vacc-name">'+v.name+'</div><div class="vacc-age">Rec: '+v.age+'</div>'+
+        (isGiven?'<input type="date" class="vacc-date-input show" value="'+(vaccData.date||today())+'" onchange="updateVaccDate(\''+v.id+'\',this.value)" onclick="try{this.showPicker();}catch(e){}" style="cursor:pointer;"/>':'')+
+        '</div></div>';
+    }).join('');
+  } else {
+    var chart='<div class="chart-wrap">'+renderGrowthChart(DB.visits)+'</div>';
+    if(!DB.visits.length){hc.innerHTML=chart+'<div class="empty">'+t('no_visits').replace('\n','<br>')+'</div>';return;}
+    hc.innerHTML=chart+'<div class="sl">'+t('visit_history')+'</div>'+
+    DB.visits.slice().sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(v){
+      return'<div class="visit-card" onclick="openVisitModal(\''+v.id+'\')">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+        '<div class="visit-date">'+fmtDate(v.date)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);">'+t('tap_edit')+'</div></div>'+
+        '<div class="visit-type">'+v.type+'</div>'+
+        (v.weight||v.height?'<div class="visit-detail" style="color:var(--accent2);font-weight:700;">'+(v.weight?v.weight+' lbs':'')+' '+(v.height?'· '+v.height+' in':'')+'</div>':'')+
+        (v.reason?'<div class="visit-detail">'+v.reason+'</div>':'')+
+        '</div>';
+    }).join('');
+  }
+}
+
+function filterLog(f,el){logFilter=f;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});el.classList.add('active');renderLog();}
+function filterMS(f,el){msFilter=f;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});el.classList.add('active');renderMS();}
+function filterHealth(f,el){
+  healthFilter=f;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});el.classList.add('active');
+  document.getElementById('health-fab').style.display=f==='visits'?'flex':'none';renderHealth();
+}
+
+function renderContactsDisplay(){
+  var cd=document.getElementById('contacts-display');
+  if(!DB.contacts||(!DB.contacts.ped&&!DB.contacts.c2&&!DB.contacts.c3)){cd.innerHTML='';return;}
+  var labels=t('contact_labels');
+  var html='<div class="sl" style="margin-top:14px;">'+t('saved_contacts')+'</div>';
+  ['ped','c2','c3'].forEach(function(key){
+    if(DB.contacts[key]){
+      html+='<div class="contact-card" onclick="openContactModal(\''+key+'\')">'+
+        '<div class="contact-icon"><i class="ti ti-'+(key==='ped'?'stethoscope':'user')+'"></i></div>'+
+        '<div class="contact-info">'+
+        '<div class="contact-label">'+labels[key]+'</div>'+
+        '<div class="contact-value">'+DB.contacts[key]+'</div>'+
+        '<div class="contact-hint">'+t('contact_hint')+'</div>'+
+        '</div></div>';
+    }
+  });
+  cd.innerHTML=html;
+}
+
+
+var BT_THEMES={
+  sage:{name:'Sage Green',    accent:'#94b79f',accent2:'#3d6b52',bg:'#fdf8f2',bg2:'#ffffff',bg3:'#f5faf7',text:'#3d4a42',text2:'#7a8e85',text3:'#b0c4b8',border:'#dde8e2',border2:'#eaf0ec'},
+  navy:{name:'Dusty Navy',    accent:'#4a5568',accent2:'#2d3748',bg:'#f5efe6',bg2:'#ffffff',bg3:'#ede8de',text:'#3d3530',text2:'#a09278',text3:'#c4b89e',border:'#d4cfc8',border2:'#ede8de'},
+  rose:{name:'Muted Rose',    accent:'#9e6b72',accent2:'#7a4a52',bg:'#f9f0ee',bg2:'#ffffff',bg3:'#f0e4e1',text:'#3d2d2e',text2:'#c4a8a0',text3:'#d4b8b5',border:'#e0cbc8',border2:'#edd8d4'},
+  lavender:{name:'Soft Lavender',accent:'#7c6b9e',accent2:'#5a4a7a',bg:'#f5f0fb',bg2:'#ffffff',bg3:'#ede6f5',text:'#2d1e40',text2:'#9880b8',text3:'#c0b0d8',border:'#d4c8e8',border2:'#e4d8f0'},
+  sky:{name:'Sky Blue',       accent:'#4a7aaa',accent2:'#2a5a8a',bg:'#f0f5fb',bg2:'#ffffff',bg3:'#e4eef8',text:'#0e2038',text2:'#5a80a8',text3:'#a0c0d8',border:'#c0d4ea',border2:'#d8e8f4'},
+  peach:{name:'Warm Peach',   accent:'#c07858',accent2:'#8a4828',bg:'#fdf5f0',bg2:'#ffffff',bg3:'#f5e8e0',text:'#2e1008',text2:'#a08068',text3:'#d8b0a0',border:'#e0c8b8',border2:'#f0ddd0'},
+  mint:{name:'Mint & Teal',   accent:'#4a9a80',accent2:'#2a7a60',bg:'#f0faf6',bg2:'#ffffff',bg3:'#e0f5ec',text:'#0a2820',text2:'#4a8870',text3:'#90c8b0',border:'#b8e0d0',border2:'#d0eee4'},
+  slate:{name:'Cool Slate',   accent:'#5a6880',accent2:'#3a4860',bg:'#f2f4f8',bg2:'#ffffff',bg3:'#e8ecf2',text:'#181e2a',text2:'#6880a0',text3:'#a8b8c8',border:'#c8d0dc',border2:'#dce4ec'},
+};
+var BT_FONTS={
+  'Cormorant Garamond':"'Cormorant Garamond',Georgia,serif",
+  'EB Garamond':"'EB Garamond',Georgia,serif",
+  'Playfair Display':"'Playfair Display',Georgia,serif",
+  'Libre Baskerville':"'Libre Baskerville',Georgia,serif",
+  'Lato':"'Lato',Arial,sans-serif",
+  'Nunito':"'Nunito',Arial,sans-serif"
+};
+function applyBTTheme(key){
+  var thm=BT_THEMES[key];if(!thm)return;
+  var r=document.documentElement.style;
+  r.setProperty('--accent',thm.accent);r.setProperty('--accent2',thm.accent2);
+  r.setProperty('--bg',thm.bg);r.setProperty('--bg2',thm.bg2);r.setProperty('--bg3',thm.bg3);
+  r.setProperty('--text',thm.text);r.setProperty('--text2',thm.text2);r.setProperty('--text3',thm.text3);
+  r.setProperty('--border',thm.border);r.setProperty('--border2',thm.border2);
+  var mc=document.getElementById("meta-theme-color");if(mc)mc.setAttribute("content",thm.accent);
+  DB.theme=key;sv();renderBTSwatches();
+}
+window.applyBTTheme=applyBTTheme;
+function applyBTFont(name){
+  var stack=BT_FONTS[name]||BT_FONTS['Cormorant Garamond'];
+  document.body.style.fontFamily=stack;
+  DB.font=name;sv();
+  var el=document.getElementById('s-font');if(el)el.value=name;
+}
+window.applyBTFont=applyBTFont;
+function renderBTSwatches(){
+  var el=document.getElementById('bt-theme-swatches');if(!el)return;
+  var keys=Object.keys(BT_THEMES);var h='';
+  for(var i=0;i<keys.length;i++){
+    var k=keys[i];var thm=BT_THEMES[k];
+    var active=DB.theme===k;
+    h+='<div data-tk="'+k+'" class="bt-swatch" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:'+(active?thm.bg3:thm.bg2)+';border:1.5px solid '+(active?thm.accent:thm.border)+';margin-bottom:8px;">';
+    h+='<div style="width:32px;height:32px;border-radius:50%;background:'+thm.accent+';flex-shrink:0;"></div>';
+    h+='<div style="font-size:15px;color:var(--text);">'+thm.name+'</div>';
+    if(active){h+='<div style="margin-left:auto;font-size:12px;font-weight:700;color:'+thm.accent+';">&#10003;</div>';}
+    h+='</div>';
+  }
+  el.innerHTML=h;
+  el.onclick=function(e){var sw=e.target.closest('.bt-swatch');if(sw&&sw.dataset.tk)applyBTTheme(sw.dataset.tk);};
+}
+window.renderBTSwatches=renderBTSwatches;
+
+function renderSetup(){
+  renderBTSwatches();
+  renderGdriveSection();
+  renderLocalBackupSection();
+  var shareEl=document.getElementById('baby-share-section');
+  if(shareEl)shareEl.innerHTML=buildSharingSection();
+  var sl=document.getElementById('baby-share-label');if(sl)sl.textContent=t('share_title');
+  var gl=document.getElementById('baby-gdrive-label');if(gl)gl.textContent=t('gdrive_title');
+  var sf=document.getElementById('s-font');if(sf&&DB.font)sf.value=DB.font;
+  document.getElementById('s-parent').value=DB.profile.parent||'';
+  document.getElementById('s-name').value=DB.profile.name||'';
+  document.getElementById('s-dob').value=DB.profile.dob||'';
+  document.getElementById('s-blood').value=DB.profile.blood||'';
+  document.getElementById('s-oz').value=DB.profile.oz||'';
+  document.getElementById('s-min').value=DB.profile.minGoal||'';
+  var method=DB.profile.feedMethod||'formula';
+  document.getElementById('s-feedmethod').value=method;
+  document.getElementById('s-oz-wrap').style.display=(method==='formula'||method==='both')?'block':'none';
+  document.getElementById('s-min-wrap').style.display=(method==='breast'||method==='both')?'block':'none';
+  document.getElementById('s-ped').value=DB.contacts.ped||'';
+  document.getElementById('s-c2').value=DB.contacts.c2||'';
+  document.getElementById('s-c3').value=DB.contacts.c3||'';
+  renderContactsDisplay();
+}
+
+document.getElementById('health-fab').style.display='flex';
+renderDash();renderLog();renderMS();renderHealth();renderSetup();
+applyLangToDOM();
+
+
+function showSaved(msg){
+  document.getElementById('saved-modal-msg').textContent=msg||'Saved!';
+  document.getElementById('saved-modal').classList.add('open');
+}
+
+window._confirmCb=null;
+window.showConfirm=function(cb){window._confirmCb=cb;document.getElementById('confirm-modal').classList.add('open');};
+
+</script>
+
+
+
+<div class="modal-bg" id="confirm-modal">
+<div class="modal">
+<div style="text-align:center;padding:8px 0 16px;">
+<div style="width:52px;height:52px;border-radius:50%;background:var(--red);border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="ti ti-trash" style="font-size:22px;color:var(--red-text);"></i></div>
+<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;">Delete this entry?</div>
+<div style="font-size:14px;color:var(--text2);">This cannot be undone.</div>
+</div>
+<div class="btn-row">
+<button class="btn-cancel" onclick="document.getElementById('confirm-modal').classList.remove('open');">Keep it</button>
+<button class="btn-save" style="background:var(--red-text);" onclick="document.getElementById('confirm-modal').classList.remove('open');if(window._confirmCb){window._confirmCb();window._confirmCb=null;}">Yes, delete</button>
+</div>
+</div></div>
+
+<div class="modal-bg" id="saved-modal">
+<div class="modal" style="text-align:center;padding:28px 20px;">
+<div style="width:52px;height:52px;border-radius:50%;background:var(--green);border:.5px solid var(--green-border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><i class="ti ti-check" style="font-size:22px;color:var(--green-text);"></i></div>
+<div style="font-size:18px;font-weight:700;color:var(--text);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:6px;" id="saved-modal-msg">Saved!</div>
+<div style="font-size:14px;color:var(--text2);margin-bottom:20px;">Your changes have been saved.</div>
+<button class="btn-full" onclick="document.getElementById('saved-modal').classList.remove('open');">Done</button>
+</div></div>
+
+<div class="modal-bg" id="restore-confirm-modal">
+<div class="modal">
+<div style="text-align:center;padding:8px 0 16px;">
+<div style="width:52px;height:52px;border-radius:50%;background:var(--red);border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="ti ti-cloud-download" style="font-size:22px;color:var(--red-text);"></i></div>
+<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;" id="restore-confirm-title">Restore this backup?</div>
+<div style="font-size:14px;color:var(--text2);" id="restore-confirm-detail">This will replace your current data.</div>
+</div>
+<div class="btn-row">
+<button class="btn-cancel" onclick="cancelRestore()">Cancel</button>
+<button class="btn-save" style="background:var(--red-text);" onclick="confirmRestoreNow()">Yes, Restore</button>
+</div>
+</div></div>
+
+<div class="modal-bg" id="gdrive-restore-modal">
+<div class="modal">
+<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">Choose a backup</div>
+<div style="font-size:14px;color:var(--text2);margin-bottom:14px;">Pick which version to restore.</div>
+<div id="gdrive-backup-list"></div>
+<button class="btn-cancel" style="width:100%;margin-top:4px;" onclick="closeGdriveRestorePicker()">Cancel</button>
+</div></div>
+</body>
+</html>

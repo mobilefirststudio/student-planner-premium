@@ -1,0 +1,24 @@
+{
+  "name": "Baby Tracker — Mobile First Studio",
+  "short_name": "Baby Tracker",
+  "description": "A complete baby tracker for new parents. Built for your phone.",
+  "start_url": "/baby-tracker/",
+  "display": "standalone",
+  "background_color": "#fdf8f2",
+  "theme_color": "#94b79f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
