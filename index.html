@@ -15,7 +15,7 @@
 <script src="https://apis.google.com/js/api.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<title>Student Planner Standard — Mobile First Studio</title>
+<title>Student Planner Premium — Mobile First Studio</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -1140,7 +1140,7 @@ function renderSettings(){
 // ── GOOGLE DRIVE ──
 const GDRIVE_CLIENT_ID='636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googleusercontent.com';
 const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
-const GDRIVE_FILENAME='student-planner-standard-backup.json';
+const GDRIVE_FILENAME='student-planner-Premium-backup.json';
 var _gdriveToken=null,_gdriveTokenClient=null;
 function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}
   _gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;localStorage.setItem('mfs_spstd_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();showToast('Google Drive connected!');}}});}
@@ -1157,7 +1157,7 @@ window.gdriveRestore=gdriveRestore;
 function renderGdriveSection(){var connected=localStorage.getItem('mfs_spstd_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});s.textContent=connected&&_gdriveToken?'✓ Connected':connected?'Reconnecting...':'Not connected';s.style.color=connected&&_gdriveToken?'var(--acc)':'var(--text3)';if(a)a.style.display=connected&&_gdriveToken?'block':'none';var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display=localStorage.getItem('mfs_sp_std_prerestore')?'block':'none';}
 
 // ── LOCAL BACKUP ──
-function exportLocal(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='student-planner-standard-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('Backup downloaded ✓');}
+function exportLocal(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='student-planner-Premium-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('Backup downloaded ✓');}
 window.exportLocal=exportLocal;
 function importLocal(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var data=JSON.parse(e.target.result);if(!data||!Array.isArray(data.assignments)){showToast('Invalid backup file.',true);return;}openRestoreConfirm(data,'local file');}catch(x){showToast('Could not read file.',true);}};r.readAsText(file);ev.target.value='';}
 window.importLocal=importLocal;
