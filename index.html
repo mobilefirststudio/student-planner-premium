@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"/>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <title>Student Planner Premium — Mobile First Studio</title>
 <style>
@@ -77,6 +77,10 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .tab-row::-webkit-scrollbar{display:none;}
 .tab-btn{flex:0 0 auto;background:var(--bg3);border:none;border-radius:20px;padding:7px 14px;color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap;}
 .tab-btn.active{background:var(--hdr);color:white;}
+.week-day-header{font-size:13px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1.5px solid var(--acc);margin-bottom:8px;}
+.week-day-header.today-hdr{color:var(--hdr);}
+.week-nav-btn{background:var(--bg2);border:.5px solid var(--border);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.week-nav-btn:active{transform:scale(.92);}
 .badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700;white-space:nowrap;}
 .badge-high{background:var(--red2);color:var(--red);}
 .badge-med{background:var(--yellow2);color:var(--yellow);}
@@ -117,7 +121,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .heatmap{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;}
 .hm-cell{width:calc((100% - 6*3px)/7);aspect-ratio:1;border-radius:3px;background:var(--bg3);}
 .hm-cell.done{background:var(--acc);}
-.timer-display{font-size:52px;font-weight:700;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;margin:16px 0;}
+.timer-display{font-size:36px;font-weight:700;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;margin:0;}
 .timer-btn-row{display:flex;gap:10px;justify-content:center;margin-top:8px;}
 .timer-btn{padding:12px 28px;border-radius:var(--radius-sm);border:none;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;min-height:48px;}
 .timer-btn-primary{background:var(--hdr);color:white;}
@@ -229,6 +233,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 <div class="ps">
   <div class="tab-row" id="study-tabs">
     <button class="tab-btn active" onclick="switchStudy('timer',this)">Timer</button>
+    <button class="tab-btn" onclick="switchStudy('week',this)">Weekly</button>
     <button class="tab-btn" onclick="switchStudy('routine',this)">Routine</button>
     <button class="tab-btn" onclick="switchStudy('habits',this)">Habits</button>
     <button class="tab-btn" onclick="switchStudy('grades',this)">Grades</button>
@@ -608,9 +613,9 @@ function renderCal(){var months=['January','February','March','April','May','Jun
 window.openEventModal=openEventModal;window.saveEvent=saveEvent;window.deleteEvent=deleteEvent;window.changeMonth=changeMonth;
 function switchStudy(tab,el){studyTab=tab;document.querySelectorAll('#study-tabs .tab-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderStudy(tab);}
 window.switchStudy=switchStudy;
-function studyFabAction(){if(studyTab==='routine')openRoutineModal(null);else if(studyTab==='habits')openHabitModal(null);else if(studyTab==='Premiumjects')openPremiumjectModal(null);else if(studyTab==='reading')openBookModal(null);else if(studyTab==='exams')openExamModal(null);else if(studyTab==='grades')openCourseModal(null);}
+function studyFabAction(){if(studyTab==='week')openAssignModal(null);else if(studyTab==='routine')openRoutineModal(null);else if(studyTab==='habits')openHabitModal(null);else if(studyTab==='Premiumjects')openPremiumjectModal(null);else if(studyTab==='reading')openBookModal(null);else if(studyTab==='exams')openExamModal(null);else if(studyTab==='grades')openCourseModal(null);}
 window.studyFabAction=studyFabAction;
-function renderStudy(tab){var el=document.getElementById('study-content');var fab=document.getElementById('study-fab');fab.style.display=tab==='timer'?'none':'flex';if(tab==='timer')el.innerHTML=buildTimer();else if(tab==='routine')el.innerHTML=buildRoutine();else if(tab==='habits')el.innerHTML=buildHabits();else if(tab==='grades')el.innerHTML=buildGrades();else if(tab==='Premiumjects')el.innerHTML=buildPremiumjects();else if(tab==='reading')el.innerHTML=buildReading();else if(tab==='exams')el.innerHTML=buildExams();if(tab==='timer')initTimerUI();}
+function renderStudy(tab){var el=document.getElementById('study-content');var fab=document.getElementById('study-fab');fab.style.display=tab==='timer'?'none':'flex';if(tab==='timer')el.innerHTML=buildTimer();else if(tab==='week')el.innerHTML=buildWeekView();else if(tab==='routine')el.innerHTML=buildRoutine();else if(tab==='habits')el.innerHTML=buildHabits();else if(tab==='grades')el.innerHTML=buildGrades();else if(tab==='Premiumjects')el.innerHTML=buildPremiumjects();else if(tab==='reading')el.innerHTML=buildReading();else if(tab==='exams')el.innerHTML=buildExams();if(tab==='timer')initTimerUI();}
 
 var _timerInterval=null,_timerSecs=0,_timerRunning=false,_timerMode='work',_timerSess=1;
 function buildTimer(){var t=DB.timer;return'<div class="card" style="text-align:center;padding:24px 16px;"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);font-weight:700;margin-bottom:16px;" id="timer-mode-lbl">Work Session 1</div><div style="position:relative;width:160px;height:160px;margin:0 auto 16px;"><svg viewBox="0 0 160 160" width="160" height="160" style="transform:rotate(-90deg)"><circle cx="80" cy="80" r="70" fill="none" stroke="var(--bg3)" stroke-width="8"/><circle id="timer-ring" cx="80" cy="80" r="70" fill="none" stroke="var(--acc)" stroke-width="8" stroke-linecap="round" stroke-dasharray="439.8" stroke-dashoffset="0"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div class="timer-display" id="timer-display">'+fmtTT(t.work*60)+'</div></div></div><div class="timer-btn-row"><button class="timer-btn timer-btn-secondary" onclick="resetTimer()">Reset</button><button class="timer-btn timer-btn-primary" id="timer-play-btn" onclick="toggleTimer()">Start</button><button class="timer-btn timer-btn-secondary" onclick="openModal(\'timer-settings-modal\')"><i class="ti ti-settings"></i></button></div><div style="margin-top:14px;font-size:12px;color:var(--text2);">Session '+_timerSess+' of '+t.sessions+' before long break</div></div><div class="sl">Session Log — Today</div><div class="card" id="session-log">'+buildSessionLog()+'</div>';}
@@ -634,6 +639,45 @@ function saveHabit(){var name=document.getElementById('hb-name').value.trim();if
 function deleteHabit(){spConfirm('Delete this habit?','Log history will be kept.',function(){DB.habits=DB.habits.filter(function(x){return x.id!==eId.habit;});sv();closeModal('habit-modal');renderStudy('habits');});}
 function toggleHabit(hId,ds,ev){if(ev)ev.stopPropagation();if(!DB.habitLog[ds])DB.habitLog[ds]={};DB.habitLog[ds][hId]=!DB.habitLog[ds][hId];sv();renderStudy('habits');}
 window.openHabitModal=openHabitModal;window.saveHabit=saveHabit;window.deleteHabit=deleteHabit;window.toggleHabit=toggleHabit;
+// ── WEEK VIEW ──
+var weekViewStart=null;
+function getWeekStart(d){var dow=d.getDay(),diff=dow===0?-6:1-dow;var ws=new Date(d);ws.setDate(d.getDate()+diff);ws.setHours(0,0,0,0);return ws;}
+function changeWeek(dir){if(!weekViewStart)weekViewStart=getWeekStart(new Date());weekViewStart=new Date(weekViewStart);weekViewStart.setDate(weekViewStart.getDate()+dir*7);document.getElementById('study-content').innerHTML=buildWeekView();}
+window.changeWeek=changeWeek;
+function jumpToThisWeek(){weekViewStart=getWeekStart(new Date());document.getElementById('study-content').innerHTML=buildWeekView();}
+window.jumpToThisWeek=jumpToThisWeek;
+function buildWeekView(){
+  var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(!weekViewStart)weekViewStart=getWeekStart(new Date());
+  var weekStart=weekViewStart,weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+  var tod=today(),isCurrentWeek=localDateStr(weekStart)===localDateStr(getWeekStart(new Date()));
+  var label;
+  if(weekStart.getMonth()===weekEnd.getMonth())label=MON[weekStart.getMonth()]+' '+weekStart.getDate()+'–'+weekEnd.getDate()+', '+weekEnd.getFullYear();
+  else if(weekStart.getFullYear()===weekEnd.getFullYear())label=MON[weekStart.getMonth()]+' '+weekStart.getDate()+' – '+MON[weekEnd.getMonth()]+' '+weekEnd.getDate()+', '+weekEnd.getFullYear();
+  else label=MON[weekStart.getMonth()]+' '+weekStart.getDate()+', '+weekStart.getFullYear()+' – '+MON[weekEnd.getMonth()]+' '+weekEnd.getDate()+', '+weekEnd.getFullYear();
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
+    +'<button class="week-nav-btn" onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>'
+    +'<div style="text-align:center;"><div style="font-size:14px;font-weight:700;color:var(--text);">'+label+'</div>'
+    +(!isCurrentWeek?'<div onclick="jumpToThisWeek()" style="font-size:11px;color:var(--hdr);font-weight:600;cursor:pointer;text-decoration:underline;">Jump to this week</div>':'<div style="font-size:11px;color:var(--text3);">This week</div>')+'</div>'
+    +'<button class="week-nav-btn" onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>'
+    +'</div>';
+  for(var i=0;i<7;i++){
+    var dd=new Date(weekStart);dd.setDate(weekStart.getDate()+i);
+    var ds=localDateStr(dd),isToday=ds===tod;
+    var as=DB.assignments.filter(function(a){return a.due===ds;});
+    var es=DB.events.filter(function(e){return e.date===ds;});
+    h+='<div class="week-day-header'+(isToday?' today-hdr':'')+'">'+(isToday?'Today — ':'')+DAYS[dd.getDay()]+', '+MON[dd.getMonth()]+' '+dd.getDate()+'</div>';
+    if(as.length||es.length){
+      h+='<div class="card" style="margin-bottom:10px;">';
+      as.forEach(function(a){h+='<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)||'Assignment')+'</div></div></div>';});
+      es.forEach(function(e){h+='<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type.charAt(0).toUpperCase()+e.type.slice(1)+'</div></div></div>';});
+      h+='</div>';
+    } else {h+='<div style="font-size:13px;color:var(--text3);padding:4px 0 12px;font-style:italic;">Nothing scheduled</div>';}
+  }
+  return h;
+}
+
 function buildHabits(){if(!DB.habits.length)return'<div class="empty">No habits yet.<br>Tap + to add your first study habit.</div>';var tod=today(),log=DB.habitLog[tod]||{};var h='<div class="sl">Today</div><div class="card">';DB.habits.forEach(function(hb){var done=!!log[hb.id];h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border2);cursor:pointer;" onclick="openHabitModal(\''+hb.id+'\')">'+'<div onclick="toggleHabit(\''+hb.id+'\',\''+tod+'\',event)" style="flex-shrink:0;width:24px;height:24px;border-radius:6px;border:2px solid '+(done?'var(--acc)':'var(--border)')+';background:'+(done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(done?'<i class="ti ti-check" style="font-size:12px;color:white;"></i>':'')+'</div>'+'<div style="flex:1;font-size:15px;font-weight:500;color:var(--text);'+(done?'opacity:.5;text-decoration:line-through;':'')+'">'+hb.name+'</div>'+(hb.days&&hb.days.length?'<div style="font-size:11px;color:var(--text3);">'+hb.days.join(' ')+'</div>':'')+'</div>';});h+='</div>';DB.habits.forEach(function(hb){h+='<div class="card" style="margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;">'+hb.name+'</div><div class="heatmap">';for(var i=27;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var ds=localDateStr(d);var done=(DB.habitLog[ds]||{})[hb.id];h+='<div class="hm-cell'+(done?' done':'')+'" title="'+ds+'"></div>';}h+='</div></div>';});return h;}
 
 function buildGrades(){var gpa=calcGPA();var h='<div class="card" style="text-align:center;padding:20px;margin-bottom:10px;"><div style="font-size:52px;font-weight:700;color:var(--hdr);line-height:1;">'+(gpa||'—')+'</div><div style="font-size:12px;color:var(--text2);margin-top:4px;">Weighted GPA</div></div>';if(!DB.courses.length)return h+'<div class="empty">No courses yet.</div>';h+='<div class="sl">Courses</div><div class="card">';DB.courses.forEach(function(c){var g=parseFloat(c.grade);h+='<div class="assign-row" onclick="openCourseModal(\''+c.id+'\')">'+'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;margin-top:4px;"></div>'+'<div class="assign-info"><div class="assign-title">'+c.name+'</div>'+(c.teacher?'<div class="assign-meta">'+c.teacher+(c.credits?' · '+c.credits+' cr':'')+'</div>':'')+'</div>'+(c.grade?'<div style="text-align:right;"><div style="font-size:18px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'<div style="font-size:14px;color:var(--text3);">—</div>')+'</div>';});return h+'</div>';}
