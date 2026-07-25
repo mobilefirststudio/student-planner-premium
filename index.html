@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="apple-mobile-web-app-title" content="Student Planner"/>
+<meta name="apple-mobile-web-app-title" content="Student Planner Pro"/>
 <meta name="theme-color" id="meta-theme-color" content="#3d5a3e"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
@@ -15,7 +15,7 @@
 <script src="https://apis.google.com/js/api.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<title>Student Planner Premium — Mobile First Studio</title>
+<title>Student Planner Pro — Mobile First Studio</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -25,8 +25,8 @@
   --border:#d4e0d4;--border2:#e8f0e8;
   --red:#c0392b;--red2:#fdecea;
   --yellow:#d4a017;--yellow2:#fef9e7;
-  --shadow:0 2px 8px rgba(0,0,0,.08);
-  --radius:16px;--radius-sm:10px;
+  --shadow:0 1px 4px rgba(0,0,0,.06);
+  --radius:14px;--radius-sm:9px;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--text);}
 body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;}
@@ -44,12 +44,11 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .ps::-webkit-scrollbar{width:2px;}
 .ps::-webkit-scrollbar-thumb{background:var(--border);}
 .nav{background:var(--bg2);border-top:.5px solid var(--border);padding:4px 0;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;flex-shrink:0;}
-.ni{display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:4px 2px;border-radius:10px;background:none;border:none;min-width:44px;min-height:44px;justify-content:center;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:4px 2px;border-radius:10px;background:none;border:none;min-width:40px;min-height:44px;justify-content:center;}
 .ni i{font-size:19px;color:var(--text3);}
-.ni span{font-size:8px;letter-spacing:.03em;color:var(--text3);text-transform:uppercase;font-weight:600;}
+.ni span{font-size:8px;letter-spacing:.02em;color:var(--text3);text-transform:uppercase;font-weight:600;}
 .ni.active i,.ni.active span{color:var(--hdr);}
 .card{background:var(--bg2);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:.5px solid var(--border);box-shadow:var(--shadow);}
-.card-acc{background:var(--acc2);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:.5px solid rgba(0,0,0,.06);}
 .card-hdr{background:var(--hdr);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
 .sl{font-size:10px;letter-spacing:.16em;color:var(--text2);text-transform:uppercase;margin-bottom:8px;margin-top:14px;font-weight:700;}
 .sl:first-child{margin-top:0;}
@@ -69,16 +68,11 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .btn-delete{width:100%;background:var(--red2);border:.5px solid var(--red);border-radius:var(--radius-sm);padding:13px;color:var(--red);font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;min-height:48px;}
 .btn-full{width:100%;background:var(--hdr);border:none;border-radius:var(--radius-sm);padding:13px;color:white;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:48px;}
 .btn-ghost{width:100%;background:transparent;border:.5px solid var(--border);border-radius:var(--radius-sm);padding:11px;color:var(--text2);font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;margin-top:6px;min-height:44px;}
-.fab{width:52px;height:52px;border-radius:50%;background:var(--hdr);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));right:calc(50% - 220px + 16px);z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.18);}
+.fab{width:52px;height:52px;border-radius:50%;background:var(--hdr);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:fixed;bottom:calc(66px + env(safe-area-inset-bottom,0px));right:calc(50% - 220px + 16px);z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.18);}
 @media(max-width:480px){.fab{right:16px;}}
 .fab i{font-size:24px;color:white;}
 .empty{text-align:center;padding:36px 0 20px;color:var(--text3);font-size:15px;line-height:2;}
 .div{height:.5px;background:var(--border2);margin:12px 0;}
-.row-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
-.row-item:last-child{border-bottom:none;}
-.row-info{flex:1;min-width:0;}
-.row-title{font-size:16px;font-weight:500;color:var(--text);}
-.row-sub{font-size:12px;color:var(--text2);margin-top:2px;}
 .tab-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
 .tab-row::-webkit-scrollbar{display:none;}
 .tab-btn{flex:0 0 auto;background:var(--bg3);border:none;border-radius:20px;padding:7px 14px;color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap;}
@@ -107,106 +101,97 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .cal-day.today .cal-num{color:var(--hdr);font-weight:700;}
 .cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:auto;}
 .cal-dot{width:5px;height:5px;border-radius:50%;}
-.sched-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border2);}
-.sched-row:last-child{border-bottom:none;}
-.sched-day{font-size:10px;font-weight:700;color:var(--hdr);letter-spacing:.08em;text-transform:uppercase;width:28px;flex-shrink:0;text-align:center;}
-.sched-time{font-size:12px;color:var(--text2);width:72px;flex-shrink:0;}
-.sched-info{flex:1;}
-.sched-name{font-size:15px;font-weight:600;color:var(--text);}
-.sched-loc{font-size:12px;color:var(--text2);margin-top:1px;}
-.sched-color{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-/* DASHBOARD */
-.dash-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.dash-stat{background:var(--bg2);border-radius:var(--radius);padding:14px 15px;border:.5px solid var(--border);box-shadow:var(--shadow);}
-.dash-stat-val{font-size:28px;font-weight:700;color:var(--text);line-height:1;}
-.dash-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;font-weight:600;}
-/* GRADES */
-.grade-bar-wrap{background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;margin-top:6px;}
-.grade-bar-fill{height:100%;border-radius:4px;transition:width .4s;}
-/* PROGRESS */
-.sem-stat-val{font-size:28px;font-weight:700;color:white;line-height:1;}
-.sem-stat-lbl{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;font-weight:600;}
-.progress-bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;margin-top:8px;}
-.progress-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .4s ease;}
-/* SWATCH */
 .swatch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px;}
 .swatch{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px 4px;border-radius:10px;border:1.5px solid transparent;}
 .swatch.active{border-color:var(--acc);}
 .swatch-dot{width:36px;height:36px;border-radius:50%;}
-.swatch-name{font-size:9px;color:var(--text2);font-weight:600;text-align:center;letter-spacing:.04em;}
-/* WEEK VIEW */
-.week-day-header{font-size:13px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1.5px solid var(--acc);margin-bottom:8px;}
-.week-day-header.today-hdr{color:var(--hdr);}
-/* READING LOG */
-.book-status-read{color:var(--acc);background:var(--acc2);}
-.book-status-reading{color:var(--yellow);background:var(--yellow2);}
-.book-status-tbr{color:var(--text2);background:var(--bg3);}
-/* PROJECT */
-.subtask-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border2);}
-.subtask-row:last-child{border-bottom:none;}
-/* EXAM PREP */
-.topic-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--border2);}
-.topic-row:last-child{border-bottom:none;}
+.swatch-name{font-size:9px;color:var(--text2);font-weight:600;text-align:center;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.stat-card{background:var(--bg2);border-radius:var(--radius);padding:14px 15px;border:.5px solid var(--border);box-shadow:var(--shadow);}
+.stat-val{font-size:28px;font-weight:700;line-height:1;}
+.stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;font-weight:600;}
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:8px;}
+.chart-bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.chart-bar{border-radius:4px 4px 0 0;background:var(--acc);width:100%;}
+.chart-lbl{font-size:9px;color:var(--text3);font-weight:600;}
+.heatmap{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;}
+.hm-cell{width:calc((100% - 6*3px)/7);aspect-ratio:1;border-radius:3px;background:var(--bg3);}
+.hm-cell.done{background:var(--acc);}
+.timer-display{font-size:52px;font-weight:700;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;margin:16px 0;}
+.timer-btn-row{display:flex;gap:10px;justify-content:center;margin-top:8px;}
+.timer-btn{padding:12px 28px;border-radius:var(--radius-sm);border:none;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;min-height:48px;}
+.timer-btn-primary{background:var(--hdr);color:white;}
+.timer-btn-secondary{background:var(--bg3);color:var(--text2);}
+.routine-block{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.routine-block:last-child{border-bottom:none;}
+.routine-time-badge{font-size:11px;font-weight:700;color:var(--hdr);background:var(--acc2);padding:4px 8px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+.syl-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border2);}
+.syl-row:last-child{border-bottom:none;}
+.syl-date{font-size:11px;font-weight:700;color:var(--hdr);width:52px;flex-shrink:0;margin-top:2px;}
+.syl-title{font-size:15px;font-weight:500;color:var(--text);}
+.syl-type{font-size:11px;color:var(--text2);margin-top:1px;}
+.sem-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);margin-right:6px;margin-bottom:6px;}
+.sem-pill.active{border-color:var(--acc);background:var(--acc2);color:var(--hdr);}
 .conf-pill{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700;}
 .conf-high{background:var(--acc2);color:var(--hdr);}
 .conf-med{background:var(--yellow2);color:var(--yellow);}
 .conf-low{background:var(--red2);color:var(--red);}
-#toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:99;white-space:nowrap;pointer-events:none;}
-.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.grade-bar-wrap{background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;margin-top:6px;}
+.grade-bar-fill{height:100%;border-radius:4px;transition:width .4s;}
+.progress-bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;margin-top:8px;}
+.progress-fill{height:100%;background:var(--acc);border-radius:3px;}
+.sem-stat-val{font-size:28px;font-weight:700;color:white;line-height:1;}
+.sem-stat-lbl{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;font-weight:600;}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:.5px solid var(--border2);}
 .set-row:last-child{border-bottom:none;}
 .set-label{font-size:15px;font-weight:500;color:var(--text);}
 .set-sub{font-size:12px;color:var(--text2);margin-top:1px;}
+#toast{position:fixed;bottom:calc(78px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:99;white-space:nowrap;pointer-events:none;}
 </style>
 </head>
 <body>
 <div class="sbar"><span>Mobile First Studio</span></div>
 <div class="screen">
-
 <!-- DASHBOARD -->
 <div class="page active" id="pg-dash">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Overview</div><h1>Dashboard</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<div class="ph"><div class="ph-left"><div class="ey">Smart Dashboard</div><h1 id="dash-greeting">Good Morning</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
-  <div class="dash-stat-grid">
-    <div class="dash-stat"><div class="dash-stat-val" id="d-due" style="color:var(--red);">0</div><div class="dash-stat-lbl">Due Soon</div></div>
-    <div class="dash-stat"><div class="dash-stat-val" id="d-gpa" style="color:var(--yellow);">—</div><div class="dash-stat-lbl">GPA</div></div>
-    <div class="dash-stat"><div class="dash-stat-val" id="d-projects">0</div><div class="dash-stat-lbl">Projects</div></div>
-    <div class="dash-stat"><div class="dash-stat-val" id="d-exams">0</div><div class="dash-stat-lbl">Exams Due</div></div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val" id="d-due" style="color:var(--red);">0</div><div class="stat-lbl">Due Soon</div></div>
+    <div class="stat-card"><div class="stat-val" id="d-gpa" style="color:var(--hdr);">—</div><div class="stat-lbl">GPA</div></div>
+    <div class="stat-card"><div class="stat-val" id="d-streak">0</div><div class="stat-lbl">Day Streak</div></div>
+    <div class="stat-card"><div class="stat-val" id="d-study">0h</div><div class="stat-lbl">Study This Week</div></div>
   </div>
-  <div class="sl">Upcoming Assignments</div>
+  <div class="sl">Assignment Completion</div>
+  <div class="card" id="completion-chart"></div>
+  <div class="sl">Upcoming</div>
   <div id="dash-upcoming"></div>
-  <div class="sl">Upcoming Exams</div>
-  <div id="dash-exams"></div>
+  <div class="sl">Today's Routine</div>
+  <div id="dash-routine"></div>
   <div style="height:20px;"></div>
 </div>
 </div>
 
-<!-- SEMESTER / SCHEDULE combined -->
+<!-- SEMESTER -->
 <div class="page" id="pg-semester">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Planner</div><h1 id="sem-page-title">Semester</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<div class="ph"><div class="ph-left"><div class="ey">Planner</div><h1>Semester</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
+  <div id="semester-switcher" style="margin-bottom:12px;"></div>
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchSemTab('overview',this)">Overview</button>
     <button class="tab-btn" onclick="switchSemTab('schedule',this)">Schedule</button>
     <button class="tab-btn" onclick="switchSemTab('courses',this)">Courses</button>
+    <button class="tab-btn" onclick="switchSemTab('syllabus',this)">Syllabus</button>
   </div>
   <div id="sem-tab-content"></div>
   <div style="height:70px;"></div>
 </div>
-<button class="fab" id="sem-fab" onclick="semFabAction()"><i class="ti ti-plus"></i></button>
+<button class="fab" onclick="semFabAction()"><i class="ti ti-plus"></i></button>
 </div>
 
 <!-- ASSIGNMENTS -->
 <div class="page" id="pg-assign">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Tasks</div><h1>Assignments</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<div class="ph"><div class="ph-left"><div class="ey">Tasks</div><h1>Assignments</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchAssign('pending',this)">Pending</button>
@@ -221,10 +206,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 
 <!-- CALENDAR -->
 <div class="page" id="pg-cal">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Monthly</div><h1 id="cal-title">Calendar</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<div class="ph"><div class="ph-left"><div class="ey">Monthly</div><h1 id="cal-title">Calendar</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
   <div class="cal-nav">
     <button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
@@ -241,32 +223,28 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 <button class="fab" onclick="openEventModal(null,null)"><i class="ti ti-plus"></i></button>
 </div>
 
-<!-- ACADEMIC (Grades + GPA + Week + Reading + Projects + Exams) -->
-<div class="page" id="pg-academic">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Academic</div><h1>Study Tools</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<!-- STUDY TOOLS -->
+<div class="page" id="pg-study">
+<div class="ph"><div class="ph-left"><div class="ey">Pro Tools</div><h1>Study</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
-  <div class="tab-row" id="academic-tabs">
-    <button class="tab-btn active" onclick="switchAcademic('grades',this)">Grades</button>
-    <button class="tab-btn" onclick="switchAcademic('week',this)">Weekly</button>
-    <button class="tab-btn" onclick="switchAcademic('projects',this)">Projects</button>
-    <button class="tab-btn" onclick="switchAcademic('reading',this)">Reading</button>
-    <button class="tab-btn" onclick="switchAcademic('exams',this)">Exam Prep</button>
+  <div class="tab-row" id="study-tabs">
+    <button class="tab-btn active" onclick="switchStudy('timer',this)">Timer</button>
+    <button class="tab-btn" onclick="switchStudy('routine',this)">Routine</button>
+    <button class="tab-btn" onclick="switchStudy('habits',this)">Habits</button>
+    <button class="tab-btn" onclick="switchStudy('grades',this)">Grades</button>
+    <button class="tab-btn" onclick="switchStudy('projects',this)">Projects</button>
+    <button class="tab-btn" onclick="switchStudy('reading',this)">Reading</button>
+    <button class="tab-btn" onclick="switchStudy('exams',this)">Exams</button>
   </div>
-  <div id="academic-content"></div>
+  <div id="study-content"></div>
   <div style="height:70px;"></div>
 </div>
-<button class="fab" id="academic-fab" onclick="academicFabAction()"><i class="ti ti-plus"></i></button>
+<button class="fab" id="study-fab" onclick="studyFabAction()"><i class="ti ti-plus"></i></button>
 </div>
 
 <!-- SETTINGS -->
 <div class="page" id="pg-settings">
-<div class="ph">
-  <div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div>
-  <div class="theme-dot"></div>
-</div>
+<div class="ph"><div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div><div class="theme-dot"></div></div>
 <div class="ps">
   <div class="sl">Your Name</div>
   <div class="field"><label>Name</label><input id="s-name" placeholder="e.g. Jessica" oninput="saveName()"/></div>
@@ -275,7 +253,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <div class="div"></div>
   <div class="sl">Backup</div>
   <div class="card">
-    <div class="set-row" onclick="gdriveConnect()">
+    <div class="set-row" onclick="gdriveConnect()" style="cursor:pointer;">
       <div><div class="set-label">Google Drive Backup</div><div class="set-sub">Back up to your own Drive</div></div>
       <div id="gdrive-status" style="font-size:12px;color:var(--text3);">Not connected</div>
     </div>
@@ -287,11 +265,11 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
     </div>
   </div>
   <div class="card">
-    <div class="set-row" onclick="exportLocal()">
+    <div class="set-row" onclick="exportLocal()" style="cursor:pointer;">
       <div><div class="set-label">Download Local Backup</div><div class="set-sub">Save a file to your device</div></div>
       <i class="ti ti-download" style="color:var(--text3);font-size:18px;"></i>
     </div>
-    <div class="set-row" style="position:relative;">
+    <div class="set-row" style="position:relative;cursor:pointer;">
       <div><div class="set-label">Restore from File</div><div class="set-sub">Load a saved backup</div></div>
       <i class="ti ti-upload" style="color:var(--text3);font-size:18px;"></i>
       <input type="file" accept=".json" onchange="importLocal(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;"/>
@@ -303,7 +281,6 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <div style="height:20px;"></div>
 </div>
 </div>
-
 </div><!-- /screen -->
 
 <nav class="nav">
@@ -311,19 +288,19 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <button class="ni" onclick="go('semester',this)"><i class="ti ti-calendar-month"></i><span>Semester</span></button>
   <button class="ni" onclick="go('assign',this)"><i class="ti ti-clipboard-check"></i><span>Tasks</span></button>
   <button class="ni" onclick="go('cal',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
-  <button class="ni" onclick="go('academic',this)"><i class="ti ti-school"></i><span>Academic</span></button>
+  <button class="ni" onclick="go('study',this)"><i class="ti ti-brain"></i><span>Study</span></button>
   <button class="ni" onclick="go('settings',this)"><i class="ti ti-settings"></i><span>Settings</span></button>
 </nav>
-
 <!-- SEMESTER MODAL -->
 <div class="modal-bg" id="sem-modal"><div class="modal">
-  <h2>Semester Details</h2>
+  <h2 id="sem-modal-title">Add Semester</h2>
   <div class="field"><label>Semester Name</label><input id="sem-name" placeholder="e.g. Fall 2026"/></div>
   <div class="field"><label>Start Date</label><input type="date" id="sem-start"/></div>
   <div class="field"><label>End Date</label><input type="date" id="sem-end"/></div>
-  <div class="field"><label>School / University</label><input id="sem-school" placeholder="e.g. State University"/></div>
+  <div class="field"><label>School</label><input id="sem-school" placeholder="e.g. State University"/></div>
   <div class="field"><label>Notes</label><textarea id="sem-notes" placeholder="Goals, reminders..."></textarea></div>
   <div class="btn-row"><button class="btn-cancel" onclick="closeModal('sem-modal')">Cancel</button><button class="btn-save" onclick="saveSem()">Save</button></div>
+  <button class="btn-delete" id="sem-del-btn" style="display:none;" onclick="deleteSem()">Archive Semester</button>
 </div></div>
 
 <!-- COURSE MODAL -->
@@ -339,6 +316,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
     <option value="#4a6840">Pistachio</option><option value="#4a4642">Cloud</option>
   </select></div>
   <div class="field"><label>Current Grade %</label><input type="number" id="c-grade" placeholder="e.g. 88" min="0" max="100"/></div>
+  <div class="field"><label>Credits</label><input type="number" id="c-credits" placeholder="e.g. 3" min="0" max="6"/></div>
   <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Room, office hours..."></textarea></div>
   <div class="btn-row"><button class="btn-cancel" onclick="closeModal('course-modal')">Cancel</button><button class="btn-save" onclick="saveCourse()">Save</button></div>
   <button class="btn-delete" id="course-del-btn" style="display:none;" onclick="deleteCourse()">Delete Course</button>
@@ -349,9 +327,8 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <h2 id="class-modal-title">Add Class</h2>
   <div class="field"><label>Course</label><select id="cl-course"></select></div>
   <div class="field"><label>Day(s)</label><select id="cl-day" multiple style="height:120px;">
-    <option value="Mon">Monday</option><option value="Tue">Tuesday</option>
-    <option value="Wed">Wednesday</option><option value="Thu">Thursday</option>
-    <option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
+    <option value="Mon">Monday</option><option value="Tue">Tuesday</option><option value="Wed">Wednesday</option>
+    <option value="Thu">Thursday</option><option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
   </select></div>
   <div style="font-size:11px;color:var(--text2);margin-top:-8px;margin-bottom:10px;">Hold Ctrl / Cmd to select multiple days</div>
   <div class="field"><label>Start Time</label><input type="time" id="cl-start"/></div>
@@ -361,14 +338,31 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <button class="btn-delete" id="class-del-btn" style="display:none;" onclick="deleteClass()">Delete</button>
 </div></div>
 
+<!-- SYLLABUS MODAL -->
+<div class="modal-bg" id="syl-modal"><div class="modal">
+  <h2 id="syl-modal-title">Add Syllabus Item</h2>
+  <div class="field"><label>Title</label><input id="sy-title" placeholder="e.g. Midterm Exam"/></div>
+  <div class="field"><label>Course</label><select id="sy-course"></select></div>
+  <div class="field"><label>Date</label><input type="date" id="sy-date"/></div>
+  <div class="field"><label>Type</label><select id="sy-type">
+    <option value="exam">Exam</option><option value="assignment">Assignment</option>
+    <option value="quiz">Quiz</option><option value="project">Project</option>
+    <option value="reading">Reading</option><option value="other">Other</option>
+  </select></div>
+  <div class="field"><label>Weight / Points</label><input id="sy-weight" placeholder="e.g. 20% or 100pts"/></div>
+  <div class="field"><label>Notes</label><textarea id="sy-notes" placeholder="Details..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('syl-modal')">Cancel</button><button class="btn-save" onclick="saveSylItem()">Save</button></div>
+  <button class="btn-delete" id="syl-del-btn" style="display:none;" onclick="deleteSylItem()">Delete</button>
+</div></div>
+
 <!-- ASSIGNMENT MODAL -->
 <div class="modal-bg" id="assign-modal"><div class="modal">
   <h2 id="assign-modal-title">Add Assignment</h2>
-  <div class="field"><label>Title</label><input id="a-title" placeholder="e.g. Essay Draft — Chapter 3"/></div>
+  <div class="field"><label>Title</label><input id="a-title" placeholder="e.g. Essay Draft"/></div>
   <div class="field"><label>Course</label><select id="a-course"><option value="">No course</option></select></div>
   <div class="field"><label>Due Date</label><input type="date" id="a-due"/></div>
   <div class="field"><label>Priority</label><select id="a-priority"><option value="high">High</option><option value="med">Medium</option><option value="low">Low</option></select></div>
-  <div class="field"><label>Notes</label><textarea id="a-notes" placeholder="Details, reminders..."></textarea></div>
+  <div class="field"><label>Notes</label><textarea id="a-notes" placeholder="Details..."></textarea></div>
   <div class="btn-row"><button class="btn-cancel" onclick="closeModal('assign-modal')">Cancel</button><button class="btn-save" onclick="saveAssign()">Save</button></div>
   <button class="btn-delete" id="assign-del-btn" style="display:none;" onclick="deleteAssign()">Delete</button>
 </div></div>
@@ -376,11 +370,48 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 <!-- EVENT MODAL -->
 <div class="modal-bg" id="event-modal"><div class="modal">
   <h2 id="event-modal-title">Add Event</h2>
-  <div class="field"><label>Description</label><input id="ev-desc" placeholder="e.g. Study group, Office hours"/></div>
+  <div class="field"><label>Description</label><input id="ev-desc" placeholder="e.g. Study group"/></div>
   <div class="field"><label>Date</label><input type="date" id="ev-date"/></div>
   <div class="field"><label>Type</label><select id="ev-type"><option value="event">Event</option><option value="exam">Exam</option><option value="deadline">Deadline</option><option value="other">Other</option></select></div>
   <div class="btn-row"><button class="btn-cancel" onclick="closeModal('event-modal')">Cancel</button><button class="btn-save" onclick="saveEvent()">Save</button></div>
   <button class="btn-delete" id="event-del-btn" style="display:none;" onclick="deleteEvent()">Delete</button>
+</div></div>
+
+<!-- ROUTINE MODAL -->
+<div class="modal-bg" id="routine-modal"><div class="modal">
+  <h2 id="routine-modal-title">Add Routine Block</h2>
+  <div class="field"><label>Activity</label><input id="rb-title" placeholder="e.g. Review notes"/></div>
+  <div class="field"><label>Session</label><select id="rb-session"><option value="am">Morning (AM)</option><option value="pm">Evening (PM)</option></select></div>
+  <div class="field"><label>Time</label><input type="time" id="rb-time"/></div>
+  <div class="field"><label>Duration (minutes)</label><input type="number" id="rb-dur" placeholder="e.g. 30" min="5" max="240"/></div>
+  <div class="field"><label>Days</label><select id="rb-days" multiple style="height:100px;">
+    <option value="Mon">Monday</option><option value="Tue">Tuesday</option><option value="Wed">Wednesday</option>
+    <option value="Thu">Thursday</option><option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
+  </select></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('routine-modal')">Cancel</button><button class="btn-save" onclick="saveRoutineBlock()">Save</button></div>
+  <button class="btn-delete" id="routine-del-btn" style="display:none;" onclick="deleteRoutineBlock()">Delete</button>
+</div></div>
+
+<!-- HABIT MODAL -->
+<div class="modal-bg" id="habit-modal"><div class="modal">
+  <h2 id="habit-modal-title">Add Habit</h2>
+  <div class="field"><label>Habit</label><input id="hb-name" placeholder="e.g. Review flashcards"/></div>
+  <div class="field"><label>Target Days</label><select id="hb-days" multiple style="height:100px;">
+    <option value="Mon">Monday</option><option value="Tue">Tuesday</option><option value="Wed">Wednesday</option>
+    <option value="Thu">Thursday</option><option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
+  </select></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('habit-modal')">Cancel</button><button class="btn-save" onclick="saveHabit()">Save</button></div>
+  <button class="btn-delete" id="habit-del-btn" style="display:none;" onclick="deleteHabit()">Delete</button>
+</div></div>
+
+<!-- TIMER SETTINGS -->
+<div class="modal-bg" id="timer-settings-modal"><div class="modal">
+  <h2>Timer Settings</h2>
+  <div class="field"><label>Work Duration (minutes)</label><input type="number" id="ts-work" value="25" min="1" max="90"/></div>
+  <div class="field"><label>Short Break (minutes)</label><input type="number" id="ts-break" value="5" min="1" max="30"/></div>
+  <div class="field"><label>Long Break (minutes)</label><input type="number" id="ts-long" value="15" min="5" max="60"/></div>
+  <div class="field"><label>Sessions before Long Break</label><input type="number" id="ts-sessions" value="4" min="2" max="8"/></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('timer-settings-modal')">Cancel</button><button class="btn-save" onclick="saveTimerSettings()">Save</button></div>
 </div></div>
 
 <!-- PROJECT MODAL -->
@@ -409,7 +440,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <div class="field"><label>Title</label><input id="r-title" placeholder="e.g. The Great Gatsby"/></div>
   <div class="field"><label>Author</label><input id="r-author" placeholder="e.g. F. Scott Fitzgerald"/></div>
   <div class="field"><label>Course (optional)</label><select id="r-course"><option value="">No course</option></select></div>
-  <div class="field"><label>Pages</label><input type="number" id="r-pages" placeholder="e.g. 180"/></div>
+  <div class="field"><label>Total Pages</label><input type="number" id="r-pages" placeholder="e.g. 180"/></div>
   <div class="field"><label>Pages Read</label><input type="number" id="r-read" placeholder="e.g. 60"/></div>
   <div class="field"><label>Status</label><select id="r-status"><option value="tbr">To Read</option><option value="reading">Reading</option><option value="read">Finished</option></select></div>
   <div class="field"><label>Notes</label><textarea id="r-notes" placeholder="Themes, annotations..."></textarea></div>
@@ -423,7 +454,9 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
   <div class="field"><label>Exam Name</label><input id="ex-name" placeholder="e.g. Midterm — PSY 101"/></div>
   <div class="field"><label>Course</label><select id="ex-course"><option value="">No course</option></select></div>
   <div class="field"><label>Exam Date</label><input type="date" id="ex-date"/></div>
-  <div class="field"><label>Notes</label><textarea id="ex-notes" placeholder="Format, weight, location..."></textarea></div>
+  <div class="field"><label>Format</label><select id="ex-format"><option value="mcq">Multiple Choice</option><option value="essay">Essay</option><option value="mixed">Mixed</option><option value="practical">Practical</option><option value="oral">Oral</option><option value="other">Other</option></select></div>
+  <div class="field"><label>Past Papers Reviewed</label><input type="number" id="ex-papers" placeholder="e.g. 3" min="0"/></div>
+  <div class="field"><label>Notes</label><textarea id="ex-notes" placeholder="Location, allowed materials..."></textarea></div>
   <div class="btn-row"><button class="btn-cancel" onclick="closeModal('exam-modal')">Cancel</button><button class="btn-save" onclick="saveExam()">Save</button></div>
   <button class="btn-delete" id="exam-del-btn" style="display:none;" onclick="deleteExam()">Delete</button>
 </div></div>
@@ -446,9 +479,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 </div></div>
 
 <div id="toast"></div>
-
 <script>
-// ── THEMES ──
 var THEMES={
   matcha:    {name:'Matcha',     hdr:'#3d5a3e',acc:'#7aaa6a',acc2:'#d4edcc',bg:'#f4f7f4',bg2:'#fff',bg3:'#eaf0ea',text:'#1a2e1a',text2:'#6a8068',text3:'#aabcaa',border:'#d4e0d4',border2:'#e8f0e8'},
   lavender:  {name:'Lavender',   hdr:'#5c4d7d',acc:'#b8a9e0',acc2:'#ede8f8',bg:'#f7f5fc',bg2:'#fff',bg3:'#eeeaf8',text:'#2a1e4a',text2:'#7868a8',text3:'#b8aad0',border:'#dcd4f0',border2:'#eee8f8'},
@@ -461,76 +492,29 @@ var THEMES={
 };
 var DARK={bg:'#181818',bg2:'#232323',bg3:'#2d2d2d',text:'#f0f0f0',text2:'#a0a0a0',text3:'#606060',border:'#383838',border2:'#2e2e2e'};
 
-var DB={profile:{name:''},semester:{},courses:[],classes:[],assignments:[],events:[],projects:[],books:[],exams:[],theme:'matcha',darkMode:false};
-var assignTab='pending',curMonth=new Date(),semTab='overview',academicTab='grades',schedWeekOffset=0,weekViewOffset=0;
-var eId={course:null,class:null,assign:null,event:null,project:null,subtask:null,book:null,exam:null,topic:null,activeExamId:null};
+var DB={profile:{name:''},semesters:[],activeSemesterId:null,courses:[],classes:[],assignments:[],events:[],syllabus:[],projects:[],books:[],exams:[],routineBlocks:[],habits:[],habitLog:{},studySessions:[],timer:{work:25,brk:5,long:15,sessions:4},theme:'matcha',darkMode:false};
+var assignTab='pending',curMonth=new Date(),semTab='overview',studyTab='timer';
+var eId={sem:null,course:null,cls:null,assign:null,event:null,syl:null,routine:null,habit:null,project:null,subtask:null,book:null,exam:null,topic:null,activeProjectId:null,activeExamId:null};
 var _pendingRestore=null;
 
-function ld(){try{var d=localStorage.getItem('mfs_sp_std_v1');if(d){var p=JSON.parse(d);['courses','classes','assignments','events','projects','books','exams'].forEach(function(k){if(!p[k])p[k]=[];});if(!p.profile)p.profile={name:''};if(!p.semester)p.semester={};DB=p;}}catch(e){}}
-function sv(){try{localStorage.setItem('mfs_sp_std_v1',JSON.stringify(DB));}catch(e){}if(gdriveIsConnected()){clearTimeout(window._gbt);window._gbt=setTimeout(function(){gdriveBackupNow().catch(function(){});},3000);}}
+function ld(){try{var d=localStorage.getItem('mfs_sp_pro_v1');if(d){var p=JSON.parse(d);['courses','classes','assignments','events','syllabus','projects','books','exams','routineBlocks','habits','studySessions','semesters'].forEach(function(k){if(!p[k])p[k]=[];});if(!p.profile)p.profile={name:''};if(!p.habitLog)p.habitLog={};if(!p.timer)p.timer={work:25,brk:5,long:15,sessions:4};DB=p;}}catch(e){}}
+function sv(){try{localStorage.setItem('mfs_sp_pro_v1',JSON.stringify(DB));}catch(e){}if(gdriveIsConnected()){clearTimeout(window._gbt);window._gbt=setTimeout(function(){gdriveBackupNow().catch(function(){});},3000);}}
 ld();
 
-// ── THEME ──
-function applyTheme(key,dark){
-  var t=THEMES[key];if(!t)return;
-  DB.theme=key;if(dark!==undefined)DB.darkMode=dark;
-  var r=document.documentElement.style;
-  var src=DB.darkMode?Object.assign({},t,DARK):t;
-  r.setProperty('--hdr',t.hdr);r.setProperty('--acc',t.acc);r.setProperty('--acc2',t.acc2);
-  r.setProperty('--bg',src.bg);r.setProperty('--bg2',src.bg2);r.setProperty('--bg3',src.bg3);
-  r.setProperty('--text',src.text);r.setProperty('--text2',src.text2);r.setProperty('--text3',src.text3);
-  r.setProperty('--border',src.border);r.setProperty('--border2',src.border2);
-  var mc=document.getElementById('meta-theme-color');if(mc)mc.setAttribute('content',t.hdr);
-  document.querySelectorAll('.theme-dot').forEach(function(d){d.style.background=t.acc;});
-  renderSwatches();sv();
-}
+function applyTheme(key,dark){var t=THEMES[key];if(!t)return;DB.theme=key;if(dark!==undefined)DB.darkMode=dark;var r=document.documentElement.style,src=DB.darkMode?Object.assign({},t,DARK):t;r.setProperty('--hdr',t.hdr);r.setProperty('--acc',t.acc);r.setProperty('--acc2',t.acc2);r.setProperty('--bg',src.bg);r.setProperty('--bg2',src.bg2);r.setProperty('--bg3',src.bg3);r.setProperty('--text',src.text);r.setProperty('--text2',src.text2);r.setProperty('--text3',src.text3);r.setProperty('--border',src.border);r.setProperty('--border2',src.border2);var mc=document.getElementById('meta-theme-color');if(mc)mc.setAttribute('content',t.hdr);document.querySelectorAll('.theme-dot').forEach(function(d){d.style.background=t.acc;});renderSwatches();sv();}
 function cycleTheme(){var keys=Object.keys(THEMES);var i=keys.indexOf(DB.theme);applyTheme(keys[(i+1)%keys.length],DB.darkMode);}
-function setupDots(){
-  document.querySelectorAll('.theme-dot').forEach(function(dot){
-    var pt=null;
-    dot.addEventListener('pointerdown',function(){pt=setTimeout(function(){applyTheme(DB.theme,!DB.darkMode);showToast(DB.darkMode?'Dark mode on':'Light mode on');},500);});
-    dot.addEventListener('pointerup',function(){clearTimeout(pt);});
-    dot.addEventListener('pointerleave',function(){clearTimeout(pt);});
-    dot.addEventListener('click',function(){cycleTheme();});
-  });
-}
-function renderSwatches(){
-  var el=document.getElementById('swatch-grid');if(!el)return;
-  el.innerHTML=Object.keys(THEMES).map(function(k){var t=THEMES[k];
-    return'<div class="swatch'+(DB.theme===k?' active':'')+'" onclick="applyTheme(\''+k+'\',DB.darkMode)">'
-      +'<div class="swatch-dot" style="background:'+t.hdr+';border:3px solid '+t.acc+';"></div>'
-      +'<div class="swatch-name">'+t.name+'</div></div>';
-  }).join('');
-}
+function setupDots(){document.querySelectorAll('.theme-dot').forEach(function(dot){var pt=null;dot.addEventListener('pointerdown',function(){pt=setTimeout(function(){applyTheme(DB.theme,!DB.darkMode);showToast(DB.darkMode?'Dark mode on':'Light mode on');},500);});dot.addEventListener('pointerup',function(){clearTimeout(pt);});dot.addEventListener('pointerleave',function(){clearTimeout(pt);});dot.addEventListener('click',function(){cycleTheme();});});}
+function renderSwatches(){var el=document.getElementById('swatch-grid');if(!el)return;el.innerHTML=Object.keys(THEMES).map(function(k){var t=THEMES[k];return'<div class="swatch'+(DB.theme===k?' active':'')+'" onclick="applyTheme(\''+k+'\',DB.darkMode)"><div class="swatch-dot" style="background:'+t.hdr+';border:3px solid '+t.acc+';"></div><div class="swatch-name">'+t.name+'</div></div>';}).join('');}
 
-// ── NAV ──
-function go(id,el){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('pg-'+id).classList.add('active');
-  if(el)el.classList.add('active');
-  var r={dash:renderDash,semester:function(){renderSemTab(semTab);},assign:renderAssign,cal:renderCal,academic:function(){renderAcademic(academicTab);},settings:renderSettings};
-  if(r[id])r[id]();
-}
+function go(id,el){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});document.getElementById('pg-'+id).classList.add('active');if(el)el.classList.add('active');var r={dash:renderDash,semester:function(){renderSemSwitcher();renderSemTab(semTab);},assign:renderAssign,cal:renderCal,study:function(){renderStudy(studyTab);},settings:renderSettings};if(r[id])r[id]();}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 window.openModal=openModal;window.closeModal=closeModal;
 
-// ── TOAST ──
 function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.style.background=err?'#c0392b':'var(--text)';t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);}
 
-// ── CONFIRM ──
-function spConfirm(title,sub,cb){
-  var o=document.getElementById('spConfirmOverlay');
-  if(!o){o=document.createElement('div');o.id='spConfirmOverlay';o.className='modal-bg';
-    o.innerHTML='<div class="modal" style="text-align:center;"><h2 id="spCT">Confirm</h2><div id="spCS" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div>'
-      +'<div class="btn-row"><button class="btn-cancel" onclick="document.getElementById(\'spConfirmOverlay\').classList.remove(\'open\');window._spCb=null;">Keep it</button>'
-      +'<button class="btn-delete" style="margin-top:0;flex:1;" onclick="document.getElementById(\'spConfirmOverlay\').classList.remove(\'open\');if(window._spCb)window._spCb();window._spCb=null;">Delete</button>'
-      +'</div></div>';document.body.appendChild(o);}
-  document.getElementById('spCT').textContent=title;document.getElementById('spCS').textContent=sub;window._spCb=cb;o.classList.add('open');
-}
+function spConfirm(title,sub,cb){var o=document.getElementById('spCO');if(!o){o=document.createElement('div');o.id='spCO';o.className='modal-bg';o.innerHTML='<div class="modal" style="text-align:center;"><h2 id="spCT">Confirm</h2><div id="spCS" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div><div class="btn-row"><button class="btn-cancel" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');window._spCb=null;">Keep it</button><button class="btn-delete" style="margin-top:0;flex:1;" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');if(window._spCb)window._spCb();window._spCb=null;">Delete</button></div></div>';document.body.appendChild(o);}document.getElementById('spCT').textContent=title;document.getElementById('spCS').textContent=sub;window._spCb=cb;o.classList.add('open');}
 
-// ── HELPERS ──
 function localDateStr(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function today(){return localDateStr();}
 function fmtDate(d){if(!d)return'';var p=d.split('-');return(+p[1])+'/'+(+p[2])+'/'+(p[0].slice(2));}
@@ -540,637 +524,178 @@ function priorityColor(p){return p==='high'?'var(--red)':p==='med'?'var(--yellow
 function priorityBadge(p){return p==='high'?'badge-high':p==='med'?'badge-med':'badge-low';}
 function evtColor(t){return t==='exam'?'var(--red)':t==='deadline'?'var(--yellow)':t==='event'?'var(--acc)':'var(--text3)';}
 function courseName(id){var c=DB.courses.find(function(x){return x.id===id;});return c?c.name:'';}
-function courseColor(id){var c=DB.courses.find(function(x){return x.id===id;});return c?c.color:'var(--text3)';}
 function popSelect(id,val){var s=document.getElementById(id);if(!s)return;s.innerHTML='<option value="">No course</option>'+DB.courses.map(function(c){return'<option value="'+c.id+'">'+c.name+'</option>';}).join('');if(val)s.value=val;}
 function gradeColor(g){var n=parseFloat(g);if(isNaN(n))return'var(--text3)';if(n>=90)return'var(--acc)';if(n>=80)return'var(--hdr)';if(n>=70)return'var(--yellow)';return'var(--red)';}
-function gradeToGPA(g){var n=parseFloat(g);if(isNaN(n))return null;if(n>=97)return 4.0;if(n>=93)return 4.0;if(n>=90)return 3.7;if(n>=87)return 3.3;if(n>=83)return 3.0;if(n>=80)return 2.7;if(n>=77)return 2.3;if(n>=73)return 2.0;if(n>=70)return 1.7;if(n>=67)return 1.3;if(n>=63)return 1.0;if(n>=60)return 0.7;return 0.0;}
+function gradeToGPA(g){var n=parseFloat(g);if(isNaN(n))return null;if(n>=93)return 4.0;if(n>=90)return 3.7;if(n>=87)return 3.3;if(n>=83)return 3.0;if(n>=80)return 2.7;if(n>=77)return 2.3;if(n>=73)return 2.0;if(n>=70)return 1.7;if(n>=67)return 1.3;if(n>=63)return 1.0;if(n>=60)return 0.7;return 0.0;}
 function gradeToLetter(g){var n=parseFloat(g);if(isNaN(n))return'—';if(n>=97)return'A+';if(n>=93)return'A';if(n>=90)return'A-';if(n>=87)return'B+';if(n>=83)return'B';if(n>=80)return'B-';if(n>=77)return'C+';if(n>=73)return'C';if(n>=70)return'C-';if(n>=67)return'D+';if(n>=63)return'D';if(n>=60)return'D-';return'F';}
-function calcGPA(){var cs=DB.courses.filter(function(c){return c.grade!==''&&c.grade!==undefined&&c.grade!==null;});if(!cs.length)return null;var total=cs.reduce(function(s,c){return s+(gradeToGPA(c.grade)||0);},0);return(total/cs.length).toFixed(2);}
+function calcGPA(){var cs=DB.courses.filter(function(c){return c.grade!==''&&c.grade!==undefined&&c.grade!==null;});if(!cs.length)return null;var tw=0,tg=0;cs.forEach(function(c){var cr=parseFloat(c.credits)||3;tw+=cr;tg+=(gradeToGPA(c.grade)||0)*cr;});return tw?(tg/tw).toFixed(2):null;}
+function calcStreak(){var log=DB.habitLog,streak=0,d=new Date();d.setHours(0,0,0,0);for(var i=0;i<365;i++){var ds=localDateStr(d);var has=DB.studySessions.some(function(s){return s.date===ds;})||(log[ds]&&Object.values(log[ds]).some(Boolean));if(has)streak++;else if(i>0)break;d.setDate(d.getDate()-1);}return streak;}
+function studyHoursWeek(){var now=new Date(),dow=now.getDay(),diff=dow===0?-6:1-dow;var ws=new Date(now);ws.setDate(now.getDate()+diff);ws.setHours(0,0,0,0);var tot=DB.studySessions.filter(function(s){return new Date(s.date+'T00:00:00')>=ws;}).reduce(function(sum,s){return sum+(s.minutes||0);},0);return(tot/60).toFixed(1);}
 
-// ── DASHBOARD ──
 function renderDash(){
-  var tod=today();
-  var upcoming=DB.assignments.filter(function(a){return!a.done&&a.due&&a.due>=tod;}).sort(function(a,b){return a.due.localeCompare(b.due);});
-  var dueSoon=upcoming.filter(function(a){var d=daysUntil(a.due);return d!==null&&d<=7;});
-  document.getElementById('d-due').textContent=dueSoon.length;
+  var h=new Date().getHours(),greet=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+  if(DB.profile.name)greet+=', '+DB.profile.name.split(' ')[0];
+  document.getElementById('dash-greeting').textContent=greet;
+  var tod=today(),upcoming=DB.assignments.filter(function(a){return!a.done&&a.due&&a.due>=tod;}).sort(function(a,b){return a.due.localeCompare(b.due);});
+  document.getElementById('d-due').textContent=upcoming.filter(function(a){var d=daysUntil(a.due);return d!==null&&d<=7;}).length;
   document.getElementById('d-gpa').textContent=calcGPA()||'—';
-  var activeProj=DB.projects.filter(function(p){return!p.done;});
-  document.getElementById('d-projects').textContent=activeProj.length;
-  var upcomingExams=DB.exams.filter(function(e){return e.date&&e.date>=tod;});
-  document.getElementById('d-exams').textContent=upcomingExams.length;
-  var upEl=document.getElementById('dash-upcoming');
+  document.getElementById('d-streak').textContent=calcStreak();
+  document.getElementById('d-study').textContent=studyHoursWeek()+'h';
+  var days=['M','T','W','T','F','S','S'],now=new Date(),dow=now.getDay(),diff=dow===0?-6:1-dow;
+  var ws=new Date(now);ws.setDate(now.getDate()+diff);ws.setHours(0,0,0,0);
+  var bars='';
+  for(var i=0;i<7;i++){var dd=new Date(ws);dd.setDate(ws.getDate()+i);var ds=localDateStr(dd);var tot=DB.assignments.filter(function(a){return a.due===ds;}).length;var done=DB.assignments.filter(function(a){return a.due===ds&&a.done;}).length;var pct=tot?done/tot:0;var bh=Math.max(4,Math.round(pct*48));bars+='<div class="chart-bar-col"><div class="chart-bar" style="height:'+bh+'px;opacity:'+(tot?1:.2)+';"></div><div class="chart-lbl">'+days[i]+'</div></div>';}
+  document.getElementById('completion-chart').innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;">Completion This Week</div><div class="chart-bar-wrap">'+bars+'</div>';
   var top=upcoming.slice(0,4);
-  upEl.innerHTML=top.length?'<div class="card">'+top.map(function(a){
-    var d=daysUntil(a.due);var dc=d===0?'var(--red)':d===1?'var(--yellow)':'var(--text2)';
-    return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'
-      +'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'
-      +'<div class="assign-info"><div class="assign-title">'+a.title+'</div>'
-      +'<div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+
-      '<span style="color:'+dc+';">'+(d===0?'Due today':d===1?'Due tomorrow':d+' days')+'</span></div></div></div>';
-  }).join('')+'</div>':'<div class="empty">No upcoming assignments.</div>';
-  var exEl=document.getElementById('dash-exams');
-  var topEx=upcomingExams.slice(0,3);
-  exEl.innerHTML=topEx.length?'<div class="card">'+topEx.map(function(ex){
-    var d=daysUntil(ex.date);
-    return'<div class="assign-row" onclick="openExamModal(\''+ex.id+'\',null)">'
-      +'<div class="assign-bar" style="background:var(--red);"></div>'
-      +'<div class="assign-info"><div class="assign-title">'+ex.name+'</div>'
-      +'<div class="assign-meta">'+(courseName(ex.courseId)?courseName(ex.courseId)+' · ':'')+fmtDate(ex.date)
-      +(d!==null?' · <span style="color:'+(d<=3?'var(--red)':'var(--text2)')+';">'+d+' days</span>':'')+'</div></div></div>';
-  }).join('')+'</div>':'<div class="empty">No upcoming exams.</div>';
+  document.getElementById('dash-upcoming').innerHTML=top.length?'<div class="card">'+top.map(function(a){var d=daysUntil(a.due);var dc=d===0?'var(--red)':d===1?'var(--yellow)':'var(--text2)';return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+' <span style="color:'+dc+';">'+(d===0?'Due today':d===1?'Due tomorrow':d+' days')+'</span></div></div></div>';}).join('')+'</div>':'<div class="empty">No upcoming assignments.</div>';
+  var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],todayDow=DOW[new Date().getDay()];
+  var todayBlocks=DB.routineBlocks.filter(function(b){return(b.days||[]).indexOf(todayDow)>-1;}).sort(function(a,b){return(a.time||'').localeCompare(b.time||'');});
+  document.getElementById('dash-routine').innerHTML=todayBlocks.length?'<div class="card">'+todayBlocks.map(function(b){return'<div class="routine-block"><span class="routine-time-badge">'+(b.session==='am'?'AM':'PM')+(b.time?' '+fmtTime(b.time):'')+'</span><div style="flex:1;"><div style="font-size:15px;font-weight:500;color:var(--text);">'+b.title+'</div>'+(b.dur?'<div style="font-size:12px;color:var(--text2);">'+b.dur+' min</div>':'')+'</div></div>';}).join('')+'</div>':'<div class="empty" style="padding:16px 0;">No routine today.<br><span style="font-size:13px;">Add blocks in Study → Routine</span></div>';
 }
 
-// ── SEMESTER TAB ──
-var semTab='overview';
-function switchSemTab(tab,el){
-  semTab=tab;
-  if(tab==='schedule')schedWeekOffset=0;
-  document.querySelectorAll('#pg-semester .tab-btn').forEach(function(b){b.classList.remove('active');});
-  if(el)el.classList.add('active');
-  renderSemTab(tab);
-}
+function renderSemSwitcher(){var el=document.getElementById('semester-switcher');if(!DB.semesters.length){el.innerHTML='';return;}el.innerHTML=DB.semesters.map(function(s){return'<span class="sem-pill'+(s.id===DB.activeSemesterId?' active':'')+'" onclick="setActiveSem(\''+s.id+'\')">'+s.name+'</span>';}).join('')+'<span class="sem-pill" onclick="openSemModal(null)" style="color:var(--acc);">+ New</span>';}
+function setActiveSem(id){DB.activeSemesterId=id;sv();renderSemSwitcher();renderSemTab(semTab);}
+window.setActiveSem=setActiveSem;
+function activeSem(){return DB.semesters.find(function(s){return s.id===DB.activeSemesterId;})||null;}
+
+function openSemModal(id){eId.sem=id;var s=id?DB.semesters.find(function(x){return x.id===id;}):null;document.getElementById('sem-modal-title').textContent=id?'Edit Semester':'Add Semester';document.getElementById('sem-name').value=s?s.name:'';document.getElementById('sem-start').value=s?(s.start||''):'';document.getElementById('sem-end').value=s?(s.end||''):'';document.getElementById('sem-school').value=s?(s.school||''):'';document.getElementById('sem-notes').value=s?(s.notes||''):'';document.getElementById('sem-del-btn').style.display=id?'block':'none';openModal('sem-modal');}
+function saveSem(){var name=document.getElementById('sem-name').value.trim();if(!name)return;var entry={id:eId.sem||('sm'+Date.now()),name:name,start:document.getElementById('sem-start').value,end:document.getElementById('sem-end').value,school:document.getElementById('sem-school').value.trim(),notes:document.getElementById('sem-notes').value.trim()};if(eId.sem){var i=DB.semesters.findIndex(function(x){return x.id===eId.sem;});if(i>-1)DB.semesters[i]=entry;}else{DB.semesters.push(entry);DB.activeSemesterId=entry.id;}sv();closeModal('sem-modal');renderSemSwitcher();renderSemTab(semTab);showToast('Semester saved ✓');}
+function deleteSem(){spConfirm('Archive this semester?','It will be removed from the list.',function(){DB.semesters=DB.semesters.filter(function(x){return x.id!==eId.sem;});if(DB.activeSemesterId===eId.sem)DB.activeSemesterId=DB.semesters.length?DB.semesters[0].id:null;sv();closeModal('sem-modal');renderSemSwitcher();renderSemTab(semTab);});}
+window.openSemModal=openSemModal;window.saveSem=saveSem;window.deleteSem=deleteSem;
+
+function switchSemTab(tab,el){semTab=tab;document.querySelectorAll('#pg-semester .tab-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderSemTab(tab);}
 window.switchSemTab=switchSemTab;
-
-function semFabAction(){
-  if(semTab==='schedule')openClassModal(null);
-  else if(semTab==='courses')openCourseModal(null);
-  else openSemModal();
-}
+function semFabAction(){if(semTab==='schedule')openClassModal(null);else if(semTab==='courses')openCourseModal(null);else if(semTab==='syllabus')openSylModal(null);else openSemModal(null);}
 window.semFabAction=semFabAction;
+function renderSemTab(tab){var el=document.getElementById('sem-tab-content');if(tab==='overview')el.innerHTML=buildSemOverview();else if(tab==='schedule')el.innerHTML=buildSchedule();else if(tab==='courses')el.innerHTML=buildCourses();else if(tab==='syllabus')el.innerHTML=buildSyllabus();}
 
-function renderSemTab(tab){
-  var el=document.getElementById('sem-tab-content');
-  if(tab==='overview')el.innerHTML=buildSemOverview();
-  else if(tab==='schedule')el.innerHTML=buildSchedule();
-  else if(tab==='courses')el.innerHTML=buildCourses();
-}
+function buildSemOverview(){var s=activeSem();if(!s&&!DB.semesters.length)return'<div class="empty">No semester yet.<br>Tap + to add your first semester.</div>';if(!s)return'<div class="empty">Select a semester above.</div>';var daysLeft='—',prog=0,startLbl='Start',endLbl='End';if(s.start&&s.end){var start=new Date(s.start+'T00:00:00'),end=new Date(s.end+'T00:00:00'),now=new Date();now.setHours(0,0,0,0);var total=Math.round((end-start)/86400000),elapsed=Math.max(0,Math.round((now-start)/86400000));daysLeft=Math.max(0,Math.round((end-now)/86400000));prog=Math.min(100,Math.round(elapsed/total*100));var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];startLbl=mo[start.getMonth()]+' '+start.getDate();endLbl=mo[end.getMonth()]+' '+end.getDate();}return'<div class="card-hdr" onclick="openSemModal(\''+s.id+'\')" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;"><div><div class="sem-stat-val">'+s.name+'</div><div class="sem-stat-lbl">'+(s.school||'Semester')+'</div></div><div style="text-align:right;"><div class="sem-stat-val">'+daysLeft+'</div><div class="sem-stat-lbl">Days Left</div></div></div><div class="progress-bar"><div class="progress-fill" style="width:'+prog+'%"></div></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><div style="font-size:11px;color:rgba(255,255,255,.45);">'+startLbl+'</div><div style="font-size:11px;color:rgba(255,255,255,.45);">'+endLbl+'</div></div></div>'+'<div class="card" style="text-align:center;padding:20px;"><div style="font-size:52px;font-weight:700;color:var(--hdr);line-height:1;">'+(calcGPA()||'—')+'</div><div style="font-size:12px;color:var(--text2);margin-top:4px;">Weighted GPA</div></div>';}
 
-function buildSemOverview(){
-  var s=DB.semester;
-  var name=s.name||'My Semester';
-  var daysLeft='—',prog=0,startLbl='Start',endLbl='End';
-  if(s.start&&s.end){
-    var start=new Date(s.start+'T00:00:00'),end=new Date(s.end+'T00:00:00'),now=new Date();now.setHours(0,0,0,0);
-    var total=Math.round((end-start)/86400000),elapsed=Math.max(0,Math.round((now-start)/86400000));
-    daysLeft=Math.max(0,Math.round((end-now)/86400000));prog=Math.min(100,Math.round(elapsed/total*100));
-    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    startLbl=mo[start.getMonth()]+' '+start.getDate();endLbl=mo[end.getMonth()]+' '+end.getDate();
-  }
-  var h='<div class="card-hdr" onclick="openSemModal()" style="cursor:pointer;">'
-    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">'
-    +'<div><div class="sem-stat-val">'+name+'</div><div class="sem-stat-lbl">'+(s.school||'Semester')+'</div></div>'
-    +'<div style="text-align:right;"><div class="sem-stat-val">'+daysLeft+'</div><div class="sem-stat-lbl">Days Left</div></div></div>'
-    +'<div class="progress-bar"><div class="progress-fill" style="width:'+prog+'%"></div></div>'
-    +'<div style="display:flex;justify-content:space-between;margin-top:6px;">'
-    +'<div style="font-size:11px;color:rgba(255,255,255,.45);">'+startLbl+'</div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,.45);">'+endLbl+'</div></div></div>';
-  if(s.notes)h+='<div class="card"><div style="font-size:14px;color:var(--text2);line-height:1.6;">'+s.notes+'</div></div>';
-  h+='<div class="sl">GPA</div><div class="card" style="text-align:center;padding:20px;">'
-    +'<div style="font-size:48px;font-weight:700;color:var(--yellow);">'+(calcGPA()||'—')+'</div>'
-    +'<div style="font-size:12px;color:var(--text2);margin-top:4px;">Cumulative GPA</div></div>';
-  return h;
-}
+function buildSchedule(){if(!DB.classes.length)return'<div class="empty">No classes yet.<br>Tap + to add your schedule.</div>';var DO=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],DF={Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'},byDay={};DB.classes.forEach(function(c){(c.days||[]).forEach(function(d){if(!byDay[d])byDay[d]=[];byDay[d].push(c);});});var h='';DO.forEach(function(day){if(!byDay[day])return;var sorted=byDay[day].slice().sort(function(a,b){return(a.start||'').localeCompare(b.start||'');});h+='<div class="sl">'+DF[day]+'</div><div class="card">';sorted.forEach(function(c){var course=DB.courses.find(function(x){return x.id===c.courseId;});h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border2);cursor:pointer;" onclick="openClassModal(\''+c.id+'\')">'+'<div style="font-size:12px;color:var(--text2);width:72px;flex-shrink:0;">'+(c.start?fmtTime(c.start):'—')+(c.end?'<br>'+fmtTime(c.end):'')+'</div>'+'<div style="flex:1;"><div style="font-size:15px;font-weight:600;color:var(--text);">'+(course?course.name:'Unnamed')+'</div>'+(c.loc?'<div style="font-size:12px;color:var(--text2);">'+c.loc+'</div>':'')+'</div>'+'<div style="width:10px;height:10px;border-radius:50%;background:'+(course?course.color:'var(--text3)')+'"></div></div>';});h+='</div>';});return h;}
 
-function getWeekStart(offset){
-  var now=new Date();now.setHours(0,0,0,0);
-  var day=now.getDay();
-  var diff=day===0?-6:1-day;
-  var mon=new Date(now);mon.setDate(now.getDate()+diff+(offset*7));
-  return mon;
-}
-function buildSchedule(){
-  if(!DB.classes.length)return'<div class="empty">No classes yet.<br>Tap + to add your schedule.</div>';
-  var DAY_ORDER=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  var DAY_FULL={Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
-  var DAY_JS={Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0};
-  var MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var weekStart=getWeekStart(schedWeekOffset);
-  var weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
-  function fmtD(d){return MON_NAMES[d.getMonth()]+' '+d.getDate();}
-  var weekLabel=fmtD(weekStart)+' – '+fmtD(weekEnd);
-  var now=new Date();now.setHours(0,0,0,0);
-  var todayDay=now.getDay();var diff2=todayDay===0?-6:1-todayDay;
-  var thisMonday=new Date(now);thisMonday.setDate(now.getDate()+diff2);
-  var isCurrentWeek=weekStart.getTime()===thisMonday.getTime();
-  var byDay={};DB.classes.forEach(function(c){(c.days||[]).forEach(function(d){if(!byDay[d])byDay[d]=[];byDay[d].push(c);});});
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px;">'
-    +'<button data-sched-nav="-1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">‹</button>'
-    +'<div style="text-align:center;">'
-    +'<div style="font-size:15px;font-weight:600;color:var(--text);">'+weekLabel+'</div>'
-    +(isCurrentWeek?'<div style="font-size:11px;color:var(--acc);font-weight:600;margin-top:2px;">This Week</div>':'')
-    +'</div>'
-    +'<button data-sched-nav="1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">›</button>'
-    +'</div>';
-  var hasAny=false;
-  DAY_ORDER.forEach(function(day){
-    if(!byDay[day])return;
-    hasAny=true;
-    var sorted=byDay[day].slice().sort(function(a,b){return(a.start||'').localeCompare(b.start||'');});
-    var jsDay=DAY_JS[day];
-    var dayOffset=jsDay===0?6:jsDay-1;
-    var dayDate=new Date(weekStart);dayDate.setDate(weekStart.getDate()+dayOffset);
-    var isToday=dayDate.getTime()===now.getTime();
-    var dayLabel=DAY_FULL[day]+' '+MON_NAMES[dayDate.getMonth()]+' '+dayDate.getDate();
-    h+='<div class="sl">'
-      +dayLabel
-      +(isToday?' <span style="font-size:9px;background:var(--hdr);color:white;padding:2px 6px;border-radius:8px;vertical-align:middle;margin-left:4px;letter-spacing:.04em;">TODAY</span>':'')
-      +'</div>'
-      +'<div class="card">';
-    sorted.forEach(function(c){
-      var course=DB.courses.find(function(x){return x.id===c.courseId;});
-      h+='<div class="sched-row" onclick="openClassModal(\'+c.id+\')">'
-        +'<div class="sched-time">'+(c.start?fmtTime(c.start):'—')+(c.end?'<br>'+fmtTime(c.end):'')+'</div>'
-        +'<div class="sched-info"><div class="sched-name">'+(course?course.name:'Unnamed')+'</div>'
-        +(c.loc?'<div class="sched-loc">'+c.loc+'</div>':'')+'</div>'
-        +'<div class="sched-color" style="background:'+(course?course.color:'var(--text3)')+'"></div></div>';
-    });
-    h+='</div>';
-  });
-  if(!hasAny)h+='<div class="empty">No classes scheduled.</div>';
-  return h;
-}
-function schedWeekNav(dir){schedWeekOffset+=dir;renderSemTab('schedule');}
-window.schedWeekNav=schedWeekNav;
-document.addEventListener('click',function(e){
-  var btn=e.target.closest('[data-sched-nav]');
-  if(btn){var dir=parseInt(btn.getAttribute('data-sched-nav'),10);schedWeekNav(dir);}
-  var btn2=e.target.closest('[data-week-nav]');
-  if(btn2){var dir2=parseInt(btn2.getAttribute('data-week-nav'),10);weekViewNav(dir2);}
-});
-function buildCourses(){
-  var h='';
-  if(!DB.courses.length)return'<div class="empty">No courses yet.<br>Tap + to add a course.</div>';
-  DB.courses.forEach(function(c){
-    var g=parseFloat(c.grade);
-    h+='<div class="card" style="cursor:pointer;margin-bottom:8px;" onclick="openCourseModal(\''+c.id+'\')">'
-      +'<div style="display:flex;align-items:center;gap:10px;">'
-      +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;"></div>'
-      +'<div style="flex:1;"><div style="font-size:16px;font-weight:600;">'+c.name+'</div>'
-      +(c.code?'<div style="font-size:12px;color:var(--text2);">'+c.code+(c.teacher?' · '+c.teacher:'')+'</div>':'')+'</div>'
-      +(c.grade?'<div style="text-align:right;"><div style="font-size:20px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'')+'</div>'
-      +(!isNaN(g)?'<div class="grade-bar-wrap"><div class="grade-bar-fill" style="width:'+Math.min(100,g)+'%;background:'+gradeColor(c.grade)+';"></div></div>':'')
-      +'</div>';
-  });
-  return h;
-}
+function buildCourses(){if(!DB.courses.length)return'<div class="empty">No courses yet.<br>Tap + to add a course.</div>';return'<div class="card">'+DB.courses.map(function(c){var g=parseFloat(c.grade);return'<div class="assign-row" onclick="openCourseModal(\''+c.id+'\')">'+'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;margin-top:4px;"></div>'+'<div class="assign-info"><div class="assign-title">'+c.name+'</div>'+(c.teacher?'<div class="assign-meta">'+c.teacher+(c.credits?' · '+c.credits+' cr':'')+'</div>':'')+'</div>'+(c.grade?'<div style="text-align:right;"><div style="font-size:18px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'<div style="font-size:14px;color:var(--text3);">—</div>')+'</div>';}).join('')+'</div>';}
 
-// ── SEMESTER MODAL ──
-function openSemModal(){
-  var s=DB.semester;
-  document.getElementById('sem-name').value=s.name||'';document.getElementById('sem-start').value=s.start||'';
-  document.getElementById('sem-end').value=s.end||'';document.getElementById('sem-school').value=s.school||'';
-  document.getElementById('sem-notes').value=s.notes||'';openModal('sem-modal');
-}
-function saveSem(){
-  DB.semester={name:document.getElementById('sem-name').value.trim(),start:document.getElementById('sem-start').value,end:document.getElementById('sem-end').value,school:document.getElementById('sem-school').value.trim(),notes:document.getElementById('sem-notes').value.trim()};
-  sv();closeModal('sem-modal');renderSemTab(semTab);showToast('Saved ✓');
-}
-window.openSemModal=openSemModal;window.saveSem=saveSem;
+function buildSyllabus(){if(!DB.syllabus.length)return'<div class="empty">No syllabus items yet.<br>Tap + to import key dates.</div>';var TC={exam:'var(--red)',assignment:'var(--yellow)',quiz:'var(--acc)',project:'var(--hdr)',reading:'var(--text2)',other:'var(--text3)'};var sorted=DB.syllabus.slice().sort(function(a,b){return(a.date||'9').localeCompare(b.date||'9');});return'<div class="card">'+sorted.map(function(s){return'<div class="syl-row" onclick="openSylModal(\''+s.id+'\')">'+'<div class="syl-date">'+fmtDate(s.date)+'</div>'+'<div style="flex:1;"><div class="syl-title">'+s.title+'</div>'+(courseName(s.courseId)?'<div class="syl-type">'+courseName(s.courseId)+(s.weight?' · '+s.weight:'')+'</div>':'')+'</div>'+'<div style="width:8px;height:8px;border-radius:50%;background:'+(TC[s.type]||'var(--text3)')+';flex-shrink:0;margin-top:5px;"></div></div>';}).join('')+'</div>';}
 
-// ── COURSES ──
-function openCourseModal(id){
-  eId.course=id;var c=id?DB.courses.find(function(x){return x.id===id;}):null;
-  document.getElementById('course-modal-title').textContent=id?'Edit Course':'Add Course';
-  document.getElementById('c-name').value=c?c.name:'';document.getElementById('c-code').value=c?(c.code||''):'';
-  document.getElementById('c-teacher').value=c?(c.teacher||''):'';document.getElementById('c-color').value=c?(c.color||'#3d5a3e'):'#3d5a3e';
-  document.getElementById('c-grade').value=c?(c.grade||''):'';document.getElementById('c-notes').value=c?(c.notes||''):'';
-  document.getElementById('course-del-btn').style.display=id?'block':'none';openModal('course-modal');
-}
-function saveCourse(){
-  var name=document.getElementById('c-name').value.trim();if(!name)return;
-  var entry={id:eId.course||('c'+Date.now()),name:name,code:document.getElementById('c-code').value.trim(),teacher:document.getElementById('c-teacher').value.trim(),color:document.getElementById('c-color').value,grade:document.getElementById('c-grade').value,notes:document.getElementById('c-notes').value.trim()};
-  if(eId.course){var i=DB.courses.findIndex(function(x){return x.id===eId.course;});if(i>-1)DB.courses[i]=entry;}
-  else DB.courses.push(entry);
-  sv();closeModal('course-modal');renderSemTab(semTab);showToast('Course saved ✓');
-}
-function deleteCourse(){spConfirm('Delete this course?','Assignments linked to it will remain.',function(){DB.courses=DB.courses.filter(function(x){return x.id!==eId.course;});sv();closeModal('course-modal');renderSemTab(semTab);});}
+function openSylModal(id){eId.syl=id;var s=id?DB.syllabus.find(function(x){return x.id===id;}):null;document.getElementById('syl-modal-title').textContent=id?'Edit Item':'Add Syllabus Item';document.getElementById('sy-title').value=s?s.title:'';popSelect('sy-course',s?s.courseId:'');document.getElementById('sy-date').value=s?(s.date||''):'';document.getElementById('sy-type').value=s?(s.type||'exam'):'exam';document.getElementById('sy-weight').value=s?(s.weight||''):'';document.getElementById('sy-notes').value=s?(s.notes||''):'';document.getElementById('syl-del-btn').style.display=id?'block':'none';openModal('syl-modal');}
+function saveSylItem(){var title=document.getElementById('sy-title').value.trim();if(!title)return;var entry={id:eId.syl||('sy'+Date.now()),title:title,courseId:document.getElementById('sy-course').value,date:document.getElementById('sy-date').value,type:document.getElementById('sy-type').value,weight:document.getElementById('sy-weight').value.trim(),notes:document.getElementById('sy-notes').value.trim()};if(eId.syl){var i=DB.syllabus.findIndex(function(x){return x.id===eId.syl;});if(i>-1)DB.syllabus[i]=entry;}else DB.syllabus.push(entry);sv();closeModal('syl-modal');renderSemTab('syllabus');showToast('Saved ✓');}
+function deleteSylItem(){spConfirm('Delete this item?','This cannot be undone.',function(){DB.syllabus=DB.syllabus.filter(function(x){return x.id!==eId.syl;});sv();closeModal('syl-modal');renderSemTab('syllabus');});}
+window.openSylModal=openSylModal;window.saveSylItem=saveSylItem;window.deleteSylItem=deleteSylItem;
+
+function openCourseModal(id){eId.course=id;var c=id?DB.courses.find(function(x){return x.id===id;}):null;document.getElementById('course-modal-title').textContent=id?'Edit Course':'Add Course';document.getElementById('c-name').value=c?c.name:'';document.getElementById('c-code').value=c?(c.code||''):'';document.getElementById('c-teacher').value=c?(c.teacher||''):'';document.getElementById('c-color').value=c?(c.color||'#3d5a3e'):'#3d5a3e';document.getElementById('c-grade').value=c?(c.grade||''):'';document.getElementById('c-credits').value=c?(c.credits||''):'';document.getElementById('c-notes').value=c?(c.notes||''):'';document.getElementById('course-del-btn').style.display=id?'block':'none';openModal('course-modal');}
+function saveCourse(){var name=document.getElementById('c-name').value.trim();if(!name)return;var entry={id:eId.course||('c'+Date.now()),name:name,code:document.getElementById('c-code').value.trim(),teacher:document.getElementById('c-teacher').value.trim(),color:document.getElementById('c-color').value,grade:document.getElementById('c-grade').value,credits:document.getElementById('c-credits').value,notes:document.getElementById('c-notes').value.trim()};if(eId.course){var i=DB.courses.findIndex(function(x){return x.id===eId.course;});if(i>-1)DB.courses[i]=entry;}else DB.courses.push(entry);sv();closeModal('course-modal');renderSemTab(semTab);showToast('Course saved ✓');}
+function deleteCourse(){spConfirm('Delete this course?','This cannot be undone.',function(){DB.courses=DB.courses.filter(function(x){return x.id!==eId.course;});sv();closeModal('course-modal');renderSemTab(semTab);});}
 window.openCourseModal=openCourseModal;window.saveCourse=saveCourse;window.deleteCourse=deleteCourse;
 
-// ── CLASSES ──
-function openClassModal(id){
-  eId.class=id;var c=id?DB.classes.find(function(x){return x.id===id;}):null;
-  document.getElementById('class-modal-title').textContent=id?'Edit Class':'Add Class';
-  popSelect('cl-course',c?c.courseId:'');
-  var dayEl=document.getElementById('cl-day');Array.from(dayEl.options).forEach(function(o){o.selected=c&&c.days&&c.days.indexOf(o.value)>-1;});
-  document.getElementById('cl-start').value=c?(c.start||''):'';document.getElementById('cl-end').value=c?(c.end||''):'';
-  document.getElementById('cl-loc').value=c?(c.loc||''):'';document.getElementById('class-del-btn').style.display=id?'block':'none';
-  openModal('class-modal');
-}
-function saveClass(){
-  var days=Array.from(document.getElementById('cl-day').selectedOptions).map(function(o){return o.value;});
-  if(!days.length){showToast('Select at least one day',true);return;}
-  var entry={id:eId.class||('cl'+Date.now()),courseId:document.getElementById('cl-course').value,days:days,start:document.getElementById('cl-start').value,end:document.getElementById('cl-end').value,loc:document.getElementById('cl-loc').value.trim()};
-  if(eId.class){var i=DB.classes.findIndex(function(x){return x.id===eId.class;});if(i>-1)DB.classes[i]=entry;}
-  else DB.classes.push(entry);
-  sv();closeModal('class-modal');renderSemTab(semTab);showToast('Class saved ✓');
-}
-function deleteClass(){spConfirm('Delete this class?','This cannot be undone.',function(){DB.classes=DB.classes.filter(function(x){return x.id!==eId.class;});sv();closeModal('class-modal');renderSemTab(semTab);});}
+function openClassModal(id){eId.cls=id;var c=id?DB.classes.find(function(x){return x.id===id;}):null;document.getElementById('class-modal-title').textContent=id?'Edit Class':'Add Class';popSelect('cl-course',c?c.courseId:'');var dayEl=document.getElementById('cl-day');Array.from(dayEl.options).forEach(function(o){o.selected=c&&c.days&&c.days.indexOf(o.value)>-1;});document.getElementById('cl-start').value=c?(c.start||''):'';document.getElementById('cl-end').value=c?(c.end||''):'';document.getElementById('cl-loc').value=c?(c.loc||''):'';document.getElementById('class-del-btn').style.display=id?'block':'none';openModal('class-modal');}
+function saveClass(){var days=Array.from(document.getElementById('cl-day').selectedOptions).map(function(o){return o.value;});if(!days.length){showToast('Select at least one day',true);return;}var entry={id:eId.cls||('cl'+Date.now()),courseId:document.getElementById('cl-course').value,days:days,start:document.getElementById('cl-start').value,end:document.getElementById('cl-end').value,loc:document.getElementById('cl-loc').value.trim()};if(eId.cls){var i=DB.classes.findIndex(function(x){return x.id===eId.cls;});if(i>-1)DB.classes[i]=entry;}else DB.classes.push(entry);sv();closeModal('class-modal');renderSemTab('schedule');showToast('Class saved ✓');}
+function deleteClass(){spConfirm('Delete this class?','This cannot be undone.',function(){DB.classes=DB.classes.filter(function(x){return x.id!==eId.cls;});sv();closeModal('class-modal');renderSemTab('schedule');});}
 window.openClassModal=openClassModal;window.saveClass=saveClass;window.deleteClass=deleteClass;
 
-// ── ASSIGNMENTS ──
-function openAssignModal(id){
-  eId.assign=id;var a=id?DB.assignments.find(function(x){return x.id===id;}):null;
-  document.getElementById('assign-modal-title').textContent=id?'Edit Assignment':'Add Assignment';
-  document.getElementById('a-title').value=a?a.title:'';popSelect('a-course',a?a.courseId:'');
-  document.getElementById('a-due').value=a?(a.due||''):'';document.getElementById('a-priority').value=a?(a.priority||'med'):'med';
-  document.getElementById('a-notes').value=a?(a.notes||''):'';document.getElementById('assign-del-btn').style.display=id?'block':'none';
-  openModal('assign-modal');
-}
-function saveAssign(){
-  var title=document.getElementById('a-title').value.trim();if(!title)return;
-  var entry={id:eId.assign||('a'+Date.now()),title:title,courseId:document.getElementById('a-course').value,due:document.getElementById('a-due').value,priority:document.getElementById('a-priority').value,notes:document.getElementById('a-notes').value.trim(),done:eId.assign?(DB.assignments.find(function(x){return x.id===eId.assign;})||{}).done||false:false};
-  if(eId.assign){var i=DB.assignments.findIndex(function(x){return x.id===eId.assign;});if(i>-1)DB.assignments[i]=entry;}
-  else DB.assignments.push(entry);
-  sv();closeModal('assign-modal');renderAssign();showToast('Saved ✓');
-}
+function openAssignModal(id){eId.assign=id;var a=id?DB.assignments.find(function(x){return x.id===id;}):null;document.getElementById('assign-modal-title').textContent=id?'Edit Assignment':'Add Assignment';document.getElementById('a-title').value=a?a.title:'';popSelect('a-course',a?a.courseId:'');document.getElementById('a-due').value=a?(a.due||''):'';document.getElementById('a-priority').value=a?(a.priority||'med'):'med';document.getElementById('a-notes').value=a?(a.notes||''):'';document.getElementById('assign-del-btn').style.display=id?'block':'none';openModal('assign-modal');}
+function saveAssign(){var title=document.getElementById('a-title').value.trim();if(!title)return;var entry={id:eId.assign||('a'+Date.now()),title:title,courseId:document.getElementById('a-course').value,due:document.getElementById('a-due').value,priority:document.getElementById('a-priority').value,notes:document.getElementById('a-notes').value.trim(),done:eId.assign?(DB.assignments.find(function(x){return x.id===eId.assign;})||{}).done||false:false};if(eId.assign){var i=DB.assignments.findIndex(function(x){return x.id===eId.assign;});if(i>-1)DB.assignments[i]=entry;}else DB.assignments.push(entry);sv();closeModal('assign-modal');renderAssign();showToast('Saved ✓');}
 function deleteAssign(){spConfirm('Delete this assignment?','This cannot be undone.',function(){DB.assignments=DB.assignments.filter(function(x){return x.id!==eId.assign;});sv();closeModal('assign-modal');renderAssign();});}
 function toggleDone(id,ev){if(ev)ev.stopPropagation();var a=DB.assignments.find(function(x){return x.id===id;});if(a){a.done=!a.done;sv();renderAssign();}}
 function switchAssign(tab,el){assignTab=tab;document.querySelectorAll('#pg-assign .tab-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderAssign();}
-function renderAssign(){
-  var el=document.getElementById('assign-content');
-  var list=DB.assignments.slice();
-  if(assignTab==='pending')list=list.filter(function(a){return!a.done;});
-  else if(assignTab==='done')list=list.filter(function(a){return a.done;});
-  list.sort(function(a,b){if(a.done!==b.done)return a.done?1:-1;return(a.due||'9').localeCompare(b.due||'9');});
-  if(!list.length){el.innerHTML='<div class="empty">'+(assignTab==='pending'?'All caught up!':assignTab==='done'?'Nothing completed yet.':'No assignments yet.')+'</div>';return;}
-  el.innerHTML='<div class="card">'+list.map(function(a){
-    var d=daysUntil(a.due);
-    var dueLbl=a.due?(d===0?'Due today':d===1?'Due tomorrow':d<0?Math.abs(d)+' days overdue':d+' days left'):'';
-    var dc=d!==null&&d<0?'var(--red)':d===0?'var(--yellow)':'var(--text2)';
-    return'<div class="assign-row'+(a.done?' assign-done':'')+'" onclick="openAssignModal(\''+a.id+'\')">'
-      +'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'
-      +'<div onclick="toggleDone(\''+a.id+'\',event)" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid '+(a.done?'var(--acc)':'var(--border)')+';background:'+(a.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(a.done?'<i class="ti ti-check" style="font-size:11px;color:white;"></i>':'')+'</div>'
-      +'<div class="assign-info"><div class="assign-title">'+a.title+'</div>'
-      +'<div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+
-      (dueLbl?'<span style="color:'+dc+'">'+dueLbl+'</span>':'')+'</div></div>'
-      +'<span class="badge '+priorityBadge(a.priority)+'">'+a.priority.toUpperCase()+'</span></div>';
-  }).join('')+'</div>';
-}
+function renderAssign(){var el=document.getElementById('assign-content');var list=DB.assignments.slice();if(assignTab==='pending')list=list.filter(function(a){return!a.done;});else if(assignTab==='done')list=list.filter(function(a){return a.done;});list.sort(function(a,b){if(a.done!==b.done)return a.done?1:-1;return(a.due||'9').localeCompare(b.due||'9');});if(!list.length){el.innerHTML='<div class="empty">'+(assignTab==='pending'?'All caught up!':assignTab==='done'?'Nothing completed yet.':'No assignments yet.')+'</div>';return;}el.innerHTML='<div class="card">'+list.map(function(a){var d=daysUntil(a.due);var dl=a.due?(d===0?'Due today':d===1?'Due tomorrow':d<0?Math.abs(d)+' days overdue':d+' days left'):'';var dc=d!==null&&d<0?'var(--red)':d===0?'var(--yellow)':'var(--text2)';return'<div class="assign-row'+(a.done?' assign-done':'')+'" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div onclick="toggleDone(\''+a.id+'\',event)" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid '+(a.done?'var(--acc)':'var(--border)')+';background:'+(a.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(a.done?'<i class="ti ti-check" style="font-size:11px;color:white;"></i>':'')+'</div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+( dl?'<span style="color:'+dc+'">'+dl+'</span>':'')+'</div></div>'+'<span class="badge '+priorityBadge(a.priority)+'">'+a.priority.toUpperCase()+'</span></div>';}).join('')+'</div>';}
 window.openAssignModal=openAssignModal;window.saveAssign=saveAssign;window.deleteAssign=deleteAssign;window.toggleDone=toggleDone;window.switchAssign=switchAssign;
 
-// ── CALENDAR ──
-function openEventModal(id,dateStr){
-  eId.event=id;var e=id?DB.events.find(function(x){return x.id===id;}):null;
-  document.getElementById('event-modal-title').textContent=id?'Edit Event':'Add Event';
-  document.getElementById('ev-desc').value=e?e.desc:'';document.getElementById('ev-date').value=e?e.date:(dateStr||today());
-  document.getElementById('ev-type').value=e?(e.type||'event'):'event';document.getElementById('event-del-btn').style.display=id?'block':'none';
-  openModal('event-modal');
-}
-function saveEvent(){
-  var desc=document.getElementById('ev-desc').value.trim();if(!desc)return;
-  var entry={id:eId.event||('ev'+Date.now()),desc:desc,date:document.getElementById('ev-date').value,type:document.getElementById('ev-type').value};
-  if(eId.event){var i=DB.events.findIndex(function(x){return x.id===eId.event;});if(i>-1)DB.events[i]=entry;}
-  else DB.events.push(entry);
-  sv();closeModal('event-modal');renderCal();showToast('Saved ✓');
-}
+function openEventModal(id,ds){eId.event=id;var e=id?DB.events.find(function(x){return x.id===id;}):null;document.getElementById('event-modal-title').textContent=id?'Edit Event':'Add Event';document.getElementById('ev-desc').value=e?e.desc:'';document.getElementById('ev-date').value=e?e.date:(ds||today());document.getElementById('ev-type').value=e?(e.type||'event'):'event';document.getElementById('event-del-btn').style.display=id?'block':'none';openModal('event-modal');}
+function saveEvent(){var desc=document.getElementById('ev-desc').value.trim();if(!desc)return;var entry={id:eId.event||('ev'+Date.now()),desc:desc,date:document.getElementById('ev-date').value,type:document.getElementById('ev-type').value};if(eId.event){var i=DB.events.findIndex(function(x){return x.id===eId.event;});if(i>-1)DB.events[i]=entry;}else DB.events.push(entry);sv();closeModal('event-modal');renderCal();showToast('Saved ✓');}
 function deleteEvent(){spConfirm('Delete this event?','This cannot be undone.',function(){DB.events=DB.events.filter(function(x){return x.id!==eId.event;});sv();closeModal('event-modal');renderCal();});}
 function changeMonth(dir){curMonth.setMonth(curMonth.getMonth()+dir);renderCal();}
-function renderCal(){
-  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var y=curMonth.getFullYear(),m=curMonth.getMonth();
-  document.getElementById('cal-title').textContent=months[m]+' '+y;
-  document.getElementById('cal-nav-label').textContent=months[m]+' '+y;
-  var firstDay=new Date(y,m,1).getDay(),offset=firstDay===0?6:firstDay-1,dim=new Date(y,m+1,0).getDate(),tod=today();
-  document.getElementById('cal-heads').innerHTML=['M','T','W','T','F','S','S'].map(function(h){return'<div class="cal-head">'+h+'</div>';}).join('');
-  var html='';for(var i=0;i<offset;i++)html+='<div class="cal-day other-month"></div>';
-  for(var d=1;d<=dim;d++){
-    var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var isT=ds===tod;
-    var as=DB.assignments.filter(function(a){return a.due===ds;});var es=DB.events.filter(function(e){return e.date===ds;});
-    html+='<div class="cal-day'+(isT?' today':'')+'" onclick="openEventModal(null,\''+ds+'\')">';
-    html+='<div class="cal-num">'+d+'</div>';
-    if(as.length||es.length){html+='<div class="cal-dots">';as.forEach(function(a){html+='<div class="cal-dot" style="background:'+priorityColor(a.priority)+'"></div>';});es.forEach(function(e){html+='<div class="cal-dot" style="background:'+evtColor(e.type)+'"></div>';});html+='</div>';}
-    html+='</div>';
-  }
-  document.getElementById('cal-grid').innerHTML=html;
-  var prefix=y+'-'+String(m+1).padStart(2,'0'),allItems=[];
-  DB.assignments.filter(function(a){return a.due&&a.due.startsWith(prefix);}).forEach(function(a){allItems.push({date:a.due,type:'assign',data:a});});
-  DB.events.filter(function(e){return e.date&&e.date.startsWith(prefix);}).forEach(function(e){allItems.push({date:e.date,type:'event',data:e});});
-  allItems.sort(function(a,b){return a.date.localeCompare(b.date);});
-  document.getElementById('cal-events-list').innerHTML=allItems.length?'<div class="card">'+allItems.map(function(item){
-    if(item.type==='assign'){var a=item.data;return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+fmtDate(a.due)+'</div></div></div>';}
-    else{var e=item.data;return'<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type.charAt(0).toUpperCase()+e.type.slice(1)+' · '+fmtDate(e.date)+'</div></div></div>';}
-  }).join('')+'</div>':'<div class="empty">Nothing this month.</div>';
-}
+function renderCal(){var months=['January','February','March','April','May','June','July','August','September','October','November','December'];var y=curMonth.getFullYear(),m=curMonth.getMonth();document.getElementById('cal-title').textContent=months[m]+' '+y;document.getElementById('cal-nav-label').textContent=months[m]+' '+y;var fd=new Date(y,m,1).getDay(),offset=fd===0?6:fd-1,dim=new Date(y,m+1,0).getDate(),tod=today();document.getElementById('cal-heads').innerHTML=['M','T','W','T','F','S','S'].map(function(h){return'<div class="cal-head">'+h+'</div>';}).join('');var html='';for(var i=0;i<offset;i++)html+='<div class="cal-day other-month"></div>';for(var d=1;d<=dim;d++){var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var isT=ds===tod;var as=DB.assignments.filter(function(a){return a.due===ds;});var es=DB.events.filter(function(e){return e.date===ds;});html+='<div class="cal-day'+(isT?' today':'')+'" onclick="openEventModal(null,\''+ds+'\')"><div class="cal-num">'+d+'</div>';if(as.length||es.length){html+='<div class="cal-dots">';as.forEach(function(a){html+='<div class="cal-dot" style="background:'+priorityColor(a.priority)+'"></div>';});es.forEach(function(e){html+='<div class="cal-dot" style="background:'+evtColor(e.type)+'"></div>';});html+='</div>';}html+='</div>';}document.getElementById('cal-grid').innerHTML=html;var prefix=y+'-'+String(m+1).padStart(2,'0'),allItems=[];DB.assignments.filter(function(a){return a.due&&a.due.startsWith(prefix);}).forEach(function(a){allItems.push({date:a.due,type:'assign',data:a});});DB.events.filter(function(e){return e.date&&e.date.startsWith(prefix);}).forEach(function(e){allItems.push({date:e.date,type:'event',data:e});});DB.syllabus.filter(function(s){return s.date&&s.date.startsWith(prefix);}).forEach(function(s){allItems.push({date:s.date,type:'syl',data:s});});allItems.sort(function(a,b){return a.date.localeCompare(b.date);});document.getElementById('cal-events-list').innerHTML=allItems.length?'<div class="card">'+allItems.map(function(item){if(item.type==='assign'){var a=item.data;return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+fmtDate(a.due)+'</div></div></div>';}else if(item.type==='event'){var e=item.data;return'<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type+' · '+fmtDate(e.date)+'</div></div></div>';}else{var s=item.data;return'<div class="assign-row" onclick="openSylModal(\''+s.id+'\')">'+'<div class="assign-bar" style="background:var(--hdr);"></div>'+'<div class="assign-info"><div class="assign-title">'+s.title+'</div><div class="assign-meta">Syllabus · '+fmtDate(s.date)+'</div></div></div>';}}).join('')+'</div>':'<div class="empty">Nothing this month.</div>';}
 window.openEventModal=openEventModal;window.saveEvent=saveEvent;window.deleteEvent=deleteEvent;window.changeMonth=changeMonth;
+function switchStudy(tab,el){studyTab=tab;document.querySelectorAll('#study-tabs .tab-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderStudy(tab);}
+window.switchStudy=switchStudy;
+function studyFabAction(){if(studyTab==='routine')openRoutineModal(null);else if(studyTab==='habits')openHabitModal(null);else if(studyTab==='projects')openProjectModal(null);else if(studyTab==='reading')openBookModal(null);else if(studyTab==='exams')openExamModal(null);else if(studyTab==='grades')openCourseModal(null);}
+window.studyFabAction=studyFabAction;
+function renderStudy(tab){var el=document.getElementById('study-content');var fab=document.getElementById('study-fab');fab.style.display=tab==='timer'?'none':'flex';if(tab==='timer')el.innerHTML=buildTimer();else if(tab==='routine')el.innerHTML=buildRoutine();else if(tab==='habits')el.innerHTML=buildHabits();else if(tab==='grades')el.innerHTML=buildGrades();else if(tab==='projects')el.innerHTML=buildProjects();else if(tab==='reading')el.innerHTML=buildReading();else if(tab==='exams')el.innerHTML=buildExams();if(tab==='timer')initTimerUI();}
 
-// ── ACADEMIC TAB ROUTER ──
-var academicTab='grades';
-function switchAcademic(tab,el){
-  academicTab=tab;
-  if(tab==='week')weekViewOffset=0;
-  document.querySelectorAll('#academic-tabs .tab-btn').forEach(function(b){b.classList.remove('active');});
-  if(el)el.classList.add('active');
-  renderAcademic(tab);
-}
-window.switchAcademic=switchAcademic;
-function academicFabAction(){
-  if(academicTab==='projects')openProjectModal(null);
-  else if(academicTab==='reading')openBookModal(null);
-  else if(academicTab==='exams')openExamModal(null,null);
-  else if(academicTab==='week')openEventModal(null,null);
-  else openCourseModal(null);
-}
-window.academicFabAction=academicFabAction;
-function renderAcademic(tab){
-  var el=document.getElementById('academic-content');
-  if(tab==='grades')el.innerHTML=buildGrades();
-  else if(tab==='week')el.innerHTML=buildWeekView();
-  else if(tab==='projects')el.innerHTML=buildProjects();
-  else if(tab==='reading')el.innerHTML=buildReading();
-  else if(tab==='exams')el.innerHTML=buildExams();
-}
+var _timerInterval=null,_timerSecs=0,_timerRunning=false,_timerMode='work',_timerSess=1;
+function buildTimer(){var t=DB.timer;return'<div class="card" style="text-align:center;padding:24px 16px;"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);font-weight:700;margin-bottom:16px;" id="timer-mode-lbl">Work Session 1</div><div style="position:relative;width:160px;height:160px;margin:0 auto 16px;"><svg viewBox="0 0 160 160" width="160" height="160" style="transform:rotate(-90deg)"><circle cx="80" cy="80" r="70" fill="none" stroke="var(--bg3)" stroke-width="8"/><circle id="timer-ring" cx="80" cy="80" r="70" fill="none" stroke="var(--acc)" stroke-width="8" stroke-linecap="round" stroke-dasharray="439.8" stroke-dashoffset="0"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div class="timer-display" id="timer-display">'+fmtTT(t.work*60)+'</div></div></div><div class="timer-btn-row"><button class="timer-btn timer-btn-secondary" onclick="resetTimer()">Reset</button><button class="timer-btn timer-btn-primary" id="timer-play-btn" onclick="toggleTimer()">Start</button><button class="timer-btn timer-btn-secondary" onclick="openModal(\'timer-settings-modal\')"><i class="ti ti-settings"></i></button></div><div style="margin-top:14px;font-size:12px;color:var(--text2);">Session '+_timerSess+' of '+t.sessions+' before long break</div></div><div class="sl">Session Log — Today</div><div class="card" id="session-log">'+buildSessionLog()+'</div>';}
+function fmtTT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function initTimerUI(){if(_timerSecs===0)_timerSecs=DB.timer.work*60;updateTimerUI();}
+function updateTimerUI(){var disp=document.getElementById('timer-display'),ring=document.getElementById('timer-ring'),lbl=document.getElementById('timer-mode-lbl'),btn=document.getElementById('timer-play-btn');if(!disp)return;var total=_timerMode==='work'?DB.timer.work*60:(_timerMode==='brk'?DB.timer.brk*60:DB.timer.long*60);disp.textContent=fmtTT(_timerSecs);if(ring)ring.style.strokeDashoffset=439.8*(1-_timerSecs/total);if(lbl)lbl.textContent=_timerMode==='work'?'Work Session '+_timerSess:_timerMode==='brk'?'Short Break':'Long Break';if(btn)btn.textContent=_timerRunning?'Pause':'Start';}
+function toggleTimer(){if(_timerRunning){clearInterval(_timerInterval);_timerRunning=false;updateTimerUI();return;}_timerRunning=true;updateTimerUI();_timerInterval=setInterval(function(){if(_timerSecs>0){_timerSecs--;updateTimerUI();}else{clearInterval(_timerInterval);_timerRunning=false;if(_timerMode==='work'){DB.studySessions.push({id:'ss'+Date.now(),date:today(),minutes:DB.timer.work,mode:'pomodoro'});sv();if(_timerSess%DB.timer.sessions===0){_timerMode='long';_timerSecs=DB.timer.long*60;}else{_timerMode='brk';_timerSecs=DB.timer.brk*60;}showToast('Work done! Take a break.');}else{if(_timerMode==='brk')_timerSess++;_timerMode='work';_timerSecs=DB.timer.work*60;showToast('Break over — back to work!');}updateTimerUI();var sl=document.getElementById('session-log');if(sl)sl.innerHTML=buildSessionLog();}},1000);}
+function resetTimer(){clearInterval(_timerInterval);_timerRunning=false;_timerMode='work';_timerSecs=DB.timer.work*60;_timerSess=1;updateTimerUI();}
+function buildSessionLog(){var tod=today(),sessions=DB.studySessions.filter(function(s){return s.date===tod;});if(!sessions.length)return'<div style="font-size:14px;color:var(--text3);font-style:italic;padding:4px 0;">No sessions today yet.</div>';var tot=sessions.reduce(function(s,x){return s+x.minutes;},0);return sessions.map(function(s){return'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:.5px solid var(--border2);"><div style="font-size:14px;color:var(--text);">'+s.mode+'</div><div style="font-size:14px;color:var(--text2);">'+s.minutes+' min</div></div>';}).join('')+'<div style="display:flex;justify-content:space-between;padding:10px 0 4px;font-weight:700;"><div style="font-size:14px;color:var(--text);">Total</div><div style="font-size:14px;color:var(--hdr);">'+tot+' min</div></div>';}
+function saveTimerSettings(){DB.timer={work:parseInt(document.getElementById('ts-work').value)||25,brk:parseInt(document.getElementById('ts-break').value)||5,long:parseInt(document.getElementById('ts-long').value)||15,sessions:parseInt(document.getElementById('ts-sessions').value)||4};resetTimer();sv();closeModal('timer-settings-modal');renderStudy('timer');showToast('Timer updated ✓');}
+window.toggleTimer=toggleTimer;window.resetTimer=resetTimer;window.saveTimerSettings=saveTimerSettings;
 
-// ── GRADES ──
-function buildGrades(){
-  var gpa=calcGPA();
-  var h='<div class="card" style="text-align:center;padding:20px;margin-bottom:10px;">'
-    +'<div style="font-size:48px;font-weight:700;color:var(--yellow);line-height:1;">'+(gpa||'—')+'</div>'
-    +'<div style="font-size:12px;color:var(--text2);margin-top:4px;">Cumulative GPA</div></div>';
-  if(!DB.courses.length)return h+'<div class="empty">No courses yet.<br>Add them in Semester → Courses.</div>';
-  h+='<div class="sl">Courses</div><div class="card">';
-  DB.courses.forEach(function(c){
-    var g=parseFloat(c.grade);
-    h+='<div class="assign-row" onclick="openCourseModal(\''+c.id+'\')">'
-      +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;margin-top:4px;"></div>'
-      +'<div class="assign-info"><div class="assign-title">'+c.name+'</div>'
-      +(!isNaN(g)?'<div class="grade-bar-wrap"><div class="grade-bar-fill" style="width:'+Math.min(100,g)+'%;background:'+gradeColor(c.grade)+';"></div></div>':'')+'</div>'
-      +(c.grade?'<div style="text-align:right;"><div style="font-size:18px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'<div style="font-size:14px;color:var(--text3);">—</div>')
-      +'</div>';
-  });
-  return h+'</div>';
-}
+function openRoutineModal(id){eId.routine=id;var b=id?DB.routineBlocks.find(function(x){return x.id===id;}):null;document.getElementById('routine-modal-title').textContent=id?'Edit Block':'Add Routine Block';document.getElementById('rb-title').value=b?b.title:'';document.getElementById('rb-session').value=b?(b.session||'am'):'am';document.getElementById('rb-time').value=b?(b.time||''):'';document.getElementById('rb-dur').value=b?(b.dur||''):'';var de=document.getElementById('rb-days');Array.from(de.options).forEach(function(o){o.selected=b&&b.days&&b.days.indexOf(o.value)>-1;});document.getElementById('routine-del-btn').style.display=id?'block':'none';openModal('routine-modal');}
+function saveRoutineBlock(){var title=document.getElementById('rb-title').value.trim();if(!title)return;var days=Array.from(document.getElementById('rb-days').selectedOptions).map(function(o){return o.value;});var entry={id:eId.routine||('rb'+Date.now()),title:title,session:document.getElementById('rb-session').value,time:document.getElementById('rb-time').value,dur:document.getElementById('rb-dur').value,days:days};if(eId.routine){var i=DB.routineBlocks.findIndex(function(x){return x.id===eId.routine;});if(i>-1)DB.routineBlocks[i]=entry;}else DB.routineBlocks.push(entry);sv();closeModal('routine-modal');renderStudy('routine');showToast('Saved ✓');}
+function deleteRoutineBlock(){spConfirm('Delete this block?','This cannot be undone.',function(){DB.routineBlocks=DB.routineBlocks.filter(function(x){return x.id!==eId.routine;});sv();closeModal('routine-modal');renderStudy('routine');});}
+window.openRoutineModal=openRoutineModal;window.saveRoutineBlock=saveRoutineBlock;window.deleteRoutineBlock=deleteRoutineBlock;
+function buildRoutine(){if(!DB.routineBlocks.length)return'<div class="empty">No routine blocks yet.<br>Tap + to build your AM/PM study routine.</div>';var am=DB.routineBlocks.filter(function(b){return b.session==='am';}).sort(function(a,b){return(a.time||'').localeCompare(b.time||'');});var pm=DB.routineBlocks.filter(function(b){return b.session==='pm';}).sort(function(a,b){return(a.time||'').localeCompare(b.time||'');});var bld=function(list){return list.map(function(b){return'<div class="routine-block" onclick="openRoutineModal(\''+b.id+'\')">'+'<span class="routine-time-badge">'+(b.time?fmtTime(b.time):'—')+'</span>'+'<div style="flex:1;"><div style="font-size:15px;font-weight:500;color:var(--text);">'+b.title+'</div>'+(b.dur?'<div style="font-size:12px;color:var(--text2);">'+b.dur+' min'+(b.days&&b.days.length?' · '+b.days.join(', '):'')+'</div>':'')+'</div></div>';}).join('');};var h='';if(am.length)h+='<div class="sl">Morning (AM)</div><div class="card">'+bld(am)+'</div>';if(pm.length)h+='<div class="sl">Evening (PM)</div><div class="card">'+bld(pm)+'</div>';return h;}
 
-// ── WEEK VIEW ──
-function buildWeekView(){
-  var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var now=new Date();now.setHours(0,0,0,0);
-  var dow=now.getDay(),diff=dow===0?-6:1-dow;
-  var baseMonday=new Date(now);baseMonday.setDate(now.getDate()+diff);
-  var weekStart=new Date(baseMonday);weekStart.setDate(baseMonday.getDate()+(weekViewOffset*7));
-  var weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
-  function fmtD(d){return MON_NAMES[d.getMonth()]+' '+d.getDate();}
-  var weekLabel=fmtD(weekStart)+' – '+fmtD(weekEnd);
-  var isCurrentWeek=weekStart.getTime()===baseMonday.getTime();
-  var tod=today();
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px;">'
-    +'<button data-week-nav="-1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">‹</button>'
-    +'<div style="text-align:center;">'
-    +'<div style="font-size:15px;font-weight:600;color:var(--text);">'+weekLabel+'</div>'
-    +(isCurrentWeek?'<div style="font-size:11px;color:var(--acc);font-weight:600;margin-top:2px;">This Week</div>':'')
-    +'</div>'
-    +'<button data-week-nav="1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">›</button>'
-    +'</div>';
-  for(var i=0;i<7;i++){
-    var dd=new Date(weekStart);dd.setDate(weekStart.getDate()+i);
-    var ds=localDateStr(dd);var isToday=ds===tod;
-    var as=DB.assignments.filter(function(a){return a.due===ds;});
-    var es=DB.events.filter(function(e){return e.date===ds;});
-    h+='<div class="week-day-header'+(isToday?' today-hdr':'')+'">'
-      +(isToday?'Today — ':'')
-      +DAYS[dd.getDay()]+', '+MON_NAMES[dd.getMonth()]+' '+dd.getDate()+'</div>';
-    if(as.length||es.length){
-      h+='<div class="card" style="margin-bottom:10px;">';
-      as.forEach(function(a){h+='<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)||'Assignment')+'</div></div></div>';});
-      es.forEach(function(e){h+='<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type.charAt(0).toUpperCase()+e.type.slice(1)+'</div></div></div>';});
-      h+='</div>';
-    } else {h+='<div style="font-size:13px;color:var(--text3);padding:4px 0 12px;font-style:italic;">Nothing scheduled</div>';}
-  }
-  return h||'<div class="empty">Nothing this week.</div>';
-}
-function weekViewNav(dir){weekViewOffset+=dir;renderAcademic('week');}
-window.weekViewNav=weekViewNav;
+function openHabitModal(id){eId.habit=id;var h=id?DB.habits.find(function(x){return x.id===id;}):null;document.getElementById('habit-modal-title').textContent=id?'Edit Habit':'Add Habit';document.getElementById('hb-name').value=h?h.name:'';var de=document.getElementById('hb-days');Array.from(de.options).forEach(function(o){o.selected=h&&h.days&&h.days.indexOf(o.value)>-1;});document.getElementById('habit-del-btn').style.display=id?'block':'none';openModal('habit-modal');}
+function saveHabit(){var name=document.getElementById('hb-name').value.trim();if(!name)return;var days=Array.from(document.getElementById('hb-days').selectedOptions).map(function(o){return o.value;});var entry={id:eId.habit||('hb'+Date.now()),name:name,days:days};if(eId.habit){var i=DB.habits.findIndex(function(x){return x.id===eId.habit;});if(i>-1)DB.habits[i]=entry;}else DB.habits.push(entry);sv();closeModal('habit-modal');renderStudy('habits');showToast('Habit saved ✓');}
+function deleteHabit(){spConfirm('Delete this habit?','Log history will be kept.',function(){DB.habits=DB.habits.filter(function(x){return x.id!==eId.habit;});sv();closeModal('habit-modal');renderStudy('habits');});}
+function toggleHabit(hId,ds,ev){if(ev)ev.stopPropagation();if(!DB.habitLog[ds])DB.habitLog[ds]={};DB.habitLog[ds][hId]=!DB.habitLog[ds][hId];sv();renderStudy('habits');}
+window.openHabitModal=openHabitModal;window.saveHabit=saveHabit;window.deleteHabit=deleteHabit;window.toggleHabit=toggleHabit;
+function buildHabits(){if(!DB.habits.length)return'<div class="empty">No habits yet.<br>Tap + to add your first study habit.</div>';var tod=today(),log=DB.habitLog[tod]||{};var h='<div class="sl">Today</div><div class="card">';DB.habits.forEach(function(hb){var done=!!log[hb.id];h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border2);cursor:pointer;" onclick="openHabitModal(\''+hb.id+'\')">'+'<div onclick="toggleHabit(\''+hb.id+'\',\''+tod+'\',event)" style="flex-shrink:0;width:24px;height:24px;border-radius:6px;border:2px solid '+(done?'var(--acc)':'var(--border)')+';background:'+(done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(done?'<i class="ti ti-check" style="font-size:12px;color:white;"></i>':'')+'</div>'+'<div style="flex:1;font-size:15px;font-weight:500;color:var(--text);'+(done?'opacity:.5;text-decoration:line-through;':'')+'">'+hb.name+'</div>'+(hb.days&&hb.days.length?'<div style="font-size:11px;color:var(--text3);">'+hb.days.join(' ')+'</div>':'')+'</div>';});h+='</div>';DB.habits.forEach(function(hb){h+='<div class="card" style="margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;">'+hb.name+'</div><div class="heatmap">';for(var i=27;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var ds=localDateStr(d);var done=(DB.habitLog[ds]||{})[hb.id];h+='<div class="hm-cell'+(done?' done':'')+'" title="'+ds+'"></div>';}h+='</div></div>';});return h;}
 
-// ── PROJECTS ──
-function openProjectModal(id){
-  eId.project=id;var p=id?DB.projects.find(function(x){return x.id===id;}):null;
-  document.getElementById('project-modal-title').textContent=id?'Edit Project':'Add Project';
-  document.getElementById('p-title').value=p?p.title:'';popSelect('p-course',p?p.courseId:'');
-  document.getElementById('p-due').value=p?(p.due||''):'';document.getElementById('p-notes').value=p?(p.notes||''):'';
-  document.getElementById('project-del-btn').style.display=id?'block':'none';openModal('project-modal');
-}
-function saveProject(){
-  var title=document.getElementById('p-title').value.trim();if(!title)return;
-  var entry={id:eId.project||('p'+Date.now()),title:title,courseId:document.getElementById('p-course').value,due:document.getElementById('p-due').value,notes:document.getElementById('p-notes').value.trim(),subtasks:[],done:false};
-  if(eId.project){var ex=DB.projects.find(function(x){return x.id===eId.project;});if(ex){entry.subtasks=ex.subtasks;entry.done=ex.done;}var i=DB.projects.findIndex(function(x){return x.id===eId.project;});if(i>-1)DB.projects[i]=entry;}
-  else DB.projects.push(entry);
-  sv();closeModal('project-modal');renderAcademic('projects');showToast('Project saved ✓');
-}
-function deleteProject(){spConfirm('Delete this project?','All steps will be deleted too.',function(){DB.projects=DB.projects.filter(function(x){return x.id!==eId.project;});sv();closeModal('project-modal');renderAcademic('projects');});}
-window.openProjectModal=openProjectModal;window.saveProject=saveProject;window.deleteProject=deleteProject;
+function buildGrades(){var gpa=calcGPA();var h='<div class="card" style="text-align:center;padding:20px;margin-bottom:10px;"><div style="font-size:52px;font-weight:700;color:var(--hdr);line-height:1;">'+(gpa||'—')+'</div><div style="font-size:12px;color:var(--text2);margin-top:4px;">Weighted GPA</div></div>';if(!DB.courses.length)return h+'<div class="empty">No courses yet.</div>';h+='<div class="sl">Courses</div><div class="card">';DB.courses.forEach(function(c){var g=parseFloat(c.grade);h+='<div class="assign-row" onclick="openCourseModal(\''+c.id+'\')">'+'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;margin-top:4px;"></div>'+'<div class="assign-info"><div class="assign-title">'+c.name+'</div>'+(c.teacher?'<div class="assign-meta">'+c.teacher+(c.credits?' · '+c.credits+' cr':'')+'</div>':'')+'</div>'+(c.grade?'<div style="text-align:right;"><div style="font-size:18px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'<div style="font-size:14px;color:var(--text3);">—</div>')+'</div>';});return h+'</div>';}
 
-function openSubtaskModal(projectId,subtaskId){
-  eId.activeExamId=projectId;eId.subtask=subtaskId;
-  var p=DB.projects.find(function(x){return x.id===projectId;});
-  var st=subtaskId&&p?(p.subtasks||[]).find(function(x){return x.id===subtaskId;}):null;
-  document.getElementById('subtask-modal-title').textContent=st?'Edit Step':'Add Step';
-  document.getElementById('st-title').value=st?st.title:'';document.getElementById('st-due').value=st?(st.due||''):'';
-  document.getElementById('subtask-del-btn').style.display=subtaskId?'block':'none';openModal('subtask-modal');
-}
-function saveSubtask(){
-  var title=document.getElementById('st-title').value.trim();if(!title)return;
-  var p=DB.projects.find(function(x){return x.id===eId.activeExamId;});if(!p)return;
-  if(!p.subtasks)p.subtasks=[];
-  var entry={id:eId.subtask||('st'+Date.now()),title:title,due:document.getElementById('st-due').value,done:eId.subtask?((p.subtasks.find(function(x){return x.id===eId.subtask;})||{}).done||false):false};
-  if(eId.subtask){var i=p.subtasks.findIndex(function(x){return x.id===eId.subtask;});if(i>-1)p.subtasks[i]=entry;}
-  else p.subtasks.push(entry);
-  sv();closeModal('subtask-modal');renderAcademic('projects');showToast('Step saved ✓');
-}
-function deleteSubtask(){
-  var p=DB.projects.find(function(x){return x.id===eId.activeExamId;});if(!p)return;
-  spConfirm('Delete this step?','This cannot be undone.',function(){p.subtasks=p.subtasks.filter(function(x){return x.id!==eId.subtask;});sv();closeModal('subtask-modal');renderAcademic('projects');});
-}
-function toggleSubtask(projectId,subtaskId,ev){
-  if(ev)ev.stopPropagation();
-  var p=DB.projects.find(function(x){return x.id===projectId;});if(!p)return;
-  var st=(p.subtasks||[]).find(function(x){return x.id===subtaskId;});if(st){st.done=!st.done;sv();renderAcademic('projects');}
-}
-window.openSubtaskModal=openSubtaskModal;window.saveSubtask=saveSubtask;window.deleteSubtask=deleteSubtask;window.toggleSubtask=toggleSubtask;
+function openProjectModal(id){eId.project=id;var p=id?DB.projects.find(function(x){return x.id===id;}):null;document.getElementById('project-modal-title').textContent=id?'Edit Project':'Add Project';document.getElementById('p-title').value=p?p.title:'';popSelect('p-course',p?p.courseId:'');document.getElementById('p-due').value=p?(p.due||''):'';document.getElementById('p-notes').value=p?(p.notes||''):'';document.getElementById('project-del-btn').style.display=id?'block':'none';openModal('project-modal');}
+function saveProject(){var title=document.getElementById('p-title').value.trim();if(!title)return;var ex=eId.project?DB.projects.find(function(x){return x.id===eId.project;}):null;var entry={id:eId.project||('p'+Date.now()),title:title,courseId:document.getElementById('p-course').value,due:document.getElementById('p-due').value,notes:document.getElementById('p-notes').value.trim(),subtasks:ex?ex.subtasks:[]};if(eId.project){var i=DB.projects.findIndex(function(x){return x.id===eId.project;});if(i>-1)DB.projects[i]=entry;}else DB.projects.push(entry);sv();closeModal('project-modal');renderStudy('projects');showToast('Project saved ✓');}
+function deleteProject(){spConfirm('Delete this project?','All steps will be deleted.',function(){DB.projects=DB.projects.filter(function(x){return x.id!==eId.project;});sv();closeModal('project-modal');renderStudy('projects');});}
+function openSubtaskModal(pid,sid){eId.activeProjectId=pid;eId.subtask=sid;var p=DB.projects.find(function(x){return x.id===pid;});var st=sid&&p?(p.subtasks||[]).find(function(x){return x.id===sid;}):null;document.getElementById('subtask-modal-title').textContent=st?'Edit Step':'Add Step';document.getElementById('st-title').value=st?st.title:'';document.getElementById('st-due').value=st?(st.due||''):'';document.getElementById('subtask-del-btn').style.display=sid?'block':'none';openModal('subtask-modal');}
+function saveSubtask(){var title=document.getElementById('st-title').value.trim();if(!title)return;var p=DB.projects.find(function(x){return x.id===eId.activeProjectId;});if(!p)return;if(!p.subtasks)p.subtasks=[];var entry={id:eId.subtask||('st'+Date.now()),title:title,due:document.getElementById('st-due').value,done:eId.subtask?((p.subtasks.find(function(x){return x.id===eId.subtask;})||{}).done||false):false};if(eId.subtask){var i=p.subtasks.findIndex(function(x){return x.id===eId.subtask;});if(i>-1)p.subtasks[i]=entry;}else p.subtasks.push(entry);sv();closeModal('subtask-modal');renderStudy('projects');showToast('Step saved ✓');}
+function deleteSubtask(){var p=DB.projects.find(function(x){return x.id===eId.activeProjectId;});if(!p)return;spConfirm('Delete this step?','This cannot be undone.',function(){p.subtasks=p.subtasks.filter(function(x){return x.id!==eId.subtask;});sv();closeModal('subtask-modal');renderStudy('projects');});}
+function toggleSubtask(pid,sid,ev){if(ev)ev.stopPropagation();var p=DB.projects.find(function(x){return x.id===pid;});if(!p)return;var st=(p.subtasks||[]).find(function(x){return x.id===sid;});if(st){st.done=!st.done;sv();renderStudy('projects');}}
+window.openProjectModal=openProjectModal;window.saveProject=saveProject;window.deleteProject=deleteProject;window.openSubtaskModal=openSubtaskModal;window.saveSubtask=saveSubtask;window.deleteSubtask=deleteSubtask;window.toggleSubtask=toggleSubtask;
+function buildProjects(){if(!DB.projects.length)return'<div class="empty">No projects yet.<br>Tap + to add your first project.</div>';return DB.projects.map(function(p){var done=(p.subtasks||[]).filter(function(s){return s.done;}).length,total=(p.subtasks||[]).length,pct=total?Math.round(done/total*100):0;return'<div class="card" style="margin-bottom:10px;"><div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;" onclick="openProjectModal(\''+p.id+'\')">'+'<div style="flex:1;"><div style="font-size:16px;font-weight:600;color:var(--text);">'+p.title+'</div>'+(courseName(p.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(p.courseId)+(p.due?' · Due '+fmtDate(p.due):'')+'</div>':'')+'</div>'+(total?'<div style="font-size:13px;color:var(--text2);">'+done+'/'+total+'</div>':'')+'</div>'+(total?'<div style="background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;margin:8px 0;"><div style="height:100%;width:'+pct+'%;background:var(--acc);border-radius:4px;"></div></div>':'')+(p.subtasks&&p.subtasks.length?'<div>'+p.subtasks.map(function(st){return'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border2);cursor:pointer;" onclick="openSubtaskModal(\''+p.id+'\',\''+st.id+'\')">'+'<div onclick="toggleSubtask(\''+p.id+'\',\''+st.id+'\',event)" style="flex-shrink:0;width:20px;height:20px;border-radius:50%;border:2px solid '+(st.done?'var(--acc)':'var(--border)')+';background:'+(st.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(st.done?'<i class="ti ti-check" style="font-size:10px;color:white;"></i>':'')+'</div>'+'<div style="flex:1;font-size:14px;color:var(--text);'+(st.done?'text-decoration:line-through;opacity:.5;':'')+'">'+st.title+'</div>'+(st.due?'<div style="font-size:11px;color:var(--text3);">'+fmtDate(st.due)+'</div>':'')+'</div>';}).join('')+'</div>':'')+'<button class="btn-ghost" style="margin-top:10px;" onclick="openSubtaskModal(\''+p.id+'\',null)">+ Add Step</button></div>';}).join('');}
 
-function buildProjects(){
-  if(!DB.projects.length)return'<div class="empty">No projects yet.<br>Tap + to add your first project.</div>';
-  var h='';
-  DB.projects.forEach(function(p){
-    var done=(p.subtasks||[]).filter(function(s){return s.done;}).length;
-    var total=(p.subtasks||[]).length;
-    var pct=total?Math.round(done/total*100):0;
-    h+='<div class="card" style="margin-bottom:10px;">'
-      +'<div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;" onclick="openProjectModal(\''+p.id+'\')">'
-      +'<div style="flex:1;"><div style="font-size:16px;font-weight:600;color:var(--text);">'+p.title+'</div>'
-      +(courseName(p.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(p.courseId)+(p.due?' · Due '+fmtDate(p.due):'')+'</div>':'')
-      +(p.due&&!courseName(p.courseId)?'<div style="font-size:12px;color:var(--text2);">Due '+fmtDate(p.due)+'</div>':'')+'</div>'
-      +(total?'<div style="font-size:13px;color:var(--text2);white-space:nowrap;">'+done+'/'+total+'</div>':'')+'</div>'
-      +(total?'<div class="grade-bar-wrap" style="margin-top:8px;"><div class="grade-bar-fill" style="width:'+pct+'%;background:var(--acc);"></div></div>':'')
-      +(total?'<div style="margin-top:10px;">'+p.subtasks.map(function(st){
-        return'<div class="subtask-row" onclick="openSubtaskModal(\''+p.id+'\',\''+st.id+'\')">'
-          +'<div onclick="toggleSubtask(\''+p.id+'\',\''+st.id+'\',event)" style="flex-shrink:0;width:20px;height:20px;border-radius:50%;border:2px solid '+(st.done?'var(--acc)':'var(--border)')+';background:'+(st.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(st.done?'<i class="ti ti-check" style="font-size:10px;color:white;"></i>':'')+'</div>'
-          +'<div style="flex:1;font-size:14px;color:var(--text);'+(st.done?'text-decoration:line-through;opacity:.5;':'')+'">'+st.title+'</div>'
-          +(st.due?'<div style="font-size:11px;color:var(--text3);">'+fmtDate(st.due)+'</div>':'')+'</div>';
-      }).join('')+'</div>':'')
-      +'<button class="btn-ghost" style="margin-top:10px;" onclick="openSubtaskModal(\''+p.id+'\',null)">+ Add Step</button></div>';
-  });
-  return h;
-}
-
-// ── READING LOG ──
-function openBookModal(id){
-  eId.book=id;var b=id?DB.books.find(function(x){return x.id===id;}):null;
-  document.getElementById('reading-modal-title').textContent=id?'Edit Book':'Add Book';
-  document.getElementById('r-title').value=b?b.title:'';document.getElementById('r-author').value=b?(b.author||''):'';
-  popSelect('r-course',b?b.courseId:'');document.getElementById('r-pages').value=b?(b.pages||''):'';
-  document.getElementById('r-read').value=b?(b.read||''):'';document.getElementById('r-status').value=b?(b.status||'tbr'):'tbr';
-  document.getElementById('r-notes').value=b?(b.notes||''):'';document.getElementById('reading-del-btn').style.display=id?'block':'none';
-  openModal('reading-modal');
-}
-function saveBook(){
-  var title=document.getElementById('r-title').value.trim();if(!title)return;
-  var entry={id:eId.book||('b'+Date.now()),title:title,author:document.getElementById('r-author').value.trim(),courseId:document.getElementById('r-course').value,pages:document.getElementById('r-pages').value,read:document.getElementById('r-read').value,status:document.getElementById('r-status').value,notes:document.getElementById('r-notes').value.trim()};
-  if(eId.book){var i=DB.books.findIndex(function(x){return x.id===eId.book;});if(i>-1)DB.books[i]=entry;}
-  else DB.books.push(entry);
-  sv();closeModal('reading-modal');renderAcademic('reading');showToast('Book saved ✓');
-}
-function deleteBook(){spConfirm('Delete this book?','This cannot be undone.',function(){DB.books=DB.books.filter(function(x){return x.id!==eId.book;});sv();closeModal('reading-modal');renderAcademic('reading');});}
+function openBookModal(id){eId.book=id;var b=id?DB.books.find(function(x){return x.id===id;}):null;document.getElementById('reading-modal-title').textContent=id?'Edit Book':'Add Book';document.getElementById('r-title').value=b?b.title:'';document.getElementById('r-author').value=b?(b.author||''):'';popSelect('r-course',b?b.courseId:'');document.getElementById('r-pages').value=b?(b.pages||''):'';document.getElementById('r-read').value=b?(b.read||''):'';document.getElementById('r-status').value=b?(b.status||'tbr'):'tbr';document.getElementById('r-notes').value=b?(b.notes||''):'';document.getElementById('reading-del-btn').style.display=id?'block':'none';openModal('reading-modal');}
+function saveBook(){var title=document.getElementById('r-title').value.trim();if(!title)return;var entry={id:eId.book||('b'+Date.now()),title:title,author:document.getElementById('r-author').value.trim(),courseId:document.getElementById('r-course').value,pages:document.getElementById('r-pages').value,read:document.getElementById('r-read').value,status:document.getElementById('r-status').value,notes:document.getElementById('r-notes').value.trim()};if(eId.book){var i=DB.books.findIndex(function(x){return x.id===eId.book;});if(i>-1)DB.books[i]=entry;}else DB.books.push(entry);sv();closeModal('reading-modal');renderStudy('reading');showToast('Book saved ✓');}
+function deleteBook(){spConfirm('Delete this book?','This cannot be undone.',function(){DB.books=DB.books.filter(function(x){return x.id!==eId.book;});sv();closeModal('reading-modal');renderStudy('reading');});}
 window.openBookModal=openBookModal;window.saveBook=saveBook;window.deleteBook=deleteBook;
+function buildReading(){if(!DB.books.length)return'<div class="empty">No books yet.<br>Tap + to add to your reading log.</div>';var SL={tbr:'To Read',reading:'Reading',read:'Finished'};var SC={tbr:'var(--text3)',reading:'var(--yellow)',read:'var(--acc)'};var grouped={reading:[],tbr:[],read:[]};DB.books.forEach(function(b){(grouped[b.status]||grouped.tbr).push(b);});var h='';['reading','tbr','read'].forEach(function(s){if(!grouped[s].length)return;h+='<div class="sl">'+SL[s]+'</div><div class="card">';grouped[s].forEach(function(b){var pct=b.pages&&b.read?Math.min(100,Math.round(b.read/b.pages*100)):0;h+='<div class="assign-row" onclick="openBookModal(\''+b.id+'\')">'+'<div class="assign-info"><div class="assign-title">'+b.title+'</div>'+(b.author?'<div class="assign-meta">'+b.author+(courseName(b.courseId)?' · '+courseName(b.courseId):'')+'</div>':'')+(b.pages&&b.read?'<div style="background:var(--bg3);border-radius:4px;height:4px;overflow:hidden;margin-top:4px;"><div style="height:100%;width:'+pct+'%;background:'+SC[s]+';border-radius:4px;"></div></div>':'')+'</div>'+'<div style="font-size:12px;color:'+SC[s]+';font-weight:700;white-space:nowrap;">'+(pct?pct+'%':SL[s])+'</div></div>';});h+='</div>';});return h;}
 
-function buildReading(){
-  if(!DB.books.length)return'<div class="empty">No books yet.<br>Tap + to add to your reading log.</div>';
-  var STATUS_LABEL={tbr:'To Read',reading:'Reading',read:'Finished'};
-  var STATUS_CLASS={tbr:'book-status-tbr',reading:'book-status-reading',read:'book-status-read'};
-  var grouped={reading:[],tbr:[],read:[]};
-  DB.books.forEach(function(b){(grouped[b.status]||grouped.tbr).push(b);});
-  var h='';
-  ['reading','tbr','read'].forEach(function(s){
-    if(!grouped[s].length)return;
-    h+='<div class="sl">'+STATUS_LABEL[s]+'</div><div class="card">';
-    grouped[s].forEach(function(b){
-      var pct=b.pages&&b.read?Math.min(100,Math.round(b.read/b.pages*100)):0;
-      h+='<div class="assign-row" onclick="openBookModal(\''+b.id+'\')">'
-        +'<div class="assign-info"><div class="assign-title">'+b.title+'</div>'
-        +(b.author?'<div class="assign-meta">'+b.author+(courseName(b.courseId)?' · '+courseName(b.courseId):'')+'</div>':'')
-        +(b.pages&&b.read?'<div class="grade-bar-wrap" style="margin-top:4px;"><div class="grade-bar-fill" style="width:'+pct+'%;background:var(--acc);"></div></div>':'')+'</div>'
-        +'<span class="badge '+STATUS_CLASS[s]+'">'+STATUS_LABEL[s]+'</span></div>';
-    });
-    h+='</div>';
-  });
-  return h;
-}
+function openExamModal(id){eId.exam=id;eId.activeExamId=null;var ex=id?DB.exams.find(function(x){return x.id===id;}):null;document.getElementById('exam-modal-title').textContent=id?'Edit Exam':'Add Exam';document.getElementById('ex-name').value=ex?ex.name:'';popSelect('ex-course',ex?ex.courseId:'');document.getElementById('ex-date').value=ex?(ex.date||''):'';document.getElementById('ex-format').value=ex?(ex.format||'mcq'):'mcq';document.getElementById('ex-papers').value=ex?(ex.papers||''):'';document.getElementById('ex-notes').value=ex?(ex.notes||''):'';document.getElementById('exam-del-btn').style.display=id?'block':'none';openModal('exam-modal');}
+function saveExam(){var name=document.getElementById('ex-name').value.trim();if(!name)return;var ex=eId.exam?DB.exams.find(function(x){return x.id===eId.exam;}):null;var entry={id:eId.exam||('ex'+Date.now()),name:name,courseId:document.getElementById('ex-course').value,date:document.getElementById('ex-date').value,format:document.getElementById('ex-format').value,papers:document.getElementById('ex-papers').value,notes:document.getElementById('ex-notes').value.trim(),topics:ex?ex.topics:[]};if(eId.exam){var i=DB.exams.findIndex(function(x){return x.id===eId.exam;});if(i>-1)DB.exams[i]=entry;}else DB.exams.push(entry);sv();closeModal('exam-modal');renderStudy('exams');showToast('Exam saved ✓');}
+function deleteExam(){spConfirm('Delete this exam?','All topics will be deleted.',function(){DB.exams=DB.exams.filter(function(x){return x.id!==eId.exam;});sv();closeModal('exam-modal');renderStudy('exams');});}
+function openTopicModal(eid,tid){eId.activeExamId=eid;eId.topic=tid;var ex=DB.exams.find(function(x){return x.id===eid;});var tp=tid&&ex?(ex.topics||[]).find(function(x){return x.id===tid;}):null;document.getElementById('topic-modal-title').textContent=tp?'Edit Topic':'Add Topic';document.getElementById('tp-name').value=tp?tp.name:'';document.getElementById('tp-conf').value=tp?(tp.conf||'med'):'med';document.getElementById('tp-notes').value=tp?(tp.notes||''):'';document.getElementById('topic-del-btn').style.display=tid?'block':'none';openModal('topic-modal');}
+function saveTopic(){var name=document.getElementById('tp-name').value.trim();if(!name)return;var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;if(!ex.topics)ex.topics=[];var entry={id:eId.topic||('tp'+Date.now()),name:name,conf:document.getElementById('tp-conf').value,notes:document.getElementById('tp-notes').value.trim()};if(eId.topic){var i=ex.topics.findIndex(function(x){return x.id===eId.topic;});if(i>-1)ex.topics[i]=entry;}else ex.topics.push(entry);sv();closeModal('topic-modal');renderStudy('exams');showToast('Topic saved ✓');}
+function deleteTopic(){var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;spConfirm('Delete this topic?','This cannot be undone.',function(){ex.topics=ex.topics.filter(function(x){return x.id!==eId.topic;});sv();closeModal('topic-modal');renderStudy('exams');});}
+window.openExamModal=openExamModal;window.saveExam=saveExam;window.deleteExam=deleteExam;window.openTopicModal=openTopicModal;window.saveTopic=saveTopic;window.deleteTopic=deleteTopic;
+function buildExams(){if(!DB.exams.length)return'<div class="empty">No exams yet.<br>Tap + to add your first exam.</div>';var FMT={mcq:'Multiple Choice',essay:'Essay',mixed:'Mixed',practical:'Practical',oral:'Oral',other:'Other'};return DB.exams.slice().sort(function(a,b){return(a.date||'9').localeCompare(b.date||'9');}).map(function(ex){var d=daysUntil(ex.date),topics=ex.topics||[];var hi=topics.filter(function(t){return t.conf==='high';}).length,med=topics.filter(function(t){return t.conf==='med';}).length,low=topics.filter(function(t){return t.conf==='low';}).length;var ready=topics.length?Math.round((hi*2+med)/(topics.length*2)*100):0;return'<div class="card" style="margin-bottom:10px;"><div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:8px;" onclick="openExamModal(\''+ex.id+'\')">'+'<div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--text);">'+ex.name+'</div>'+(courseName(ex.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(ex.courseId)+(ex.format?' · '+FMT[ex.format]:'')+(ex.papers?' · '+ex.papers+' past papers':'')+'</div>':'')+'</div>'+(ex.date?'<div style="text-align:right;font-size:12px;color:'+(d!==null&&d<=3?'var(--red)':'var(--text2)')+';">'+fmtDate(ex.date)+(d!==null?'<br><b>'+d+'d</b>':'')+'</div>':'')+'</div>'+(topics.length?'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Readiness</div><div style="font-size:11px;font-weight:700;color:var(--hdr);">'+ready+'%</div></div><div style="background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;"><div style="height:100%;width:'+ready+'%;background:var(--acc);border-radius:4px;"></div></div></div>':'')+(topics.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">'+(hi?'<span class="conf-pill conf-high">'+hi+' got it</span>':'')+(med?'<span class="conf-pill conf-med">'+med+' mostly</span>':'')+(low?'<span class="conf-pill conf-low">'+low+' needs work</span>':'')+'</div>':'')+(topics.length?'<div>'+topics.map(function(tp){return'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--border2);cursor:pointer;" onclick="openTopicModal(\''+ex.id+'\',\''+tp.id+'\')">'+'<div style="flex:1;font-size:14px;color:var(--text);">'+tp.name+'</div>'+'<span class="conf-pill conf-'+tp.conf+'">'+(tp.conf==='high'?'Got it':tp.conf==='med'?'Mostly':'Needs work')+'</span></div>';}).join('')+'</div>':'')+'<button class="btn-ghost" style="margin-top:10px;" onclick="openTopicModal(\''+ex.id+'\',null)">+ Add Topic</button></div>';}).join('');}
 
-// ── EXAM PREP ──
-function openExamModal(id,courseId){
-  eId.exam=id;eId.activeExamId=null;
-  var ex=id?DB.exams.find(function(x){return x.id===id;}):null;
-  document.getElementById('exam-modal-title').textContent=id?'Edit Exam':'Add Exam';
-  document.getElementById('ex-name').value=ex?ex.name:'';popSelect('ex-course',ex?ex.courseId:(courseId||''));
-  document.getElementById('ex-date').value=ex?(ex.date||''):'';document.getElementById('ex-notes').value=ex?(ex.notes||''):'';
-  document.getElementById('exam-del-btn').style.display=id?'block':'none';openModal('exam-modal');
-}
-function saveExam(){
-  var name=document.getElementById('ex-name').value.trim();if(!name)return;
-  var entry={id:eId.exam||('ex'+Date.now()),name:name,courseId:document.getElementById('ex-course').value,date:document.getElementById('ex-date').value,notes:document.getElementById('ex-notes').value.trim(),topics:eId.exam?(DB.exams.find(function(x){return x.id===eId.exam;})||{topics:[]}).topics:[]};
-  if(eId.exam){var i=DB.exams.findIndex(function(x){return x.id===eId.exam;});if(i>-1)DB.exams[i]=entry;}
-  else DB.exams.push(entry);
-  sv();closeModal('exam-modal');renderAcademic('exams');showToast('Exam saved ✓');
-}
-function deleteExam(){spConfirm('Delete this exam?','All topics will be deleted too.',function(){DB.exams=DB.exams.filter(function(x){return x.id!==eId.exam;});sv();closeModal('exam-modal');renderAcademic('exams');});}
-window.openExamModal=openExamModal;window.saveExam=saveExam;window.deleteExam=deleteExam;
-
-function openTopicModal(examId,topicId){
-  eId.activeExamId=examId;eId.topic=topicId;
-  var ex=DB.exams.find(function(x){return x.id===examId;});
-  var tp=topicId&&ex?(ex.topics||[]).find(function(x){return x.id===topicId;}):null;
-  document.getElementById('topic-modal-title').textContent=tp?'Edit Topic':'Add Topic';
-  document.getElementById('tp-name').value=tp?tp.name:'';document.getElementById('tp-conf').value=tp?(tp.conf||'med'):'med';
-  document.getElementById('tp-notes').value=tp?(tp.notes||''):'';document.getElementById('topic-del-btn').style.display=topicId?'block':'none';
-  openModal('topic-modal');
-}
-function saveTopic(){
-  var name=document.getElementById('tp-name').value.trim();if(!name)return;
-  var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;
-  if(!ex.topics)ex.topics=[];
-  var entry={id:eId.topic||('tp'+Date.now()),name:name,conf:document.getElementById('tp-conf').value,notes:document.getElementById('tp-notes').value.trim()};
-  if(eId.topic){var i=ex.topics.findIndex(function(x){return x.id===eId.topic;});if(i>-1)ex.topics[i]=entry;}
-  else ex.topics.push(entry);
-  sv();closeModal('topic-modal');renderAcademic('exams');showToast('Topic saved ✓');
-}
-function deleteTopic(){
-  var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;
-  spConfirm('Delete this topic?','This cannot be undone.',function(){ex.topics=ex.topics.filter(function(x){return x.id!==eId.topic;});sv();closeModal('topic-modal');renderAcademic('exams');});
-}
-window.openTopicModal=openTopicModal;window.saveTopic=saveTopic;window.deleteTopic=deleteTopic;
-
-function buildExams(){
-  if(!DB.exams.length)return'<div class="empty">No exams yet.<br>Tap + to add your first exam.</div>';
-  var tod=today();
-  var sorted=DB.exams.slice().sort(function(a,b){return(a.date||'9').localeCompare(b.date||'9');});
-  var h='';
-  sorted.forEach(function(ex){
-    var d=daysUntil(ex.date);var topics=ex.topics||[];
-    var high=topics.filter(function(t){return t.conf==='high';}).length;
-    var med=topics.filter(function(t){return t.conf==='med';}).length;
-    var low=topics.filter(function(t){return t.conf==='low';}).length;
-    h+='<div class="card" style="margin-bottom:10px;">'
-      +'<div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:8px;" onclick="openExamModal(\''+ex.id+'\',null)">'
-      +'<div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--text);">'+ex.name+'</div>'
-      +(courseName(ex.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(ex.courseId)+'</div>':'')+'</div>'
-      +(ex.date?'<div style="text-align:right;font-size:12px;color:'+(d!==null&&d<=3?'var(--red)':'var(--text2)')+';">'+fmtDate(ex.date)+(d!==null?'<br>'+d+' days':'')+'</div>':'')+'</div>'
-      +(topics.length?'<div style="display:flex;gap:6px;margin-bottom:10px;">'
-        +(high?'<span class="badge conf-high">'+high+' confident</span>':'')
-        +(med?'<span class="badge conf-med">'+med+' medium</span>':'')
-        +(low?'<span class="badge conf-low">'+low+' need work</span>':'')
-        +'</div>':'')
-      +(topics.length?'<div>'+topics.map(function(tp){
-        return'<div class="topic-row" onclick="openTopicModal(\''+ex.id+'\',\''+tp.id+'\')">'
-          +'<div style="flex:1;font-size:14px;color:var(--text);">'+tp.name+'</div>'
-          +'<span class="conf-pill conf-'+tp.conf+'">'+(tp.conf==='high'?'Got it':tp.conf==='med'?'Mostly':'Needs work')+'</span></div>';
-      }).join('')+'</div>':'')
-      +'<button class="btn-ghost" style="margin-top:10px;" onclick="openTopicModal(\''+ex.id+'\',null)">+ Add Topic</button></div>';
-  });
-  return h;
-}
-
-// ── SETTINGS ──
 function saveName(){DB.profile.name=document.getElementById('s-name').value.trim();sv();}
 window.saveName=saveName;
-function renderSettings(){
-  document.getElementById('s-name').value=DB.profile.name||'';
-  renderSwatches();renderGdriveSection();
-  document.getElementById('local-undo-row').style.display=localStorage.getItem('mfs_sp_std_prerestore')?'block':'none';
-}
+function renderSettings(){document.getElementById('s-name').value=DB.profile.name||'';renderSwatches();renderGdriveSection();document.getElementById('local-undo-row').style.display=localStorage.getItem('mfs_sp_pro_prerestore')?'block':'none';}
 
-// ── GOOGLE DRIVE ──
 const GDRIVE_CLIENT_ID='636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googleusercontent.com';
 const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
-const GDRIVE_FILENAME='student-planner-Premium-backup.json';
+const GDRIVE_FILENAME='student-planner-pro-backup.json';
 var _gdriveToken=null,_gdriveTokenClient=null;
-function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}
-  _gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;localStorage.setItem('mfs_spstd_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();showToast('Google Drive connected!');}}});}
+function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}_gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;localStorage.setItem('mfs_sppro_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();showToast('Google Drive connected!');}}});}
 function gdriveConnect(){if(_gdriveTokenClient){_gdriveTokenClient.requestAccessToken();return;}var a=0,w=setInterval(function(){a++;if(typeof google!=='undefined'&&google.accounts&&google.accounts.oauth2){clearInterval(w);if(!_gdriveTokenClient)gdriveInit();setTimeout(function(){if(_gdriveTokenClient)_gdriveTokenClient.requestAccessToken();},100);}else if(a>40){clearInterval(w);showToast('Could not load Google Drive.',true);}},500);}
 window.gdriveConnect=gdriveConnect;
-function gdriveDisconnect(){_gdriveToken=null;localStorage.removeItem('mfs_spstd_gdrive');showToast('Disconnected.');renderGdriveSection();}
+function gdriveDisconnect(){_gdriveToken=null;localStorage.removeItem('mfs_sppro_gdrive');showToast('Disconnected.');renderGdriveSection();}
 window.gdriveDisconnect=gdriveDisconnect;
 function gdriveIsConnected(){return!!_gdriveToken;}
 async function gdriveFindFile(){if(!_gdriveToken)return null;var r=await fetch('https://www.googleapis.com/drive/v3/files?q=name%3D%27'+GDRIVE_FILENAME+'%27%20and%20trashed%3Dfalse&spaces=drive',{headers:{'Authorization':'Bearer '+_gdriveToken}});var d=await r.json();return(d.files&&d.files[0])?d.files[0].id:null;}
-async function gdriveBackupNow(){if(!_gdriveToken)throw new Error('Not connected');var fileId=await gdriveFindFile();var content=JSON.stringify(DB);var meta={name:GDRIVE_FILENAME,mimeType:'application/json'};var b='-------mfs'+Date.now();var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--';var url=fileId?'https://www.googleapis.com/upload/drive/v3/files/'+fileId+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';var r=await fetch(url,{method:fileId?'PATCH':'POST',headers:{'Authorization':'Bearer '+_gdriveToken,'Content-Type':'multipart/related; boundary='+b},body:body});if(!r.ok){if(r.status===401)_gdriveToken=null;var e=null;try{e=await r.json();}catch(x){}throw new Error((e&&e.error&&e.error.message)||'Drive error ('+r.status+')');}}
+async function gdriveBackupNow(){if(!_gdriveToken)throw new Error('Not connected');var fid=await gdriveFindFile();var content=JSON.stringify(DB);var meta={name:GDRIVE_FILENAME,mimeType:'application/json'};var b='-------mfs'+Date.now();var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--';var url=fid?'https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';var r=await fetch(url,{method:fid?'PATCH':'POST',headers:{'Authorization':'Bearer '+_gdriveToken,'Content-Type':'multipart/related; boundary='+b},body:body});if(!r.ok){if(r.status===401)_gdriveToken=null;var e=null;try{e=await r.json();}catch(x){}throw new Error((e&&e.error&&e.error.message)||'Drive error ('+r.status+')');}}
 window.gdriveBackupNow=gdriveBackupNow;
-async function gdriveRestore(){if(!_gdriveToken){showToast('Connect Google Drive first.',true);return;}try{var fileId=await gdriveFindFile();if(!fileId){showToast('No backup found yet.',true);return;}var r=await fetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media',{headers:{'Authorization':'Bearer '+_gdriveToken}});if(!r.ok){if(r.status===401)_gdriveToken=null;throw new Error('Drive error ('+r.status+')');}var data=await r.json();if(!data||!Array.isArray(data.assignments)){showToast('Backup looks invalid.',true);return;}openRestoreConfirm(data,'Google Drive');}catch(e){showToast('Restore failed: '+e.message,true);}}
+async function gdriveRestore(){if(!_gdriveToken){showToast('Connect Google Drive first.',true);return;}try{var fid=await gdriveFindFile();if(!fid){showToast('No backup found yet.',true);return;}var r=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',{headers:{'Authorization':'Bearer '+_gdriveToken}});if(!r.ok){if(r.status===401)_gdriveToken=null;throw new Error('Drive error ('+r.status+')');}var data=await r.json();if(!data||!Array.isArray(data.assignments)){showToast('Backup looks invalid.',true);return;}openRestoreConfirm(data,'Google Drive');}catch(e){showToast('Restore failed: '+e.message,true);}}
 window.gdriveRestore=gdriveRestore;
-function renderGdriveSection(){var connected=localStorage.getItem('mfs_spstd_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});s.textContent=connected&&_gdriveToken?'✓ Connected':connected?'Reconnecting...':'Not connected';s.style.color=connected&&_gdriveToken?'var(--acc)':'var(--text3)';if(a)a.style.display=connected&&_gdriveToken?'block':'none';var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display=localStorage.getItem('mfs_sp_std_prerestore')?'block':'none';}
+function renderGdriveSection(){var connected=localStorage.getItem('mfs_sppro_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});s.textContent=connected&&_gdriveToken?'✓ Connected':connected?'Reconnecting...':'Not connected';s.style.color=connected&&_gdriveToken?'var(--acc)':'var(--text3)';if(a)a.style.display=connected&&_gdriveToken?'block':'none';var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display=localStorage.getItem('mfs_sp_pro_prerestore')?'block':'none';}
 
-// ── LOCAL BACKUP ──
-function exportLocal(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='student-planner-Premium-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('Backup downloaded ✓');}
+function exportLocal(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=GDRIVE_FILENAME;a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('Backup downloaded ✓');}
 window.exportLocal=exportLocal;
 function importLocal(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var data=JSON.parse(e.target.result);if(!data||!Array.isArray(data.assignments)){showToast('Invalid backup file.',true);return;}openRestoreConfirm(data,'local file');}catch(x){showToast('Could not read file.',true);}};r.readAsText(file);ev.target.value='';}
 window.importLocal=importLocal;
 
-// ── RESTORE ──
-function dataSummary(db){var n=0;['assignments','events','courses','classes','projects','books','exams'].forEach(function(k){if(Array.isArray(db[k]))n+=db[k].length;});return n;}
+function dataSummary(db){var n=0;['assignments','events','courses','classes','projects','books','exams','routineBlocks','habits','syllabus','semesters'].forEach(function(k){if(Array.isArray(db[k]))n+=db[k].length;});return n;}
 function openRestoreConfirm(data,label){_pendingRestore=data;var inc=dataSummary(data),cur=dataSummary(DB);document.getElementById('restore-title').textContent='Restore from '+label+'?';document.getElementById('restore-detail').textContent=(inc<cur?'⚠ This backup has fewer items ('+inc+') than your current data ('+cur+'). Double-check before continuing.':'This backup has '+inc+' items. Your current data has '+cur+'. Restoring replaces what you have now — you can undo it right after.');openModal('restore-modal');}
-function confirmRestore(){if(!_pendingRestore){closeModal('restore-modal');return;}try{localStorage.setItem('mfs_sp_std_prerestore',JSON.stringify({db:DB,ts:Date.now()}));}catch(e){}DB=_pendingRestore;_pendingRestore=null;sv();closeModal('restore-modal');showToast('Restored!');setTimeout(function(){location.reload();},1200);}
+function confirmRestore(){if(!_pendingRestore){closeModal('restore-modal');return;}try{localStorage.setItem('mfs_sp_pro_prerestore',JSON.stringify({db:DB,ts:Date.now()}));}catch(e){}DB=_pendingRestore;_pendingRestore=null;sv();closeModal('restore-modal');showToast('Restored!');setTimeout(function(){location.reload();},1200);}
 window.confirmRestore=confirmRestore;
-function undoLastRestore(){try{var raw=localStorage.getItem('mfs_sp_std_prerestore');if(!raw){showToast('Nothing to undo.',true);return;}var snap=JSON.parse(raw);DB=snap.db;localStorage.removeItem('mfs_sp_std_prerestore');sv();showToast('Restore undone!');setTimeout(function(){location.reload();},1200);}catch(e){showToast('Could not undo.',true);}}
+function undoLastRestore(){try{var raw=localStorage.getItem('mfs_sp_pro_prerestore');if(!raw){showToast('Nothing to undo.',true);return;}var snap=JSON.parse(raw);DB=snap.db;localStorage.removeItem('mfs_sp_pro_prerestore');sv();showToast('Restore undone!');setTimeout(function(){location.reload();},1200);}catch(e){showToast('Could not undo.',true);}}
 window.undoLastRestore=undoLastRestore;
 
-// ── INIT ──
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
 applyTheme(DB.theme||'matcha',DB.darkMode||false);
 setupDots();
