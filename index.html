@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Student Planner"/>
+<meta name="theme-color" id="meta-theme-color" content="#3d5a3e"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"/>
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"/>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Student Planner Standard — Mobile First Studio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --hdr:#3d5a3e;--acc:#7aaa6a;--acc2:#d4edcc;
+  --bg:#f4f7f4;--bg2:#ffffff;--bg3:#eaf0ea;
+  --text:#1a2e1a;--text2:#6a8068;--text3:#aabcaa;
+  --border:#d4e0d4;--border2:#e8f0e8;
+  --red:#c0392b;--red2:#fdecea;
+  --yellow:#d4a017;--yellow2:#fef9e7;
+  --shadow:0 2px 8px rgba(0,0,0,.08);
+  --radius:16px;--radius-sm:10px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--text);}
+body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;}
+.sbar{background:var(--hdr);padding:env(safe-area-inset-top,10px) 20px 0;display:flex;justify-content:center;flex-shrink:0;}
+.sbar span{color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding-bottom:6px;}
+.screen{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
+.page.active{display:flex;}
+.ph{background:var(--hdr);padding:10px 20px 16px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;}
+.ph-left .ey{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:2px;font-weight:600;}
+.ph-left h1{font-size:22px;font-weight:700;color:white;line-height:1.1;}
+.theme-dot{width:28px;height:28px;border-radius:50%;background:var(--acc);border:2.5px solid rgba(255,255,255,.5);cursor:pointer;flex-shrink:0;margin-bottom:2px;user-select:none;}
+.theme-dot:active{transform:scale(.9);}
+.ps{flex:1;overflow-y:auto;padding:16px;min-height:0;-webkit-overflow-scrolling:touch;background:var(--bg);}
+.ps::-webkit-scrollbar{width:2px;}
+.ps::-webkit-scrollbar-thumb{background:var(--border);}
+.nav{background:var(--bg2);border-top:.5px solid var(--border);padding:4px 0;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:4px 2px;border-radius:10px;background:none;border:none;min-width:44px;min-height:44px;justify-content:center;}
+.ni i{font-size:19px;color:var(--text3);}
+.ni span{font-size:8px;letter-spacing:.03em;color:var(--text3);text-transform:uppercase;font-weight:600;}
+.ni.active i,.ni.active span{color:var(--hdr);}
+.card{background:var(--bg2);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:.5px solid var(--border);box-shadow:var(--shadow);}
+.card-acc{background:var(--acc2);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:.5px solid rgba(0,0,0,.06);}
+.card-hdr{background:var(--hdr);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
+.sl{font-size:10px;letter-spacing:.16em;color:var(--text2);text-transform:uppercase;margin-bottom:8px;margin-top:14px;font-weight:700;}
+.sl:first-child{margin-top:0;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:none;align-items:flex-end;max-width:480px;margin:0 auto;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto;border-top:3px solid var(--acc);padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
+.modal h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.field{margin-bottom:12px;}
+.field label{font-size:10px;letter-spacing:.14em;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;font-weight:700;}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:16px;outline:none;-webkit-appearance:none;}
+.field input::placeholder,.field textarea::placeholder{color:var(--text3);}
+.field select option{background:var(--bg2);color:var(--text);}
+.field textarea{resize:none;height:70px;}
+.btn-row{display:flex;gap:10px;margin-top:14px;}
+.btn-save{flex:1;background:var(--hdr);border:none;border-radius:var(--radius-sm);padding:13px;color:white;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;min-height:48px;}
+.btn-cancel{flex:1;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:13px;color:var(--text2);font-family:'Inter',sans-serif;font-size:16px;cursor:pointer;min-height:48px;}
+.btn-delete{width:100%;background:var(--red2);border:.5px solid var(--red);border-radius:var(--radius-sm);padding:13px;color:var(--red);font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;min-height:48px;}
+.btn-full{width:100%;background:var(--hdr);border:none;border-radius:var(--radius-sm);padding:13px;color:white;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:48px;}
+.btn-ghost{width:100%;background:transparent;border:.5px solid var(--border);border-radius:var(--radius-sm);padding:11px;color:var(--text2);font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;margin-top:6px;min-height:44px;}
+.fab{width:52px;height:52px;border-radius:50%;background:var(--hdr);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));right:calc(50% - 220px + 16px);z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.18);}
+@media(max-width:480px){.fab{right:16px;}}
+.fab i{font-size:24px;color:white;}
+.empty{text-align:center;padding:36px 0 20px;color:var(--text3);font-size:15px;line-height:2;}
+.div{height:.5px;background:var(--border2);margin:12px 0;}
+.row-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.row-item:last-child{border-bottom:none;}
+.row-info{flex:1;min-width:0;}
+.row-title{font-size:16px;font-weight:500;color:var(--text);}
+.row-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.tab-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
+.tab-row::-webkit-scrollbar{display:none;}
+.tab-btn{flex:0 0 auto;background:var(--bg3);border:none;border-radius:20px;padding:7px 14px;color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;min-height:34px;white-space:nowrap;}
+.tab-btn.active{background:var(--hdr);color:white;}
+.badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700;white-space:nowrap;}
+.badge-high{background:var(--red2);color:var(--red);}
+.badge-med{background:var(--yellow2);color:var(--yellow);}
+.badge-low{background:var(--bg3);color:var(--text2);}
+.assign-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.assign-row:last-child{border-bottom:none;}
+.assign-bar{width:3px;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:32px;}
+.assign-info{flex:1;min-width:0;}
+.assign-title{font-size:16px;font-weight:500;color:var(--text);line-height:1.3;}
+.assign-meta{font-size:12px;color:var(--text2);margin-top:3px;}
+.assign-done .assign-title{opacity:.45;text-decoration:line-through;}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;padding:6px 0 12px;}
+.cal-nav button{background:none;border:none;color:var(--text2);cursor:pointer;font-size:20px;padding:6px 8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;}
+.cal-nav span{font-size:16px;font-weight:600;color:var(--text);}
+.cal-heads{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.cal-head{font-size:10px;color:var(--text3);text-align:center;padding:3px 0;letter-spacing:.06em;font-weight:700;text-transform:uppercase;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-day{background:var(--bg2);border-radius:var(--radius-sm);border:.5px solid var(--border);padding:4px;display:flex;flex-direction:column;min-height:46px;cursor:pointer;}
+.cal-day.today{border-color:var(--acc);border-width:2px;}
+.cal-day.other-month{opacity:.25;}
+.cal-num{font-size:11px;color:var(--text2);line-height:1;margin-bottom:2px;font-weight:500;}
+.cal-day.today .cal-num{color:var(--hdr);font-weight:700;}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:auto;}
+.cal-dot{width:5px;height:5px;border-radius:50%;}
+.sched-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border2);}
+.sched-row:last-child{border-bottom:none;}
+.sched-day{font-size:10px;font-weight:700;color:var(--hdr);letter-spacing:.08em;text-transform:uppercase;width:28px;flex-shrink:0;text-align:center;}
+.sched-time{font-size:12px;color:var(--text2);width:72px;flex-shrink:0;}
+.sched-info{flex:1;}
+.sched-name{font-size:15px;font-weight:600;color:var(--text);}
+.sched-loc{font-size:12px;color:var(--text2);margin-top:1px;}
+.sched-color{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+/* DASHBOARD */
+.dash-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.dash-stat{background:var(--bg2);border-radius:var(--radius);padding:14px 15px;border:.5px solid var(--border);box-shadow:var(--shadow);}
+.dash-stat-val{font-size:28px;font-weight:700;color:var(--text);line-height:1;}
+.dash-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;font-weight:600;}
+/* GRADES */
+.grade-bar-wrap{background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;margin-top:6px;}
+.grade-bar-fill{height:100%;border-radius:4px;transition:width .4s;}
+/* PROGRESS */
+.sem-stat-val{font-size:28px;font-weight:700;color:white;line-height:1;}
+.sem-stat-lbl{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;font-weight:600;}
+.progress-bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;margin-top:8px;}
+.progress-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .4s ease;}
+/* SWATCH */
+.swatch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px;}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px 4px;border-radius:10px;border:1.5px solid transparent;}
+.swatch.active{border-color:var(--acc);}
+.swatch-dot{width:36px;height:36px;border-radius:50%;}
+.swatch-name{font-size:9px;color:var(--text2);font-weight:600;text-align:center;letter-spacing:.04em;}
+/* WEEK VIEW */
+.week-day-header{font-size:13px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1.5px solid var(--acc);margin-bottom:8px;}
+.week-day-header.today-hdr{color:var(--hdr);}
+/* READING LOG */
+.book-status-read{color:var(--acc);background:var(--acc2);}
+.book-status-reading{color:var(--yellow);background:var(--yellow2);}
+.book-status-tbr{color:var(--text2);background:var(--bg3);}
+/* PROJECT */
+.subtask-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border2);}
+.subtask-row:last-child{border-bottom:none;}
+/* EXAM PREP */
+.topic-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--border2);}
+.topic-row:last-child{border-bottom:none;}
+.conf-pill{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700;}
+.conf-high{background:var(--acc2);color:var(--hdr);}
+.conf-med{background:var(--yellow2);color:var(--yellow);}
+.conf-low{background:var(--red2);color:var(--red);}
+#toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:99;white-space:nowrap;pointer-events:none;}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:.5px solid var(--border2);cursor:pointer;}
+.set-row:last-child{border-bottom:none;}
+.set-label{font-size:15px;font-weight:500;color:var(--text);}
+.set-sub{font-size:12px;color:var(--text2);margin-top:1px;}
+</style>
+</head>
+<body>
+<div class="sbar"><span>Mobile First Studio</span></div>
+<div class="screen">
+
+<!-- DASHBOARD -->
+<div class="page active" id="pg-dash">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Overview</div><h1>Dashboard</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="dash-stat-grid">
+    <div class="dash-stat"><div class="dash-stat-val" id="d-due" style="color:var(--red);">0</div><div class="dash-stat-lbl">Due Soon</div></div>
+    <div class="dash-stat"><div class="dash-stat-val" id="d-gpa" style="color:var(--yellow);">—</div><div class="dash-stat-lbl">GPA</div></div>
+    <div class="dash-stat"><div class="dash-stat-val" id="d-projects">0</div><div class="dash-stat-lbl">Projects</div></div>
+    <div class="dash-stat"><div class="dash-stat-val" id="d-exams">0</div><div class="dash-stat-lbl">Exams Due</div></div>
+  </div>
+  <div class="sl">Upcoming Assignments</div>
+  <div id="dash-upcoming"></div>
+  <div class="sl">Upcoming Exams</div>
+  <div id="dash-exams"></div>
+  <div style="height:20px;"></div>
+</div>
+</div>
+
+<!-- SEMESTER / SCHEDULE combined -->
+<div class="page" id="pg-semester">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Planner</div><h1 id="sem-page-title">Semester</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchSemTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="switchSemTab('schedule',this)">Schedule</button>
+    <button class="tab-btn" onclick="switchSemTab('courses',this)">Courses</button>
+  </div>
+  <div id="sem-tab-content"></div>
+  <div style="height:70px;"></div>
+</div>
+<button class="fab" id="sem-fab" onclick="semFabAction()"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- ASSIGNMENTS -->
+<div class="page" id="pg-assign">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Tasks</div><h1>Assignments</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchAssign('pending',this)">Pending</button>
+    <button class="tab-btn" onclick="switchAssign('done',this)">Done</button>
+    <button class="tab-btn" onclick="switchAssign('all',this)">All</button>
+  </div>
+  <div id="assign-content"></div>
+  <div style="height:70px;"></div>
+</div>
+<button class="fab" onclick="openAssignModal(null)"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- CALENDAR -->
+<div class="page" id="pg-cal">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Monthly</div><h1 id="cal-title">Calendar</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="cal-nav">
+    <button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+    <span id="cal-nav-label"></span>
+    <button onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+  </div>
+  <div class="cal-heads" id="cal-heads"></div>
+  <div class="cal-grid" id="cal-grid"></div>
+  <div style="height:12px;"></div>
+  <div class="sl">This Month</div>
+  <div id="cal-events-list"></div>
+  <div style="height:70px;"></div>
+</div>
+<button class="fab" onclick="openEventModal(null,null)"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- ACADEMIC (Grades + GPA + Week + Reading + Projects + Exams) -->
+<div class="page" id="pg-academic">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Academic</div><h1>Study Tools</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="tab-row" id="academic-tabs">
+    <button class="tab-btn active" onclick="switchAcademic('grades',this)">Grades</button>
+    <button class="tab-btn" onclick="switchAcademic('week',this)">Weekly</button>
+    <button class="tab-btn" onclick="switchAcademic('projects',this)">Projects</button>
+    <button class="tab-btn" onclick="switchAcademic('reading',this)">Reading</button>
+    <button class="tab-btn" onclick="switchAcademic('exams',this)">Exam Prep</button>
+  </div>
+  <div id="academic-content"></div>
+  <div style="height:70px;"></div>
+</div>
+<button class="fab" id="academic-fab" onclick="academicFabAction()"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="pg-settings">
+<div class="ph">
+  <div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div>
+  <div class="theme-dot"></div>
+</div>
+<div class="ps">
+  <div class="sl">Your Name</div>
+  <div class="field"><label>Name</label><input id="s-name" placeholder="e.g. Jessica" oninput="saveName()"/></div>
+  <div class="sl">Color Theme</div>
+  <div class="swatch-grid" id="swatch-grid"></div>
+  <div class="div"></div>
+  <div class="sl">Backup</div>
+  <div class="card">
+    <div class="set-row" onclick="gdriveConnect()">
+      <div><div class="set-label">Google Drive Backup</div><div class="set-sub">Back up to your own Drive</div></div>
+      <div id="gdrive-status" style="font-size:12px;color:var(--text3);">Not connected</div>
+    </div>
+    <div id="gdrive-actions" style="display:none;">
+      <button class="btn-full" style="margin-top:10px;" onclick="gdriveBackupNow().then(()=>showToast('Backed up!')).catch(e=>showToast(e.message,true))">Back up now</button>
+      <button class="btn-ghost" onclick="gdriveRestore()">Restore from Drive</button>
+      <button class="btn-ghost" id="gdrive-undo-btn" style="display:none;color:var(--red);" onclick="undoLastRestore()">Undo Last Restore</button>
+      <button class="btn-delete" onclick="gdriveDisconnect()">Disconnect</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="set-row" onclick="exportLocal()">
+      <div><div class="set-label">Download Local Backup</div><div class="set-sub">Save a file to your device</div></div>
+      <i class="ti ti-download" style="color:var(--text3);font-size:18px;"></i>
+    </div>
+    <div class="set-row" style="position:relative;">
+      <div><div class="set-label">Restore from File</div><div class="set-sub">Load a saved backup</div></div>
+      <i class="ti ti-upload" style="color:var(--text3);font-size:18px;"></i>
+      <input type="file" accept=".json" onchange="importLocal(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;"/>
+    </div>
+    <div id="local-undo-row" style="display:none;padding-top:6px;">
+      <button class="btn-ghost" style="color:var(--red);" onclick="undoLastRestore()">Undo Last Restore</button>
+    </div>
+  </div>
+  <div style="height:20px;"></div>
+</div>
+</div>
+
+</div><!-- /screen -->
+
+<nav class="nav">
+  <button class="ni active" onclick="go('dash',this)"><i class="ti ti-layout-dashboard"></i><span>Dash</span></button>
+  <button class="ni" onclick="go('semester',this)"><i class="ti ti-calendar-month"></i><span>Semester</span></button>
+  <button class="ni" onclick="go('assign',this)"><i class="ti ti-clipboard-check"></i><span>Tasks</span></button>
+  <button class="ni" onclick="go('cal',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
+  <button class="ni" onclick="go('academic',this)"><i class="ti ti-school"></i><span>Academic</span></button>
+  <button class="ni" onclick="go('settings',this)"><i class="ti ti-settings"></i><span>Settings</span></button>
+</nav>
+
+<!-- SEMESTER MODAL -->
+<div class="modal-bg" id="sem-modal"><div class="modal">
+  <h2>Semester Details</h2>
+  <div class="field"><label>Semester Name</label><input id="sem-name" placeholder="e.g. Fall 2026"/></div>
+  <div class="field"><label>Start Date</label><input type="date" id="sem-start"/></div>
+  <div class="field"><label>End Date</label><input type="date" id="sem-end"/></div>
+  <div class="field"><label>School / University</label><input id="sem-school" placeholder="e.g. State University"/></div>
+  <div class="field"><label>Notes</label><textarea id="sem-notes" placeholder="Goals, reminders..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('sem-modal')">Cancel</button><button class="btn-save" onclick="saveSem()">Save</button></div>
+</div></div>
+
+<!-- COURSE MODAL -->
+<div class="modal-bg" id="course-modal"><div class="modal">
+  <h2 id="course-modal-title">Add Course</h2>
+  <div class="field"><label>Course Name</label><input id="c-name" placeholder="e.g. Intro to Psychology"/></div>
+  <div class="field"><label>Course Code</label><input id="c-code" placeholder="e.g. PSY 101"/></div>
+  <div class="field"><label>Instructor</label><input id="c-teacher" placeholder="e.g. Dr. Smith"/></div>
+  <div class="field"><label>Color</label><select id="c-color">
+    <option value="#3d5a3e">Matcha</option><option value="#5c4d7d">Lavender</option>
+    <option value="#1a3a5c">Cobalt</option><option value="#7a4a52">Rose Latte</option>
+    <option value="#7a4a30">Terracotta</option><option value="#1a1a2e">Midnight</option>
+    <option value="#4a6840">Pistachio</option><option value="#4a4642">Cloud</option>
+  </select></div>
+  <div class="field"><label>Current Grade %</label><input type="number" id="c-grade" placeholder="e.g. 88" min="0" max="100"/></div>
+  <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Room, office hours..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('course-modal')">Cancel</button><button class="btn-save" onclick="saveCourse()">Save</button></div>
+  <button class="btn-delete" id="course-del-btn" style="display:none;" onclick="deleteCourse()">Delete Course</button>
+</div></div>
+
+<!-- CLASS MODAL -->
+<div class="modal-bg" id="class-modal"><div class="modal">
+  <h2 id="class-modal-title">Add Class</h2>
+  <div class="field"><label>Course</label><select id="cl-course"></select></div>
+  <div class="field"><label>Day(s)</label><select id="cl-day" multiple style="height:120px;">
+    <option value="Mon">Monday</option><option value="Tue">Tuesday</option>
+    <option value="Wed">Wednesday</option><option value="Thu">Thursday</option>
+    <option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
+  </select></div>
+  <div style="font-size:11px;color:var(--text2);margin-top:-8px;margin-bottom:10px;">Hold Ctrl / Cmd to select multiple days</div>
+  <div class="field"><label>Start Time</label><input type="time" id="cl-start"/></div>
+  <div class="field"><label>End Time</label><input type="time" id="cl-end"/></div>
+  <div class="field"><label>Room / Location</label><input id="cl-loc" placeholder="e.g. Rm 204, Science Hall"/></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('class-modal')">Cancel</button><button class="btn-save" onclick="saveClass()">Save</button></div>
+  <button class="btn-delete" id="class-del-btn" style="display:none;" onclick="deleteClass()">Delete</button>
+</div></div>
+
+<!-- ASSIGNMENT MODAL -->
+<div class="modal-bg" id="assign-modal"><div class="modal">
+  <h2 id="assign-modal-title">Add Assignment</h2>
+  <div class="field"><label>Title</label><input id="a-title" placeholder="e.g. Essay Draft — Chapter 3"/></div>
+  <div class="field"><label>Course</label><select id="a-course"><option value="">No course</option></select></div>
+  <div class="field"><label>Due Date</label><input type="date" id="a-due"/></div>
+  <div class="field"><label>Priority</label><select id="a-priority"><option value="high">High</option><option value="med">Medium</option><option value="low">Low</option></select></div>
+  <div class="field"><label>Notes</label><textarea id="a-notes" placeholder="Details, reminders..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('assign-modal')">Cancel</button><button class="btn-save" onclick="saveAssign()">Save</button></div>
+  <button class="btn-delete" id="assign-del-btn" style="display:none;" onclick="deleteAssign()">Delete</button>
+</div></div>
+
+<!-- EVENT MODAL -->
+<div class="modal-bg" id="event-modal"><div class="modal">
+  <h2 id="event-modal-title">Add Event</h2>
+  <div class="field"><label>Description</label><input id="ev-desc" placeholder="e.g. Study group, Office hours"/></div>
+  <div class="field"><label>Date</label><input type="date" id="ev-date"/></div>
+  <div class="field"><label>Type</label><select id="ev-type"><option value="event">Event</option><option value="exam">Exam</option><option value="deadline">Deadline</option><option value="other">Other</option></select></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('event-modal')">Cancel</button><button class="btn-save" onclick="saveEvent()">Save</button></div>
+  <button class="btn-delete" id="event-del-btn" style="display:none;" onclick="deleteEvent()">Delete</button>
+</div></div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-bg" id="project-modal"><div class="modal">
+  <h2 id="project-modal-title">Add Project</h2>
+  <div class="field"><label>Project Title</label><input id="p-title" placeholder="e.g. Research Paper"/></div>
+  <div class="field"><label>Course</label><select id="p-course"><option value="">No course</option></select></div>
+  <div class="field"><label>Due Date</label><input type="date" id="p-due"/></div>
+  <div class="field"><label>Notes</label><textarea id="p-notes" placeholder="Goals, requirements..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('project-modal')">Cancel</button><button class="btn-save" onclick="saveProject()">Save</button></div>
+  <button class="btn-delete" id="project-del-btn" style="display:none;" onclick="deleteProject()">Delete Project</button>
+</div></div>
+
+<!-- SUBTASK MODAL -->
+<div class="modal-bg" id="subtask-modal"><div class="modal">
+  <h2 id="subtask-modal-title">Add Step</h2>
+  <div class="field"><label>Step Title</label><input id="st-title" placeholder="e.g. Write introduction"/></div>
+  <div class="field"><label>Due Date (optional)</label><input type="date" id="st-due"/></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('subtask-modal')">Cancel</button><button class="btn-save" onclick="saveSubtask()">Save</button></div>
+  <button class="btn-delete" id="subtask-del-btn" style="display:none;" onclick="deleteSubtask()">Delete Step</button>
+</div></div>
+
+<!-- READING MODAL -->
+<div class="modal-bg" id="reading-modal"><div class="modal">
+  <h2 id="reading-modal-title">Add Book</h2>
+  <div class="field"><label>Title</label><input id="r-title" placeholder="e.g. The Great Gatsby"/></div>
+  <div class="field"><label>Author</label><input id="r-author" placeholder="e.g. F. Scott Fitzgerald"/></div>
+  <div class="field"><label>Course (optional)</label><select id="r-course"><option value="">No course</option></select></div>
+  <div class="field"><label>Pages</label><input type="number" id="r-pages" placeholder="e.g. 180"/></div>
+  <div class="field"><label>Pages Read</label><input type="number" id="r-read" placeholder="e.g. 60"/></div>
+  <div class="field"><label>Status</label><select id="r-status"><option value="tbr">To Read</option><option value="reading">Reading</option><option value="read">Finished</option></select></div>
+  <div class="field"><label>Notes</label><textarea id="r-notes" placeholder="Themes, annotations..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('reading-modal')">Cancel</button><button class="btn-save" onclick="saveBook()">Save</button></div>
+  <button class="btn-delete" id="reading-del-btn" style="display:none;" onclick="deleteBook()">Delete</button>
+</div></div>
+
+<!-- EXAM MODAL -->
+<div class="modal-bg" id="exam-modal"><div class="modal">
+  <h2 id="exam-modal-title">Add Exam</h2>
+  <div class="field"><label>Exam Name</label><input id="ex-name" placeholder="e.g. Midterm — PSY 101"/></div>
+  <div class="field"><label>Course</label><select id="ex-course"><option value="">No course</option></select></div>
+  <div class="field"><label>Exam Date</label><input type="date" id="ex-date"/></div>
+  <div class="field"><label>Notes</label><textarea id="ex-notes" placeholder="Format, weight, location..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('exam-modal')">Cancel</button><button class="btn-save" onclick="saveExam()">Save</button></div>
+  <button class="btn-delete" id="exam-del-btn" style="display:none;" onclick="deleteExam()">Delete</button>
+</div></div>
+
+<!-- TOPIC MODAL -->
+<div class="modal-bg" id="topic-modal"><div class="modal">
+  <h2 id="topic-modal-title">Add Topic</h2>
+  <div class="field"><label>Topic</label><input id="tp-name" placeholder="e.g. Cognitive dissonance"/></div>
+  <div class="field"><label>Confidence</label><select id="tp-conf"><option value="high">High — got it</option><option value="med">Medium — mostly there</option><option value="low">Low — needs work</option></select></div>
+  <div class="field"><label>Notes</label><textarea id="tp-notes" placeholder="Key points, resources..."></textarea></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('topic-modal')">Cancel</button><button class="btn-save" onclick="saveTopic()">Save</button></div>
+  <button class="btn-delete" id="topic-del-btn" style="display:none;" onclick="deleteTopic()">Delete</button>
+</div></div>
+
+<!-- RESTORE CONFIRM -->
+<div class="modal-bg" id="restore-modal"><div class="modal" style="text-align:center;">
+  <h2 id="restore-title">Restore backup?</h2>
+  <div id="restore-detail" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeModal('restore-modal')">Cancel</button><button class="btn-save" onclick="confirmRestore()">Restore</button></div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+// ── THEMES ──
+var THEMES={
+  matcha:    {name:'Matcha',     hdr:'#3d5a3e',acc:'#7aaa6a',acc2:'#d4edcc',bg:'#f4f7f4',bg2:'#fff',bg3:'#eaf0ea',text:'#1a2e1a',text2:'#6a8068',text3:'#aabcaa',border:'#d4e0d4',border2:'#e8f0e8'},
+  lavender:  {name:'Lavender',   hdr:'#5c4d7d',acc:'#b8a9e0',acc2:'#ede8f8',bg:'#f7f5fc',bg2:'#fff',bg3:'#eeeaf8',text:'#2a1e4a',text2:'#7868a8',text3:'#b8aad0',border:'#dcd4f0',border2:'#eee8f8'},
+  cloud:     {name:'Cloud',      hdr:'#4a4642',acc:'#e8b4a0',acc2:'#faeae4',bg:'#faf8f6',bg2:'#fff',bg3:'#f2ede8',text:'#2a2420',text2:'#8a7a70',text3:'#bca8a4',border:'#e0d8d0',border2:'#ece8e4'},
+  cobalt:    {name:'Cobalt',     hdr:'#1a3a5c',acc:'#6aace0',acc2:'#d4eaf8',bg:'#f4f7fb',bg2:'#fff',bg3:'#e4edf6',text:'#0a1e38',text2:'#5a7898',text3:'#a0b8d0',border:'#c8d8ec',border2:'#dce8f4'},
+  roselatte: {name:'Rose Latte', hdr:'#7a4a52',acc:'#e09090',acc2:'#f8e4e4',bg:'#fdf6f6',bg2:'#fff',bg3:'#f5ecec',text:'#3a1820',text2:'#a07880',text3:'#c8a8b0',border:'#e8d0d0',border2:'#f0e0e0'},
+  terracotta:{name:'Terracotta', hdr:'#7a4a30',acc:'#d4845a',acc2:'#f5e0d0',bg:'#fdf8f4',bg2:'#fff',bg3:'#f2e8e0',text:'#3a1e0a',text2:'#9a7060',text3:'#c4a898',border:'#e4d0c0',border2:'#ece0d8'},
+  midnight:  {name:'Midnight',   hdr:'#1a1a2e',acc:'#8888cc',acc2:'#ddddf5',bg:'#f5f5fc',bg2:'#fff',bg3:'#eaeaf5',text:'#0a0a20',text2:'#6868a0',text3:'#a8a8c8',border:'#d0d0ec',border2:'#e4e4f5'},
+  pistachio: {name:'Pistachio',  hdr:'#4a6840',acc:'#a0c880',acc2:'#e4f0d8',bg:'#f6faf4',bg2:'#fff',bg3:'#ecf4e8',text:'#1a2e14',text2:'#688060',text3:'#a8c0a0',border:'#d0e4c8',border2:'#e4f0dc'},
+};
+var DARK={bg:'#181818',bg2:'#232323',bg3:'#2d2d2d',text:'#f0f0f0',text2:'#a0a0a0',text3:'#606060',border:'#383838',border2:'#2e2e2e'};
+
+var DB={profile:{name:''},semester:{},courses:[],classes:[],assignments:[],events:[],projects:[],books:[],exams:[],theme:'matcha',darkMode:false};
+var assignTab='pending',curMonth=new Date(),semTab='overview',academicTab='grades',schedWeekOffset=0,weekViewOffset=0;
+var eId={course:null,class:null,assign:null,event:null,project:null,subtask:null,book:null,exam:null,topic:null,activeExamId:null};
+var _pendingRestore=null;
+
+function ld(){try{var d=localStorage.getItem('mfs_sp_std_v1');if(d){var p=JSON.parse(d);['courses','classes','assignments','events','projects','books','exams'].forEach(function(k){if(!p[k])p[k]=[];});if(!p.profile)p.profile={name:''};if(!p.semester)p.semester={};DB=p;}}catch(e){}}
+function sv(){try{localStorage.setItem('mfs_sp_std_v1',JSON.stringify(DB));}catch(e){}if(gdriveIsConnected()){clearTimeout(window._gbt);window._gbt=setTimeout(function(){gdriveBackupNow().catch(function(){});},3000);}}
+ld();
+
+// ── THEME ──
+function applyTheme(key,dark){
+  var t=THEMES[key];if(!t)return;
+  DB.theme=key;if(dark!==undefined)DB.darkMode=dark;
+  var r=document.documentElement.style;
+  var src=DB.darkMode?Object.assign({},t,DARK):t;
+  r.setProperty('--hdr',t.hdr);r.setProperty('--acc',t.acc);r.setProperty('--acc2',t.acc2);
+  r.setProperty('--bg',src.bg);r.setProperty('--bg2',src.bg2);r.setProperty('--bg3',src.bg3);
+  r.setProperty('--text',src.text);r.setProperty('--text2',src.text2);r.setProperty('--text3',src.text3);
+  r.setProperty('--border',src.border);r.setProperty('--border2',src.border2);
+  var mc=document.getElementById('meta-theme-color');if(mc)mc.setAttribute('content',t.hdr);
+  document.querySelectorAll('.theme-dot').forEach(function(d){d.style.background=t.acc;});
+  renderSwatches();sv();
+}
+function cycleTheme(){var keys=Object.keys(THEMES);var i=keys.indexOf(DB.theme);applyTheme(keys[(i+1)%keys.length],DB.darkMode);}
+function setupDots(){
+  document.querySelectorAll('.theme-dot').forEach(function(dot){
+    var pt=null;
+    dot.addEventListener('pointerdown',function(){pt=setTimeout(function(){applyTheme(DB.theme,!DB.darkMode);showToast(DB.darkMode?'Dark mode on':'Light mode on');},500);});
+    dot.addEventListener('pointerup',function(){clearTimeout(pt);});
+    dot.addEventListener('pointerleave',function(){clearTimeout(pt);});
+    dot.addEventListener('click',function(){cycleTheme();});
+  });
+}
+function renderSwatches(){
+  var el=document.getElementById('swatch-grid');if(!el)return;
+  el.innerHTML=Object.keys(THEMES).map(function(k){var t=THEMES[k];
+    return'<div class="swatch'+(DB.theme===k?' active':'')+'" onclick="applyTheme(\''+k+'\',DB.darkMode)">'
+      +'<div class="swatch-dot" style="background:'+t.hdr+';border:3px solid '+t.acc+';"></div>'
+      +'<div class="swatch-name">'+t.name+'</div></div>';
+  }).join('');
+}
+
+// ── NAV ──
+function go(id,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('pg-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  var r={dash:renderDash,semester:function(){renderSemTab(semTab);},assign:renderAssign,cal:renderCal,academic:function(){renderAcademic(academicTab);},settings:renderSettings};
+  if(r[id])r[id]();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+window.openModal=openModal;window.closeModal=closeModal;
+
+// ── TOAST ──
+function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.style.background=err?'#c0392b':'var(--text)';t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);}
+
+// ── CONFIRM ──
+function spConfirm(title,sub,cb){
+  var o=document.getElementById('spConfirmOverlay');
+  if(!o){o=document.createElement('div');o.id='spConfirmOverlay';o.className='modal-bg';
+    o.innerHTML='<div class="modal" style="text-align:center;"><h2 id="spCT">Confirm</h2><div id="spCS" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div>'
+      +'<div class="btn-row"><button class="btn-cancel" onclick="document.getElementById(\'spConfirmOverlay\').classList.remove(\'open\');window._spCb=null;">Keep it</button>'
+      +'<button class="btn-delete" style="margin-top:0;flex:1;" onclick="document.getElementById(\'spConfirmOverlay\').classList.remove(\'open\');if(window._spCb)window._spCb();window._spCb=null;">Delete</button>'
+      +'</div></div>';document.body.appendChild(o);}
+  document.getElementById('spCT').textContent=title;document.getElementById('spCS').textContent=sub;window._spCb=cb;o.classList.add('open');
+}
+
+// ── HELPERS ──
+function localDateStr(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function today(){return localDateStr();}
+function fmtDate(d){if(!d)return'';var p=d.split('-');return(+p[1])+'/'+(+p[2])+'/'+(p[0].slice(2));}
+function daysUntil(d){if(!d)return null;var now=new Date();now.setHours(0,0,0,0);return Math.round((new Date(d+'T00:00:00')-now)/86400000);}
+function fmtTime(t){if(!t)return'';var p=t.split(':');var h=+p[0],m=p[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m+' '+ap;}
+function priorityColor(p){return p==='high'?'var(--red)':p==='med'?'var(--yellow)':'var(--text3)';}
+function priorityBadge(p){return p==='high'?'badge-high':p==='med'?'badge-med':'badge-low';}
+function evtColor(t){return t==='exam'?'var(--red)':t==='deadline'?'var(--yellow)':t==='event'?'var(--acc)':'var(--text3)';}
+function courseName(id){var c=DB.courses.find(function(x){return x.id===id;});return c?c.name:'';}
+function courseColor(id){var c=DB.courses.find(function(x){return x.id===id;});return c?c.color:'var(--text3)';}
+function popSelect(id,val){var s=document.getElementById(id);if(!s)return;s.innerHTML='<option value="">No course</option>'+DB.courses.map(function(c){return'<option value="'+c.id+'">'+c.name+'</option>';}).join('');if(val)s.value=val;}
+function gradeColor(g){var n=parseFloat(g);if(isNaN(n))return'var(--text3)';if(n>=90)return'var(--acc)';if(n>=80)return'var(--hdr)';if(n>=70)return'var(--yellow)';return'var(--red)';}
+function gradeToGPA(g){var n=parseFloat(g);if(isNaN(n))return null;if(n>=97)return 4.0;if(n>=93)return 4.0;if(n>=90)return 3.7;if(n>=87)return 3.3;if(n>=83)return 3.0;if(n>=80)return 2.7;if(n>=77)return 2.3;if(n>=73)return 2.0;if(n>=70)return 1.7;if(n>=67)return 1.3;if(n>=63)return 1.0;if(n>=60)return 0.7;return 0.0;}
+function gradeToLetter(g){var n=parseFloat(g);if(isNaN(n))return'—';if(n>=97)return'A+';if(n>=93)return'A';if(n>=90)return'A-';if(n>=87)return'B+';if(n>=83)return'B';if(n>=80)return'B-';if(n>=77)return'C+';if(n>=73)return'C';if(n>=70)return'C-';if(n>=67)return'D+';if(n>=63)return'D';if(n>=60)return'D-';return'F';}
+function calcGPA(){var cs=DB.courses.filter(function(c){return c.grade!==''&&c.grade!==undefined&&c.grade!==null;});if(!cs.length)return null;var total=cs.reduce(function(s,c){return s+(gradeToGPA(c.grade)||0);},0);return(total/cs.length).toFixed(2);}
+
+// ── DASHBOARD ──
+function renderDash(){
+  var tod=today();
+  var upcoming=DB.assignments.filter(function(a){return!a.done&&a.due&&a.due>=tod;}).sort(function(a,b){return a.due.localeCompare(b.due);});
+  var dueSoon=upcoming.filter(function(a){var d=daysUntil(a.due);return d!==null&&d<=7;});
+  document.getElementById('d-due').textContent=dueSoon.length;
+  document.getElementById('d-gpa').textContent=calcGPA()||'—';
+  var activeProj=DB.projects.filter(function(p){return!p.done;});
+  document.getElementById('d-projects').textContent=activeProj.length;
+  var upcomingExams=DB.exams.filter(function(e){return e.date&&e.date>=tod;});
+  document.getElementById('d-exams').textContent=upcomingExams.length;
+  var upEl=document.getElementById('dash-upcoming');
+  var top=upcoming.slice(0,4);
+  upEl.innerHTML=top.length?'<div class="card">'+top.map(function(a){
+    var d=daysUntil(a.due);var dc=d===0?'var(--red)':d===1?'var(--yellow)':'var(--text2)';
+    return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'
+      +'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'
+      +'<div class="assign-info"><div class="assign-title">'+a.title+'</div>'
+      +'<div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+
+      '<span style="color:'+dc+';">'+(d===0?'Due today':d===1?'Due tomorrow':d+' days')+'</span></div></div></div>';
+  }).join('')+'</div>':'<div class="empty">No upcoming assignments.</div>';
+  var exEl=document.getElementById('dash-exams');
+  var topEx=upcomingExams.slice(0,3);
+  exEl.innerHTML=topEx.length?'<div class="card">'+topEx.map(function(ex){
+    var d=daysUntil(ex.date);
+    return'<div class="assign-row" onclick="openExamModal(\''+ex.id+'\',null)">'
+      +'<div class="assign-bar" style="background:var(--red);"></div>'
+      +'<div class="assign-info"><div class="assign-title">'+ex.name+'</div>'
+      +'<div class="assign-meta">'+(courseName(ex.courseId)?courseName(ex.courseId)+' · ':'')+fmtDate(ex.date)
+      +(d!==null?' · <span style="color:'+(d<=3?'var(--red)':'var(--text2)')+';">'+d+' days</span>':'')+'</div></div></div>';
+  }).join('')+'</div>':'<div class="empty">No upcoming exams.</div>';
+}
+
+// ── SEMESTER TAB ──
+var semTab='overview';
+function switchSemTab(tab,el){
+  semTab=tab;
+  if(tab==='schedule')schedWeekOffset=0;
+  document.querySelectorAll('#pg-semester .tab-btn').forEach(function(b){b.classList.remove('active');});
+  if(el)el.classList.add('active');
+  renderSemTab(tab);
+}
+window.switchSemTab=switchSemTab;
+
+function semFabAction(){
+  if(semTab==='schedule')openClassModal(null);
+  else if(semTab==='courses')openCourseModal(null);
+  else openSemModal();
+}
+window.semFabAction=semFabAction;
+
+function renderSemTab(tab){
+  var el=document.getElementById('sem-tab-content');
+  if(tab==='overview')el.innerHTML=buildSemOverview();
+  else if(tab==='schedule')el.innerHTML=buildSchedule();
+  else if(tab==='courses')el.innerHTML=buildCourses();
+}
+
+function buildSemOverview(){
+  var s=DB.semester;
+  var name=s.name||'My Semester';
+  var daysLeft='—',prog=0,startLbl='Start',endLbl='End';
+  if(s.start&&s.end){
+    var start=new Date(s.start+'T00:00:00'),end=new Date(s.end+'T00:00:00'),now=new Date();now.setHours(0,0,0,0);
+    var total=Math.round((end-start)/86400000),elapsed=Math.max(0,Math.round((now-start)/86400000));
+    daysLeft=Math.max(0,Math.round((end-now)/86400000));prog=Math.min(100,Math.round(elapsed/total*100));
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    startLbl=mo[start.getMonth()]+' '+start.getDate();endLbl=mo[end.getMonth()]+' '+end.getDate();
+  }
+  var h='<div class="card-hdr" onclick="openSemModal()" style="cursor:pointer;">'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">'
+    +'<div><div class="sem-stat-val">'+name+'</div><div class="sem-stat-lbl">'+(s.school||'Semester')+'</div></div>'
+    +'<div style="text-align:right;"><div class="sem-stat-val">'+daysLeft+'</div><div class="sem-stat-lbl">Days Left</div></div></div>'
+    +'<div class="progress-bar"><div class="progress-fill" style="width:'+prog+'%"></div></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;">'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.45);">'+startLbl+'</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.45);">'+endLbl+'</div></div></div>';
+  if(s.notes)h+='<div class="card"><div style="font-size:14px;color:var(--text2);line-height:1.6;">'+s.notes+'</div></div>';
+  h+='<div class="sl">GPA</div><div class="card" style="text-align:center;padding:20px;">'
+    +'<div style="font-size:48px;font-weight:700;color:var(--yellow);">'+(calcGPA()||'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);margin-top:4px;">Cumulative GPA</div></div>';
+  return h;
+}
+
+function getWeekStart(offset){
+  var now=new Date();now.setHours(0,0,0,0);
+  var day=now.getDay();
+  var diff=day===0?-6:1-day;
+  var mon=new Date(now);mon.setDate(now.getDate()+diff+(offset*7));
+  return mon;
+}
+function buildSchedule(){
+  if(!DB.classes.length)return'<div class="empty">No classes yet.<br>Tap + to add your schedule.</div>';
+  var DAY_ORDER=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var DAY_FULL={Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+  var DAY_JS={Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0};
+  var MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var weekStart=getWeekStart(schedWeekOffset);
+  var weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+  function fmtD(d){return MON_NAMES[d.getMonth()]+' '+d.getDate();}
+  var weekLabel=fmtD(weekStart)+' – '+fmtD(weekEnd);
+  var now=new Date();now.setHours(0,0,0,0);
+  var todayDay=now.getDay();var diff2=todayDay===0?-6:1-todayDay;
+  var thisMonday=new Date(now);thisMonday.setDate(now.getDate()+diff2);
+  var isCurrentWeek=weekStart.getTime()===thisMonday.getTime();
+  var byDay={};DB.classes.forEach(function(c){(c.days||[]).forEach(function(d){if(!byDay[d])byDay[d]=[];byDay[d].push(c);});});
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px;">'
+    +'<button data-sched-nav="-1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">‹</button>'
+    +'<div style="text-align:center;">'
+    +'<div style="font-size:15px;font-weight:600;color:var(--text);">'+weekLabel+'</div>'
+    +(isCurrentWeek?'<div style="font-size:11px;color:var(--acc);font-weight:600;margin-top:2px;">This Week</div>':'')
+    +'</div>'
+    +'<button data-sched-nav="1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">›</button>'
+    +'</div>';
+  var hasAny=false;
+  DAY_ORDER.forEach(function(day){
+    if(!byDay[day])return;
+    hasAny=true;
+    var sorted=byDay[day].slice().sort(function(a,b){return(a.start||'').localeCompare(b.start||'');});
+    var jsDay=DAY_JS[day];
+    var dayOffset=jsDay===0?6:jsDay-1;
+    var dayDate=new Date(weekStart);dayDate.setDate(weekStart.getDate()+dayOffset);
+    var isToday=dayDate.getTime()===now.getTime();
+    var dayLabel=DAY_FULL[day]+' '+MON_NAMES[dayDate.getMonth()]+' '+dayDate.getDate();
+    h+='<div class="sl">'
+      +dayLabel
+      +(isToday?' <span style="font-size:9px;background:var(--hdr);color:white;padding:2px 6px;border-radius:8px;vertical-align:middle;margin-left:4px;letter-spacing:.04em;">TODAY</span>':'')
+      +'</div>'
+      +'<div class="card">';
+    sorted.forEach(function(c){
+      var course=DB.courses.find(function(x){return x.id===c.courseId;});
+      h+='<div class="sched-row" onclick="openClassModal(\'+c.id+\')">'
+        +'<div class="sched-time">'+(c.start?fmtTime(c.start):'—')+(c.end?'<br>'+fmtTime(c.end):'')+'</div>'
+        +'<div class="sched-info"><div class="sched-name">'+(course?course.name:'Unnamed')+'</div>'
+        +(c.loc?'<div class="sched-loc">'+c.loc+'</div>':'')+'</div>'
+        +'<div class="sched-color" style="background:'+(course?course.color:'var(--text3)')+'"></div></div>';
+    });
+    h+='</div>';
+  });
+  if(!hasAny)h+='<div class="empty">No classes scheduled.</div>';
+  return h;
+}
+function schedWeekNav(dir){schedWeekOffset+=dir;renderSemTab('schedule');}
+window.schedWeekNav=schedWeekNav;
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('[data-sched-nav]');
+  if(btn){var dir=parseInt(btn.getAttribute('data-sched-nav'),10);schedWeekNav(dir);}
+  var btn2=e.target.closest('[data-week-nav]');
+  if(btn2){var dir2=parseInt(btn2.getAttribute('data-week-nav'),10);weekViewNav(dir2);}
+});
+function buildCourses(){
+  var h='';
+  if(!DB.courses.length)return'<div class="empty">No courses yet.<br>Tap + to add a course.</div>';
+  DB.courses.forEach(function(c){
+    var g=parseFloat(c.grade);
+    h+='<div class="card" style="cursor:pointer;margin-bottom:8px;" onclick="openCourseModal(\''+c.id+'\')">'
+      +'<div style="display:flex;align-items:center;gap:10px;">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;"></div>'
+      +'<div style="flex:1;"><div style="font-size:16px;font-weight:600;">'+c.name+'</div>'
+      +(c.code?'<div style="font-size:12px;color:var(--text2);">'+c.code+(c.teacher?' · '+c.teacher:'')+'</div>':'')+'</div>'
+      +(c.grade?'<div style="text-align:right;"><div style="font-size:20px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'')+'</div>'
+      +(!isNaN(g)?'<div class="grade-bar-wrap"><div class="grade-bar-fill" style="width:'+Math.min(100,g)+'%;background:'+gradeColor(c.grade)+';"></div></div>':'')
+      +'</div>';
+  });
+  return h;
+}
+
+// ── SEMESTER MODAL ──
+function openSemModal(){
+  var s=DB.semester;
+  document.getElementById('sem-name').value=s.name||'';document.getElementById('sem-start').value=s.start||'';
+  document.getElementById('sem-end').value=s.end||'';document.getElementById('sem-school').value=s.school||'';
+  document.getElementById('sem-notes').value=s.notes||'';openModal('sem-modal');
+}
+function saveSem(){
+  DB.semester={name:document.getElementById('sem-name').value.trim(),start:document.getElementById('sem-start').value,end:document.getElementById('sem-end').value,school:document.getElementById('sem-school').value.trim(),notes:document.getElementById('sem-notes').value.trim()};
+  sv();closeModal('sem-modal');renderSemTab(semTab);showToast('Saved ✓');
+}
+window.openSemModal=openSemModal;window.saveSem=saveSem;
+
+// ── COURSES ──
+function openCourseModal(id){
+  eId.course=id;var c=id?DB.courses.find(function(x){return x.id===id;}):null;
+  document.getElementById('course-modal-title').textContent=id?'Edit Course':'Add Course';
+  document.getElementById('c-name').value=c?c.name:'';document.getElementById('c-code').value=c?(c.code||''):'';
+  document.getElementById('c-teacher').value=c?(c.teacher||''):'';document.getElementById('c-color').value=c?(c.color||'#3d5a3e'):'#3d5a3e';
+  document.getElementById('c-grade').value=c?(c.grade||''):'';document.getElementById('c-notes').value=c?(c.notes||''):'';
+  document.getElementById('course-del-btn').style.display=id?'block':'none';openModal('course-modal');
+}
+function saveCourse(){
+  var name=document.getElementById('c-name').value.trim();if(!name)return;
+  var entry={id:eId.course||('c'+Date.now()),name:name,code:document.getElementById('c-code').value.trim(),teacher:document.getElementById('c-teacher').value.trim(),color:document.getElementById('c-color').value,grade:document.getElementById('c-grade').value,notes:document.getElementById('c-notes').value.trim()};
+  if(eId.course){var i=DB.courses.findIndex(function(x){return x.id===eId.course;});if(i>-1)DB.courses[i]=entry;}
+  else DB.courses.push(entry);
+  sv();closeModal('course-modal');renderSemTab(semTab);showToast('Course saved ✓');
+}
+function deleteCourse(){spConfirm('Delete this course?','Assignments linked to it will remain.',function(){DB.courses=DB.courses.filter(function(x){return x.id!==eId.course;});sv();closeModal('course-modal');renderSemTab(semTab);});}
+window.openCourseModal=openCourseModal;window.saveCourse=saveCourse;window.deleteCourse=deleteCourse;
+
+// ── CLASSES ──
+function openClassModal(id){
+  eId.class=id;var c=id?DB.classes.find(function(x){return x.id===id;}):null;
+  document.getElementById('class-modal-title').textContent=id?'Edit Class':'Add Class';
+  popSelect('cl-course',c?c.courseId:'');
+  var dayEl=document.getElementById('cl-day');Array.from(dayEl.options).forEach(function(o){o.selected=c&&c.days&&c.days.indexOf(o.value)>-1;});
+  document.getElementById('cl-start').value=c?(c.start||''):'';document.getElementById('cl-end').value=c?(c.end||''):'';
+  document.getElementById('cl-loc').value=c?(c.loc||''):'';document.getElementById('class-del-btn').style.display=id?'block':'none';
+  openModal('class-modal');
+}
+function saveClass(){
+  var days=Array.from(document.getElementById('cl-day').selectedOptions).map(function(o){return o.value;});
+  if(!days.length){showToast('Select at least one day',true);return;}
+  var entry={id:eId.class||('cl'+Date.now()),courseId:document.getElementById('cl-course').value,days:days,start:document.getElementById('cl-start').value,end:document.getElementById('cl-end').value,loc:document.getElementById('cl-loc').value.trim()};
+  if(eId.class){var i=DB.classes.findIndex(function(x){return x.id===eId.class;});if(i>-1)DB.classes[i]=entry;}
+  else DB.classes.push(entry);
+  sv();closeModal('class-modal');renderSemTab(semTab);showToast('Class saved ✓');
+}
+function deleteClass(){spConfirm('Delete this class?','This cannot be undone.',function(){DB.classes=DB.classes.filter(function(x){return x.id!==eId.class;});sv();closeModal('class-modal');renderSemTab(semTab);});}
+window.openClassModal=openClassModal;window.saveClass=saveClass;window.deleteClass=deleteClass;
+
+// ── ASSIGNMENTS ──
+function openAssignModal(id){
+  eId.assign=id;var a=id?DB.assignments.find(function(x){return x.id===id;}):null;
+  document.getElementById('assign-modal-title').textContent=id?'Edit Assignment':'Add Assignment';
+  document.getElementById('a-title').value=a?a.title:'';popSelect('a-course',a?a.courseId:'');
+  document.getElementById('a-due').value=a?(a.due||''):'';document.getElementById('a-priority').value=a?(a.priority||'med'):'med';
+  document.getElementById('a-notes').value=a?(a.notes||''):'';document.getElementById('assign-del-btn').style.display=id?'block':'none';
+  openModal('assign-modal');
+}
+function saveAssign(){
+  var title=document.getElementById('a-title').value.trim();if(!title)return;
+  var entry={id:eId.assign||('a'+Date.now()),title:title,courseId:document.getElementById('a-course').value,due:document.getElementById('a-due').value,priority:document.getElementById('a-priority').value,notes:document.getElementById('a-notes').value.trim(),done:eId.assign?(DB.assignments.find(function(x){return x.id===eId.assign;})||{}).done||false:false};
+  if(eId.assign){var i=DB.assignments.findIndex(function(x){return x.id===eId.assign;});if(i>-1)DB.assignments[i]=entry;}
+  else DB.assignments.push(entry);
+  sv();closeModal('assign-modal');renderAssign();showToast('Saved ✓');
+}
+function deleteAssign(){spConfirm('Delete this assignment?','This cannot be undone.',function(){DB.assignments=DB.assignments.filter(function(x){return x.id!==eId.assign;});sv();closeModal('assign-modal');renderAssign();});}
+function toggleDone(id,ev){if(ev)ev.stopPropagation();var a=DB.assignments.find(function(x){return x.id===id;});if(a){a.done=!a.done;sv();renderAssign();}}
+function switchAssign(tab,el){assignTab=tab;document.querySelectorAll('#pg-assign .tab-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderAssign();}
+function renderAssign(){
+  var el=document.getElementById('assign-content');
+  var list=DB.assignments.slice();
+  if(assignTab==='pending')list=list.filter(function(a){return!a.done;});
+  else if(assignTab==='done')list=list.filter(function(a){return a.done;});
+  list.sort(function(a,b){if(a.done!==b.done)return a.done?1:-1;return(a.due||'9').localeCompare(b.due||'9');});
+  if(!list.length){el.innerHTML='<div class="empty">'+(assignTab==='pending'?'All caught up!':assignTab==='done'?'Nothing completed yet.':'No assignments yet.')+'</div>';return;}
+  el.innerHTML='<div class="card">'+list.map(function(a){
+    var d=daysUntil(a.due);
+    var dueLbl=a.due?(d===0?'Due today':d===1?'Due tomorrow':d<0?Math.abs(d)+' days overdue':d+' days left'):'';
+    var dc=d!==null&&d<0?'var(--red)':d===0?'var(--yellow)':'var(--text2)';
+    return'<div class="assign-row'+(a.done?' assign-done':'')+'" onclick="openAssignModal(\''+a.id+'\')">'
+      +'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'
+      +'<div onclick="toggleDone(\''+a.id+'\',event)" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid '+(a.done?'var(--acc)':'var(--border)')+';background:'+(a.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(a.done?'<i class="ti ti-check" style="font-size:11px;color:white;"></i>':'')+'</div>'
+      +'<div class="assign-info"><div class="assign-title">'+a.title+'</div>'
+      +'<div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+
+      (dueLbl?'<span style="color:'+dc+'">'+dueLbl+'</span>':'')+'</div></div>'
+      +'<span class="badge '+priorityBadge(a.priority)+'">'+a.priority.toUpperCase()+'</span></div>';
+  }).join('')+'</div>';
+}
+window.openAssignModal=openAssignModal;window.saveAssign=saveAssign;window.deleteAssign=deleteAssign;window.toggleDone=toggleDone;window.switchAssign=switchAssign;
+
+// ── CALENDAR ──
+function openEventModal(id,dateStr){
+  eId.event=id;var e=id?DB.events.find(function(x){return x.id===id;}):null;
+  document.getElementById('event-modal-title').textContent=id?'Edit Event':'Add Event';
+  document.getElementById('ev-desc').value=e?e.desc:'';document.getElementById('ev-date').value=e?e.date:(dateStr||today());
+  document.getElementById('ev-type').value=e?(e.type||'event'):'event';document.getElementById('event-del-btn').style.display=id?'block':'none';
+  openModal('event-modal');
+}
+function saveEvent(){
+  var desc=document.getElementById('ev-desc').value.trim();if(!desc)return;
+  var entry={id:eId.event||('ev'+Date.now()),desc:desc,date:document.getElementById('ev-date').value,type:document.getElementById('ev-type').value};
+  if(eId.event){var i=DB.events.findIndex(function(x){return x.id===eId.event;});if(i>-1)DB.events[i]=entry;}
+  else DB.events.push(entry);
+  sv();closeModal('event-modal');renderCal();showToast('Saved ✓');
+}
+function deleteEvent(){spConfirm('Delete this event?','This cannot be undone.',function(){DB.events=DB.events.filter(function(x){return x.id!==eId.event;});sv();closeModal('event-modal');renderCal();});}
+function changeMonth(dir){curMonth.setMonth(curMonth.getMonth()+dir);renderCal();}
+function renderCal(){
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var y=curMonth.getFullYear(),m=curMonth.getMonth();
+  document.getElementById('cal-title').textContent=months[m]+' '+y;
+  document.getElementById('cal-nav-label').textContent=months[m]+' '+y;
+  var firstDay=new Date(y,m,1).getDay(),offset=firstDay===0?6:firstDay-1,dim=new Date(y,m+1,0).getDate(),tod=today();
+  document.getElementById('cal-heads').innerHTML=['M','T','W','T','F','S','S'].map(function(h){return'<div class="cal-head">'+h+'</div>';}).join('');
+  var html='';for(var i=0;i<offset;i++)html+='<div class="cal-day other-month"></div>';
+  for(var d=1;d<=dim;d++){
+    var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var isT=ds===tod;
+    var as=DB.assignments.filter(function(a){return a.due===ds;});var es=DB.events.filter(function(e){return e.date===ds;});
+    html+='<div class="cal-day'+(isT?' today':'')+'" onclick="openEventModal(null,\''+ds+'\')">';
+    html+='<div class="cal-num">'+d+'</div>';
+    if(as.length||es.length){html+='<div class="cal-dots">';as.forEach(function(a){html+='<div class="cal-dot" style="background:'+priorityColor(a.priority)+'"></div>';});es.forEach(function(e){html+='<div class="cal-dot" style="background:'+evtColor(e.type)+'"></div>';});html+='</div>';}
+    html+='</div>';
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+  var prefix=y+'-'+String(m+1).padStart(2,'0'),allItems=[];
+  DB.assignments.filter(function(a){return a.due&&a.due.startsWith(prefix);}).forEach(function(a){allItems.push({date:a.due,type:'assign',data:a});});
+  DB.events.filter(function(e){return e.date&&e.date.startsWith(prefix);}).forEach(function(e){allItems.push({date:e.date,type:'event',data:e});});
+  allItems.sort(function(a,b){return a.date.localeCompare(b.date);});
+  document.getElementById('cal-events-list').innerHTML=allItems.length?'<div class="card">'+allItems.map(function(item){
+    if(item.type==='assign'){var a=item.data;return'<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)?courseName(a.courseId)+' · ':'')+fmtDate(a.due)+'</div></div></div>';}
+    else{var e=item.data;return'<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type.charAt(0).toUpperCase()+e.type.slice(1)+' · '+fmtDate(e.date)+'</div></div></div>';}
+  }).join('')+'</div>':'<div class="empty">Nothing this month.</div>';
+}
+window.openEventModal=openEventModal;window.saveEvent=saveEvent;window.deleteEvent=deleteEvent;window.changeMonth=changeMonth;
+
+// ── ACADEMIC TAB ROUTER ──
+var academicTab='grades';
+function switchAcademic(tab,el){
+  academicTab=tab;
+  if(tab==='week')weekViewOffset=0;
+  document.querySelectorAll('#academic-tabs .tab-btn').forEach(function(b){b.classList.remove('active');});
+  if(el)el.classList.add('active');
+  renderAcademic(tab);
+}
+window.switchAcademic=switchAcademic;
+function academicFabAction(){
+  if(academicTab==='projects')openProjectModal(null);
+  else if(academicTab==='reading')openBookModal(null);
+  else if(academicTab==='exams')openExamModal(null,null);
+  else if(academicTab==='week')openEventModal(null,null);
+  else openCourseModal(null);
+}
+window.academicFabAction=academicFabAction;
+function renderAcademic(tab){
+  var el=document.getElementById('academic-content');
+  if(tab==='grades')el.innerHTML=buildGrades();
+  else if(tab==='week')el.innerHTML=buildWeekView();
+  else if(tab==='projects')el.innerHTML=buildProjects();
+  else if(tab==='reading')el.innerHTML=buildReading();
+  else if(tab==='exams')el.innerHTML=buildExams();
+}
+
+// ── GRADES ──
+function buildGrades(){
+  var gpa=calcGPA();
+  var h='<div class="card" style="text-align:center;padding:20px;margin-bottom:10px;">'
+    +'<div style="font-size:48px;font-weight:700;color:var(--yellow);line-height:1;">'+(gpa||'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);margin-top:4px;">Cumulative GPA</div></div>';
+  if(!DB.courses.length)return h+'<div class="empty">No courses yet.<br>Add them in Semester → Courses.</div>';
+  h+='<div class="sl">Courses</div><div class="card">';
+  DB.courses.forEach(function(c){
+    var g=parseFloat(c.grade);
+    h+='<div class="assign-row" onclick="openCourseModal(\''+c.id+'\')">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;margin-top:4px;"></div>'
+      +'<div class="assign-info"><div class="assign-title">'+c.name+'</div>'
+      +(!isNaN(g)?'<div class="grade-bar-wrap"><div class="grade-bar-fill" style="width:'+Math.min(100,g)+'%;background:'+gradeColor(c.grade)+';"></div></div>':'')+'</div>'
+      +(c.grade?'<div style="text-align:right;"><div style="font-size:18px;font-weight:700;color:'+gradeColor(c.grade)+';line-height:1;">'+gradeToLetter(c.grade)+'</div><div style="font-size:11px;color:var(--text2);">'+c.grade+'%</div></div>':'<div style="font-size:14px;color:var(--text3);">—</div>')
+      +'</div>';
+  });
+  return h+'</div>';
+}
+
+// ── WEEK VIEW ──
+function buildWeekView(){
+  var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var now=new Date();now.setHours(0,0,0,0);
+  var dow=now.getDay(),diff=dow===0?-6:1-dow;
+  var baseMonday=new Date(now);baseMonday.setDate(now.getDate()+diff);
+  var weekStart=new Date(baseMonday);weekStart.setDate(baseMonday.getDate()+(weekViewOffset*7));
+  var weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+  function fmtD(d){return MON_NAMES[d.getMonth()]+' '+d.getDate();}
+  var weekLabel=fmtD(weekStart)+' – '+fmtD(weekEnd);
+  var isCurrentWeek=weekStart.getTime()===baseMonday.getTime();
+  var tod=today();
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px;">'
+    +'<button data-week-nav="-1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">‹</button>'
+    +'<div style="text-align:center;">'
+    +'<div style="font-size:15px;font-weight:600;color:var(--text);">'+weekLabel+'</div>'
+    +(isCurrentWeek?'<div style="font-size:11px;color:var(--acc);font-weight:600;margin-top:2px;">This Week</div>':'')
+    +'</div>'
+    +'<button data-week-nav="1" style="background:none;border:none;cursor:pointer;padding:8px;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:22px;">›</button>'
+    +'</div>';
+  for(var i=0;i<7;i++){
+    var dd=new Date(weekStart);dd.setDate(weekStart.getDate()+i);
+    var ds=localDateStr(dd);var isToday=ds===tod;
+    var as=DB.assignments.filter(function(a){return a.due===ds;});
+    var es=DB.events.filter(function(e){return e.date===ds;});
+    h+='<div class="week-day-header'+(isToday?' today-hdr':'')+'">'
+      +(isToday?'Today — ':'')
+      +DAYS[dd.getDay()]+', '+MON_NAMES[dd.getMonth()]+' '+dd.getDate()+'</div>';
+    if(as.length||es.length){
+      h+='<div class="card" style="margin-bottom:10px;">';
+      as.forEach(function(a){h+='<div class="assign-row" onclick="openAssignModal(\''+a.id+'\')">'+'<div class="assign-bar" style="background:'+priorityColor(a.priority)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+a.title+'</div><div class="assign-meta">'+(courseName(a.courseId)||'Assignment')+'</div></div></div>';});
+      es.forEach(function(e){h+='<div class="assign-row" onclick="openEventModal(\''+e.id+'\',null)">'+'<div class="assign-bar" style="background:'+evtColor(e.type)+';"></div>'+'<div class="assign-info"><div class="assign-title">'+e.desc+'</div><div class="assign-meta">'+e.type.charAt(0).toUpperCase()+e.type.slice(1)+'</div></div></div>';});
+      h+='</div>';
+    } else {h+='<div style="font-size:13px;color:var(--text3);padding:4px 0 12px;font-style:italic;">Nothing scheduled</div>';}
+  }
+  return h||'<div class="empty">Nothing this week.</div>';
+}
+function weekViewNav(dir){weekViewOffset+=dir;renderAcademic('week');}
+window.weekViewNav=weekViewNav;
+
+// ── PROJECTS ──
+function openProjectModal(id){
+  eId.project=id;var p=id?DB.projects.find(function(x){return x.id===id;}):null;
+  document.getElementById('project-modal-title').textContent=id?'Edit Project':'Add Project';
+  document.getElementById('p-title').value=p?p.title:'';popSelect('p-course',p?p.courseId:'');
+  document.getElementById('p-due').value=p?(p.due||''):'';document.getElementById('p-notes').value=p?(p.notes||''):'';
+  document.getElementById('project-del-btn').style.display=id?'block':'none';openModal('project-modal');
+}
+function saveProject(){
+  var title=document.getElementById('p-title').value.trim();if(!title)return;
+  var entry={id:eId.project||('p'+Date.now()),title:title,courseId:document.getElementById('p-course').value,due:document.getElementById('p-due').value,notes:document.getElementById('p-notes').value.trim(),subtasks:[],done:false};
+  if(eId.project){var ex=DB.projects.find(function(x){return x.id===eId.project;});if(ex){entry.subtasks=ex.subtasks;entry.done=ex.done;}var i=DB.projects.findIndex(function(x){return x.id===eId.project;});if(i>-1)DB.projects[i]=entry;}
+  else DB.projects.push(entry);
+  sv();closeModal('project-modal');renderAcademic('projects');showToast('Project saved ✓');
+}
+function deleteProject(){spConfirm('Delete this project?','All steps will be deleted too.',function(){DB.projects=DB.projects.filter(function(x){return x.id!==eId.project;});sv();closeModal('project-modal');renderAcademic('projects');});}
+window.openProjectModal=openProjectModal;window.saveProject=saveProject;window.deleteProject=deleteProject;
+
+function openSubtaskModal(projectId,subtaskId){
+  eId.activeExamId=projectId;eId.subtask=subtaskId;
+  var p=DB.projects.find(function(x){return x.id===projectId;});
+  var st=subtaskId&&p?(p.subtasks||[]).find(function(x){return x.id===subtaskId;}):null;
+  document.getElementById('subtask-modal-title').textContent=st?'Edit Step':'Add Step';
+  document.getElementById('st-title').value=st?st.title:'';document.getElementById('st-due').value=st?(st.due||''):'';
+  document.getElementById('subtask-del-btn').style.display=subtaskId?'block':'none';openModal('subtask-modal');
+}
+function saveSubtask(){
+  var title=document.getElementById('st-title').value.trim();if(!title)return;
+  var p=DB.projects.find(function(x){return x.id===eId.activeExamId;});if(!p)return;
+  if(!p.subtasks)p.subtasks=[];
+  var entry={id:eId.subtask||('st'+Date.now()),title:title,due:document.getElementById('st-due').value,done:eId.subtask?((p.subtasks.find(function(x){return x.id===eId.subtask;})||{}).done||false):false};
+  if(eId.subtask){var i=p.subtasks.findIndex(function(x){return x.id===eId.subtask;});if(i>-1)p.subtasks[i]=entry;}
+  else p.subtasks.push(entry);
+  sv();closeModal('subtask-modal');renderAcademic('projects');showToast('Step saved ✓');
+}
+function deleteSubtask(){
+  var p=DB.projects.find(function(x){return x.id===eId.activeExamId;});if(!p)return;
+  spConfirm('Delete this step?','This cannot be undone.',function(){p.subtasks=p.subtasks.filter(function(x){return x.id!==eId.subtask;});sv();closeModal('subtask-modal');renderAcademic('projects');});
+}
+function toggleSubtask(projectId,subtaskId,ev){
+  if(ev)ev.stopPropagation();
+  var p=DB.projects.find(function(x){return x.id===projectId;});if(!p)return;
+  var st=(p.subtasks||[]).find(function(x){return x.id===subtaskId;});if(st){st.done=!st.done;sv();renderAcademic('projects');}
+}
+window.openSubtaskModal=openSubtaskModal;window.saveSubtask=saveSubtask;window.deleteSubtask=deleteSubtask;window.toggleSubtask=toggleSubtask;
+
+function buildProjects(){
+  if(!DB.projects.length)return'<div class="empty">No projects yet.<br>Tap + to add your first project.</div>';
+  var h='';
+  DB.projects.forEach(function(p){
+    var done=(p.subtasks||[]).filter(function(s){return s.done;}).length;
+    var total=(p.subtasks||[]).length;
+    var pct=total?Math.round(done/total*100):0;
+    h+='<div class="card" style="margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;" onclick="openProjectModal(\''+p.id+'\')">'
+      +'<div style="flex:1;"><div style="font-size:16px;font-weight:600;color:var(--text);">'+p.title+'</div>'
+      +(courseName(p.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(p.courseId)+(p.due?' · Due '+fmtDate(p.due):'')+'</div>':'')
+      +(p.due&&!courseName(p.courseId)?'<div style="font-size:12px;color:var(--text2);">Due '+fmtDate(p.due)+'</div>':'')+'</div>'
+      +(total?'<div style="font-size:13px;color:var(--text2);white-space:nowrap;">'+done+'/'+total+'</div>':'')+'</div>'
+      +(total?'<div class="grade-bar-wrap" style="margin-top:8px;"><div class="grade-bar-fill" style="width:'+pct+'%;background:var(--acc);"></div></div>':'')
+      +(total?'<div style="margin-top:10px;">'+p.subtasks.map(function(st){
+        return'<div class="subtask-row" onclick="openSubtaskModal(\''+p.id+'\',\''+st.id+'\')">'
+          +'<div onclick="toggleSubtask(\''+p.id+'\',\''+st.id+'\',event)" style="flex-shrink:0;width:20px;height:20px;border-radius:50%;border:2px solid '+(st.done?'var(--acc)':'var(--border)')+';background:'+(st.done?'var(--acc)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+(st.done?'<i class="ti ti-check" style="font-size:10px;color:white;"></i>':'')+'</div>'
+          +'<div style="flex:1;font-size:14px;color:var(--text);'+(st.done?'text-decoration:line-through;opacity:.5;':'')+'">'+st.title+'</div>'
+          +(st.due?'<div style="font-size:11px;color:var(--text3);">'+fmtDate(st.due)+'</div>':'')+'</div>';
+      }).join('')+'</div>':'')
+      +'<button class="btn-ghost" style="margin-top:10px;" onclick="openSubtaskModal(\''+p.id+'\',null)">+ Add Step</button></div>';
+  });
+  return h;
+}
+
+// ── READING LOG ──
+function openBookModal(id){
+  eId.book=id;var b=id?DB.books.find(function(x){return x.id===id;}):null;
+  document.getElementById('reading-modal-title').textContent=id?'Edit Book':'Add Book';
+  document.getElementById('r-title').value=b?b.title:'';document.getElementById('r-author').value=b?(b.author||''):'';
+  popSelect('r-course',b?b.courseId:'');document.getElementById('r-pages').value=b?(b.pages||''):'';
+  document.getElementById('r-read').value=b?(b.read||''):'';document.getElementById('r-status').value=b?(b.status||'tbr'):'tbr';
+  document.getElementById('r-notes').value=b?(b.notes||''):'';document.getElementById('reading-del-btn').style.display=id?'block':'none';
+  openModal('reading-modal');
+}
+function saveBook(){
+  var title=document.getElementById('r-title').value.trim();if(!title)return;
+  var entry={id:eId.book||('b'+Date.now()),title:title,author:document.getElementById('r-author').value.trim(),courseId:document.getElementById('r-course').value,pages:document.getElementById('r-pages').value,read:document.getElementById('r-read').value,status:document.getElementById('r-status').value,notes:document.getElementById('r-notes').value.trim()};
+  if(eId.book){var i=DB.books.findIndex(function(x){return x.id===eId.book;});if(i>-1)DB.books[i]=entry;}
+  else DB.books.push(entry);
+  sv();closeModal('reading-modal');renderAcademic('reading');showToast('Book saved ✓');
+}
+function deleteBook(){spConfirm('Delete this book?','This cannot be undone.',function(){DB.books=DB.books.filter(function(x){return x.id!==eId.book;});sv();closeModal('reading-modal');renderAcademic('reading');});}
+window.openBookModal=openBookModal;window.saveBook=saveBook;window.deleteBook=deleteBook;
+
+function buildReading(){
+  if(!DB.books.length)return'<div class="empty">No books yet.<br>Tap + to add to your reading log.</div>';
+  var STATUS_LABEL={tbr:'To Read',reading:'Reading',read:'Finished'};
+  var STATUS_CLASS={tbr:'book-status-tbr',reading:'book-status-reading',read:'book-status-read'};
+  var grouped={reading:[],tbr:[],read:[]};
+  DB.books.forEach(function(b){(grouped[b.status]||grouped.tbr).push(b);});
+  var h='';
+  ['reading','tbr','read'].forEach(function(s){
+    if(!grouped[s].length)return;
+    h+='<div class="sl">'+STATUS_LABEL[s]+'</div><div class="card">';
+    grouped[s].forEach(function(b){
+      var pct=b.pages&&b.read?Math.min(100,Math.round(b.read/b.pages*100)):0;
+      h+='<div class="assign-row" onclick="openBookModal(\''+b.id+'\')">'
+        +'<div class="assign-info"><div class="assign-title">'+b.title+'</div>'
+        +(b.author?'<div class="assign-meta">'+b.author+(courseName(b.courseId)?' · '+courseName(b.courseId):'')+'</div>':'')
+        +(b.pages&&b.read?'<div class="grade-bar-wrap" style="margin-top:4px;"><div class="grade-bar-fill" style="width:'+pct+'%;background:var(--acc);"></div></div>':'')+'</div>'
+        +'<span class="badge '+STATUS_CLASS[s]+'">'+STATUS_LABEL[s]+'</span></div>';
+    });
+    h+='</div>';
+  });
+  return h;
+}
+
+// ── EXAM PREP ──
+function openExamModal(id,courseId){
+  eId.exam=id;eId.activeExamId=null;
+  var ex=id?DB.exams.find(function(x){return x.id===id;}):null;
+  document.getElementById('exam-modal-title').textContent=id?'Edit Exam':'Add Exam';
+  document.getElementById('ex-name').value=ex?ex.name:'';popSelect('ex-course',ex?ex.courseId:(courseId||''));
+  document.getElementById('ex-date').value=ex?(ex.date||''):'';document.getElementById('ex-notes').value=ex?(ex.notes||''):'';
+  document.getElementById('exam-del-btn').style.display=id?'block':'none';openModal('exam-modal');
+}
+function saveExam(){
+  var name=document.getElementById('ex-name').value.trim();if(!name)return;
+  var entry={id:eId.exam||('ex'+Date.now()),name:name,courseId:document.getElementById('ex-course').value,date:document.getElementById('ex-date').value,notes:document.getElementById('ex-notes').value.trim(),topics:eId.exam?(DB.exams.find(function(x){return x.id===eId.exam;})||{topics:[]}).topics:[]};
+  if(eId.exam){var i=DB.exams.findIndex(function(x){return x.id===eId.exam;});if(i>-1)DB.exams[i]=entry;}
+  else DB.exams.push(entry);
+  sv();closeModal('exam-modal');renderAcademic('exams');showToast('Exam saved ✓');
+}
+function deleteExam(){spConfirm('Delete this exam?','All topics will be deleted too.',function(){DB.exams=DB.exams.filter(function(x){return x.id!==eId.exam;});sv();closeModal('exam-modal');renderAcademic('exams');});}
+window.openExamModal=openExamModal;window.saveExam=saveExam;window.deleteExam=deleteExam;
+
+function openTopicModal(examId,topicId){
+  eId.activeExamId=examId;eId.topic=topicId;
+  var ex=DB.exams.find(function(x){return x.id===examId;});
+  var tp=topicId&&ex?(ex.topics||[]).find(function(x){return x.id===topicId;}):null;
+  document.getElementById('topic-modal-title').textContent=tp?'Edit Topic':'Add Topic';
+  document.getElementById('tp-name').value=tp?tp.name:'';document.getElementById('tp-conf').value=tp?(tp.conf||'med'):'med';
+  document.getElementById('tp-notes').value=tp?(tp.notes||''):'';document.getElementById('topic-del-btn').style.display=topicId?'block':'none';
+  openModal('topic-modal');
+}
+function saveTopic(){
+  var name=document.getElementById('tp-name').value.trim();if(!name)return;
+  var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;
+  if(!ex.topics)ex.topics=[];
+  var entry={id:eId.topic||('tp'+Date.now()),name:name,conf:document.getElementById('tp-conf').value,notes:document.getElementById('tp-notes').value.trim()};
+  if(eId.topic){var i=ex.topics.findIndex(function(x){return x.id===eId.topic;});if(i>-1)ex.topics[i]=entry;}
+  else ex.topics.push(entry);
+  sv();closeModal('topic-modal');renderAcademic('exams');showToast('Topic saved ✓');
+}
+function deleteTopic(){
+  var ex=DB.exams.find(function(x){return x.id===eId.activeExamId;});if(!ex)return;
+  spConfirm('Delete this topic?','This cannot be undone.',function(){ex.topics=ex.topics.filter(function(x){return x.id!==eId.topic;});sv();closeModal('topic-modal');renderAcademic('exams');});
+}
+window.openTopicModal=openTopicModal;window.saveTopic=saveTopic;window.deleteTopic=deleteTopic;
+
+function buildExams(){
+  if(!DB.exams.length)return'<div class="empty">No exams yet.<br>Tap + to add your first exam.</div>';
+  var tod=today();
+  var sorted=DB.exams.slice().sort(function(a,b){return(a.date||'9').localeCompare(b.date||'9');});
+  var h='';
+  sorted.forEach(function(ex){
+    var d=daysUntil(ex.date);var topics=ex.topics||[];
+    var high=topics.filter(function(t){return t.conf==='high';}).length;
+    var med=topics.filter(function(t){return t.conf==='med';}).length;
+    var low=topics.filter(function(t){return t.conf==='low';}).length;
+    h+='<div class="card" style="margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:8px;" onclick="openExamModal(\''+ex.id+'\',null)">'
+      +'<div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--text);">'+ex.name+'</div>'
+      +(courseName(ex.courseId)?'<div style="font-size:12px;color:var(--text2);">'+courseName(ex.courseId)+'</div>':'')+'</div>'
+      +(ex.date?'<div style="text-align:right;font-size:12px;color:'+(d!==null&&d<=3?'var(--red)':'var(--text2)')+';">'+fmtDate(ex.date)+(d!==null?'<br>'+d+' days':'')+'</div>':'')+'</div>'
+      +(topics.length?'<div style="display:flex;gap:6px;margin-bottom:10px;">'
+        +(high?'<span class="badge conf-high">'+high+' confident</span>':'')
+        +(med?'<span class="badge conf-med">'+med+' medium</span>':'')
+        +(low?'<span class="badge conf-low">'+low+' need work</span>':'')
+        +'</div>':'')
+      +(topics.length?'<div>'+topics.map(function(tp){
+        return'<div class="topic-row" onclick="openTopicModal(\''+ex.id+'\',\''+tp.id+'\')">'
+          +'<div style="flex:1;font-size:14px;color:var(--text);">'+tp.name+'</div>'
+          +'<span class="conf-pill conf-'+tp.conf+'">'+(tp.conf==='high'?'Got it':tp.conf==='med'?'Mostly':'Needs work')+'</span></div>';
+      }).join('')+'</div>':'')
+      +'<button class="btn-ghost" style="margin-top:10px;" onclick="openTopicModal(\''+ex.id+'\',null)">+ Add Topic</button></div>';
+  });
+  return h;
+}
+
+// ── SETTINGS ──
+function saveName(){DB.profile.name=document.getElementById('s-name').value.trim();sv();}
+window.saveName=saveName;
+function renderSettings(){
+  document.getElementById('s-name').value=DB.profile.name||'';
+  renderSwatches();renderGdriveSection();
+  document.getElementById('local-undo-row').style.display=localStorage.getItem('mfs_sp_std_prerestore')?'block':'none';
+}
+
+// ── GOOGLE DRIVE ──
+const GDRIVE_CLIENT_ID='636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googleusercontent.com';
+const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+const GDRIVE_FILENAME='student-planner-standard-backup.json';
+var _gdriveToken=null,_gdriveTokenClient=null;
+function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}
+  _gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;localStorage.setItem('mfs_spstd_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();showToast('Google Drive connected!');}}});}
+function gdriveConnect(){if(_gdriveTokenClient){_gdriveTokenClient.requestAccessToken();return;}var a=0,w=setInterval(function(){a++;if(typeof google!=='undefined'&&google.accounts&&google.accounts.oauth2){clearInterval(w);if(!_gdriveTokenClient)gdriveInit();setTimeout(function(){if(_gdriveTokenClient)_gdriveTokenClient.requestAccessToken();},100);}else if(a>40){clearInterval(w);showToast('Could not load Google Drive.',true);}},500);}
+window.gdriveConnect=gdriveConnect;
+function gdriveDisconnect(){_gdriveToken=null;localStorage.removeItem('mfs_spstd_gdrive');showToast('Disconnected.');renderGdriveSection();}
+window.gdriveDisconnect=gdriveDisconnect;
+function gdriveIsConnected(){return!!_gdriveToken;}
+async function gdriveFindFile(){if(!_gdriveToken)return null;var r=await fetch('https://www.googleapis.com/drive/v3/files?q=name%3D%27'+GDRIVE_FILENAME+'%27%20and%20trashed%3Dfalse&spaces=drive',{headers:{'Authorization':'Bearer '+_gdriveToken}});var d=await r.json();return(d.files&&d.files[0])?d.files[0].id:null;}
+async function gdriveBackupNow(){if(!_gdriveToken)throw new Error('Not connected');var fileId=await gdriveFindFile();var content=JSON.stringify(DB);var meta={name:GDRIVE_FILENAME,mimeType:'application/json'};var b='-------mfs'+Date.now();var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--';var url=fileId?'https://www.googleapis.com/upload/drive/v3/files/'+fileId+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';var r=await fetch(url,{method:fileId?'PATCH':'POST',headers:{'Authorization':'Bearer '+_gdriveToken,'Content-Type':'multipart/related; boundary='+b},body:body});if(!r.ok){if(r.status===401)_gdriveToken=null;var e=null;try{e=await r.json();}catch(x){}throw new Error((e&&e.error&&e.error.message)||'Drive error ('+r.status+')');}}
+window.gdriveBackupNow=gdriveBackupNow;
+async function gdriveRestore(){if(!_gdriveToken){showToast('Connect Google Drive first.',true);return;}try{var fileId=await gdriveFindFile();if(!fileId){showToast('No backup found yet.',true);return;}var r=await fetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media',{headers:{'Authorization':'Bearer '+_gdriveToken}});if(!r.ok){if(r.status===401)_gdriveToken=null;throw new Error('Drive error ('+r.status+')');}var data=await r.json();if(!data||!Array.isArray(data.assignments)){showToast('Backup looks invalid.',true);return;}openRestoreConfirm(data,'Google Drive');}catch(e){showToast('Restore failed: '+e.message,true);}}
+window.gdriveRestore=gdriveRestore;
+function renderGdriveSection(){var connected=localStorage.getItem('mfs_spstd_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});s.textContent=connected&&_gdriveToken?'✓ Connected':connected?'Reconnecting...':'Not connected';s.style.color=connected&&_gdriveToken?'var(--acc)':'var(--text3)';if(a)a.style.display=connected&&_gdriveToken?'block':'none';var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display=localStorage.getItem('mfs_sp_std_prerestore')?'block':'none';}
+
+// ── LOCAL BACKUP ──
+function exportLocal(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='student-planner-standard-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);showToast('Backup downloaded ✓');}
+window.exportLocal=exportLocal;
+function importLocal(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var data=JSON.parse(e.target.result);if(!data||!Array.isArray(data.assignments)){showToast('Invalid backup file.',true);return;}openRestoreConfirm(data,'local file');}catch(x){showToast('Could not read file.',true);}};r.readAsText(file);ev.target.value='';}
+window.importLocal=importLocal;
+
+// ── RESTORE ──
+function dataSummary(db){var n=0;['assignments','events','courses','classes','projects','books','exams'].forEach(function(k){if(Array.isArray(db[k]))n+=db[k].length;});return n;}
+function openRestoreConfirm(data,label){_pendingRestore=data;var inc=dataSummary(data),cur=dataSummary(DB);document.getElementById('restore-title').textContent='Restore from '+label+'?';document.getElementById('restore-detail').textContent=(inc<cur?'⚠ This backup has fewer items ('+inc+') than your current data ('+cur+'). Double-check before continuing.':'This backup has '+inc+' items. Your current data has '+cur+'. Restoring replaces what you have now — you can undo it right after.');openModal('restore-modal');}
+function confirmRestore(){if(!_pendingRestore){closeModal('restore-modal');return;}try{localStorage.setItem('mfs_sp_std_prerestore',JSON.stringify({db:DB,ts:Date.now()}));}catch(e){}DB=_pendingRestore;_pendingRestore=null;sv();closeModal('restore-modal');showToast('Restored!');setTimeout(function(){location.reload();},1200);}
+window.confirmRestore=confirmRestore;
+function undoLastRestore(){try{var raw=localStorage.getItem('mfs_sp_std_prerestore');if(!raw){showToast('Nothing to undo.',true);return;}var snap=JSON.parse(raw);DB=snap.db;localStorage.removeItem('mfs_sp_std_prerestore');sv();showToast('Restore undone!');setTimeout(function(){location.reload();},1200);}catch(e){showToast('Could not undo.',true);}}
+window.undoLastRestore=undoLastRestore;
+
+// ── INIT ──
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+applyTheme(DB.theme||'matcha',DB.darkMode||false);
+setupDots();
+renderDash();
+setTimeout(function(){if(typeof gdriveInit==='function')gdriveInit();},500);
+</script>
+</body>
+</html>
