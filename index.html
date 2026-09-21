@@ -166,7 +166,7 @@ body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100
 .set-row:last-child{border-bottom:none;}
 .set-label{font-size:15px;font-weight:500;color:var(--text);}
 .set-sub{font-size:12px;color:var(--text2);margin-top:1px;}
-#toast{position:fixed;bottom:calc(78px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:99;white-space:nowrap;pointer-events:none;}
+#toast{position:fixed;bottom:calc(78px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:white;padding:10px 20px;border-radius:20px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:99;white-space:normal;text-align:center;max-width:calc(100% - 48px);width:max-content;pointer-events:none;}
 </style>
 </head>
 <body>
@@ -733,7 +733,7 @@ const GDRIVE_CLIENT_ID='636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googl
 const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GDRIVE_FILENAME='student-planner-Premium-backup.json';
 var _gdriveToken=null,_gdriveTokenClient=null;
-function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}_gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;localStorage.setItem('mfs_spPremium_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();showToast('Google Drive connected!');}}});}
+function gdriveInit(){if(typeof google==='undefined'||!google.accounts||!google.accounts.oauth2){setTimeout(gdriveInit,500);return;}_gdriveTokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:function(resp){if(resp.access_token){_gdriveToken=resp.access_token;var wasConnected=localStorage.getItem('mfs_spPremium_gdrive')==='1';localStorage.setItem('mfs_spPremium_gdrive','1');gdriveBackupNow().catch(function(){});renderGdriveSection();if(!wasConnected)showToast('Google Drive connected!');}}});}
 function gdriveConnect(){if(_gdriveTokenClient){_gdriveTokenClient.requestAccessToken();return;}var a=0,w=setInterval(function(){a++;if(typeof google!=='undefined'&&google.accounts&&google.accounts.oauth2){clearInterval(w);if(!_gdriveTokenClient)gdriveInit();setTimeout(function(){if(_gdriveTokenClient)_gdriveTokenClient.requestAccessToken();},100);}else if(a>40){clearInterval(w);showToast('Could not load Google Drive.',true);}},500);}
 window.gdriveConnect=gdriveConnect;
 function gdriveDisconnect(){_gdriveToken=null;localStorage.removeItem('mfs_spPremium_gdrive');showToast('Disconnected.');renderGdriveSection();}
