@@ -1,4 +1,4 @@
-const CACHE = 'sp-premium-v1';
+const CACHE = 'sp-premium-v2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -19,7 +19,7 @@ self.addEventListener('install', function(e) {
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
-      return premiummise.all(
+      return Promise.all(
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
@@ -28,10 +28,43 @@ self.addEventListener('activate', function(e) {
   self.clients.claim();
 });
 
+// Network-first for the app shell page, so a fresh deploy shows up right
+// away instead of waiting on a cache-name bump. Cache-first (with
+// background populate) for other same-origin assets. Cross-origin requests
+// always go straight to the network — never intercepted or cached.
 self.addEventListener('fetch', function(e) {
+  if (e.request.method !== 'GET') return;
+
+  var url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+
+  var isPageRequest = e.request.mode === 'navigate' ||
+    url.pathname === '/' ||
+    url.pathname.endsWith('/index.html');
+
+  if (isPageRequest) {
+    e.respondWith(
+      fetch(e.request).then(function(response) {
+        var copy = response.clone();
+        caches.open(CACHE).then(function(cache) { cache.put(e.request, copy); });
+        return response;
+      }).catch(function() {
+        return caches.match(e.request).then(function(cached) { return cached || caches.match('/index.html'); });
+      })
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request);
+      if (cached) return cached;
+      return fetch(e.request).then(function(response) {
+        if (response && response.status === 200) {
+          var copy = response.clone();
+          caches.open(CACHE).then(function(cache) { cache.put(e.request, copy); });
+        }
+        return response;
+      }).catch(function() { return cached; });
     })
   );
 });
