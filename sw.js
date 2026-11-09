@@ -1,6 +1,6 @@
 // Student Planner Premium, Service Worker
 // Change CACHE_NAME (for example to today's date) whenever you redeploy index.html.
-const CACHE_NAME = "student-planner-cache-2026-11-09b";
+const CACHE_NAME = "student-planner-cache-2026-11-09c";
 const ICON_CSS = "https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css";
 const CORE_ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", ICON_CSS];
 // Fonts and icons come from these sites; they are saved so the app looks right offline.
