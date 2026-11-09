@@ -207,6 +207,31 @@ html.dark .badge-high,html.dark .conf-low{background:rgba(192,57,43,.22);}
 html.dark .badge-med,html.dark .conf-med{background:rgba(212,160,23,.18);}
 html.dark .btn-delete{background:rgba(192,57,43,.14);}
 
+
+/* ── settings page ── */
+.set-grid{display:block;}
+.set-card{padding:18px 18px 16px;}
+.card-ttl{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;}
+.card-ttl i{font-size:19px;color:var(--hdr);width:32px;height:32px;border-radius:10px;background:var(--acc2);display:flex;align-items:center;justify-content:center;}
+html.dark .card-ttl i{color:var(--acc);background:rgba(255,255,255,.06);}
+.set-lbl{font-size:11px;letter-spacing:.12em;color:var(--text2);text-transform:uppercase;font-weight:700;margin:14px 0 8px;}
+.set-lbl:first-of-type{margin-top:0;}
+.set-hint{font-size:12px;color:var(--text2);margin-top:7px;}
+.set-card .swatch-grid{margin-top:0;}
+.drive-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--bg3);cursor:pointer;}
+.drive-ic{width:40px;height:40px;border-radius:12px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:.5px solid var(--border);}
+.drive-ic i{font-size:21px;color:var(--text3);}
+.drive-on .drive-ic i{color:var(--acc);}
+.drive-pill{font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;background:var(--hdr);color:#fff;white-space:nowrap;}
+.drive-on .drive-pill{background:var(--acc2);color:var(--hdr);}
+.btn-pair{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.btn-pair .btn-full,.btn-pair .btn-ghost{margin:0;display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-pair .btn-ghost{color:var(--text);font-weight:600;min-height:48px;}
+.undo-btn{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--red)!important;font-weight:600;}
+.btn-text-danger{display:block;margin:12px auto 0;background:none;border:none;color:var(--red);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:6px 10px;}
+.btn-text-danger:hover{text-decoration:underline;}
+.ni:focus{outline:none;}
+.ni:focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
 /* ══════════ DESKTOP (1000px and up) ══════════ */
 @media (min-width:1000px){
   html,body{background:var(--bg);}
@@ -252,8 +277,11 @@ html.dark .btn-delete{background:rgba(192,57,43,.14);}
   .modal::after{display:none;}
   .field select[multiple]{height:auto;}
   #toast{bottom:32px;left:calc(50% + 126px);}
-  .swatch-grid{grid-template-columns:repeat(8,1fr);max-width:760px;}
-  #pg-settings .ps>*{max-width:760px;}
+  .set-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;}
+  .set-card{padding:22px 24px 20px;margin-bottom:20px;}
+  .btn-pair{flex-direction:row;}
+  .btn-pair>*{flex:1;}
+  .swatch:hover{background:var(--bg3);}
   .tab-row{flex-wrap:wrap;}
   .tab-btn{font-size:13px;padding:8px 16px;}
   .cal-grid{gap:6px;grid-template-columns:repeat(7,minmax(0,1fr));}
@@ -396,40 +424,55 @@ html.dark .btn-delete{background:rgba(192,57,43,.14);}
 <div class="page" id="pg-settings">
 <div class="ph"><div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
 <div class="ps">
-  <div class="sl">Your Name</div>
-  <div class="field"><label>Name</label><input id="s-name" placeholder="e.g. Jessica" maxlength="40" oninput="saveName()"/></div>
-  <div class="sl">Appearance</div>
-  <div class="mode-row" id="mode-row"><button class="mode-btn" data-dark="0" onclick="setDark(false)"><i class="ti ti-sun"></i>Light</button><button class="mode-btn" data-dark="1" onclick="setDark(true)"><i class="ti ti-moon"></i>Dark</button></div>
-  <div class="sl">Color Theme</div>
-  <div class="swatch-grid" id="swatch-grid"></div>
-  <div class="div"></div>
-  <div class="sl" id="backup-sl">Backup</div>
-  <div class="card">
-    <div class="set-row" onclick="gdriveConnect()" style="cursor:pointer;">
-      <div><div class="set-label">Google Drive Backup</div><div class="set-sub">Back up to your own Drive</div></div>
-      <div id="gdrive-status" style="font-size:12px;color:var(--text3);">Not connected</div>
+<div class="set-grid">
+ <div class="set-col">
+  <div class="card set-card">
+    <div class="card-ttl"><i class="ti ti-user"></i>Profile</div>
+    <div class="field" style="margin-bottom:0;"><label for="s-name">Your name</label><input id="s-name" placeholder="e.g. Jessica" maxlength="40" oninput="saveName()"/></div>
+    <div class="set-hint">Shown in the dashboard greeting.</div>
+  </div>
+  <div class="card set-card">
+    <div class="card-ttl"><i class="ti ti-palette"></i>Appearance</div>
+    <div class="set-lbl">Mode</div>
+    <div class="mode-row" id="mode-row"><button class="mode-btn" data-dark="0" onclick="setDark(false)"><i class="ti ti-sun"></i>Light</button><button class="mode-btn" data-dark="1" onclick="setDark(true)"><i class="ti ti-moon"></i>Dark</button></div>
+    <div class="set-lbl">Color theme</div>
+    <div class="swatch-grid" id="swatch-grid"></div>
+  </div>
+ </div>
+ <div class="set-col">
+  <div class="card set-card" id="backup-sl">
+    <div class="card-ttl"><i class="ti ti-brand-google-drive"></i>Google Drive backup</div>
+    <div class="drive-row" onclick="if(!_gdriveToken)gdriveConnect()">
+      <div class="drive-ic"><i class="ti ti-cloud"></i></div>
+      <div style="flex:1;min-width:0;"><div class="set-label" id="gdrive-head">Not connected</div><div class="set-sub" id="gdrive-sub">Back up to your own Google Drive</div></div>
+      <div id="gdrive-status" class="drive-pill">Connect</div>
     </div>
     <div id="gdrive-actions" style="display:none;">
-      <button class="btn-full" style="margin-top:10px;" onclick="gdriveBackupNow().then(()=>showToast('Backed up!')).catch(e=>showToast(e.message,true))">Back up now</button>
-      <button class="btn-ghost" onclick="gdriveRestore()">Restore from Drive</button>
-      <button class="btn-ghost" id="gdrive-undo-btn" style="display:none;color:var(--red);" onclick="undoLastRestore()">Undo Last Restore</button>
-      <button class="btn-delete" onclick="gdriveDisconnect()">Disconnect</button>
+      <div class="btn-pair">
+        <button class="btn-full" onclick="driveBackupBtn(this)"><i class="ti ti-cloud-upload"></i> Back up now</button>
+        <button class="btn-ghost" onclick="gdriveRestore()"><i class="ti ti-cloud-download"></i> Restore from Drive</button>
+      </div>
+      <button class="btn-ghost undo-btn" id="gdrive-undo-btn" style="display:none;" onclick="undoLastRestore()"><i class="ti ti-arrow-back-up"></i> Undo last restore</button>
+      <button class="btn-text-danger" onclick="gdriveDisconnect()">Disconnect Google Drive</button>
     </div>
   </div>
-  <div class="card">
+  <div class="card set-card">
+    <div class="card-ttl"><i class="ti ti-file-download"></i>Backup file</div>
     <div class="set-row" onclick="exportLocal()" style="cursor:pointer;">
-      <div><div class="set-label">Download Local Backup</div><div class="set-sub">Save a file to your device</div></div>
-      <i class="ti ti-download" style="color:var(--text3);font-size:18px;"></i>
+      <div><div class="set-label">Download a backup file</div><div class="set-sub">Save everything to your device</div></div>
+      <i class="ti ti-download" style="color:var(--text2);font-size:19px;"></i>
     </div>
     <div class="set-row" style="position:relative;cursor:pointer;">
-      <div><div class="set-label">Restore from File</div><div class="set-sub">Load a saved backup</div></div>
-      <i class="ti ti-upload" style="color:var(--text3);font-size:18px;"></i>
+      <div><div class="set-label">Restore from a file</div><div class="set-sub">Load a backup you saved</div></div>
+      <i class="ti ti-upload" style="color:var(--text2);font-size:19px;"></i>
       <input type="file" accept=".json" onchange="importLocal(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;"/>
     </div>
-    <div id="local-undo-row" style="display:none;padding-top:6px;">
-      <button class="btn-ghost" style="color:var(--red);" onclick="undoLastRestore()">Undo Last Restore</button>
+    <div id="local-undo-row" style="display:none;padding-top:8px;">
+      <button class="btn-ghost undo-btn" onclick="undoLastRestore()"><i class="ti ti-arrow-back-up"></i> Undo last restore</button>
     </div>
   </div>
+ </div>
+</div>
   <div style="height:20px;"></div>
 </div>
 </div>
@@ -680,7 +723,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=docum
 
 function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.style.background=err?'#c0392b':'var(--text)';t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);}
 
-function spConfirm(title,sub,cb){var o=document.getElementById('spCO');if(!o){o=document.createElement('div');o.id='spCO';o.className='modal-bg';o.innerHTML='<div class="modal" style="text-align:center;"><h2 id="spCT">Confirm</h2><div id="spCS" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div><div class="btn-row"><button class="btn-cancel" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');window._spCb=null;">Keep it</button><button class="btn-delete" style="margin-top:0;flex:1;" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');if(window._spCb)window._spCb();window._spCb=null;">Delete</button></div></div>';document.body.appendChild(o);}document.getElementById('spCT').textContent=title;document.getElementById('spCS').textContent=sub;window._spCb=cb;o.classList.add('open');}
+function spConfirm(title,sub,cb){var o=document.getElementById('spCO');if(!o){o=document.createElement('div');o.id='spCO';o.className='modal-bg';o.innerHTML='<div class="modal" style="text-align:center;"><h2 id="spCT">Confirm</h2><div id="spCS" style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;"></div><div class="btn-row"><button class="btn-cancel" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');window._spCb=null;">Keep it</button><button class="btn-delete" style="margin-top:0;flex:1;" onclick="document.getElementById(\'spCO\').classList.remove(\'open\');if(window._spCb)window._spCb();window._spCb=null;">Delete</button></div></div>';document.body.appendChild(o);}var _db=o.querySelector('.btn-delete');if(_db)_db.textContent='Delete';document.getElementById('spCT').textContent=title;document.getElementById('spCS').textContent=sub;window._spCb=cb;o.classList.add('open');}
 
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function localDateStr(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -876,7 +919,7 @@ function buildExams(){if(!DB.exams.length)return'<div class="empty">No exams yet
 
 function saveName(){DB.profile.name=document.getElementById('s-name').value.trim();sv();}
 window.saveName=saveName;
-function renderSettings(){document.getElementById('s-name').value=DB.profile.name||'';renderSwatches();renderModeRow();renderGdriveSection();document.getElementById('local-undo-row').style.display=localStorage.getItem('mfs_sp_Premium_prerestore')?'block':'none';}
+function renderSettings(){document.getElementById('s-name').value=DB.profile.name||'';renderSwatches();renderModeRow();renderGdriveSection();document.getElementById('local-undo-row').style.display=hasUndo()?'block':'none';}
 
 const GDRIVE_CLIENT_ID='636576283764-urkn6im4r86n5q4u3iokmska4ejid9o9.apps.googleusercontent.com';
 const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
@@ -890,11 +933,15 @@ function gdriveDisconnect(){_gdriveToken=null;localStorage.removeItem('mfs_spPre
 window.gdriveDisconnect=gdriveDisconnect;
 function gdriveIsConnected(){return!!_gdriveToken;}
 async function gdriveFindFile(){if(!_gdriveToken)return null;var r=await fetch('https://www.googleapis.com/drive/v3/files?q=name%3D%27'+GDRIVE_FILENAME+'%27%20and%20trashed%3Dfalse&spaces=drive',{headers:{'Authorization':'Bearer '+_gdriveToken}});var d=await r.json();return(d.files&&d.files[0])?d.files[0].id:null;}
-async function gdriveBackupNow(){if(!_gdriveToken)throw new Error('Not connected');var fid=await gdriveFindFile();var content=JSON.stringify(DB);var meta={name:GDRIVE_FILENAME,mimeType:'application/json'};var b='-------mfs'+Date.now();var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--';var url=fid?'https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';var r=await fetch(url,{method:fid?'PATCH':'POST',headers:{'Authorization':'Bearer '+_gdriveToken,'Content-Type':'multipart/related; boundary='+b},body:body});if(!r.ok){if(r.status===401){_gdriveToken=null;localStorage.removeItem('mfs_spPremium_gtoken');renderCloudState();}var e=null;try{e=await r.json();}catch(x){}throw new Error((e&&e.error&&e.error.message)||'Drive error ('+r.status+')');}}
+async function gdriveBackupNow(){if(!_gdriveToken)throw new Error('Not connected');var fid=await gdriveFindFile();var content=JSON.stringify(DB);var meta={name:GDRIVE_FILENAME,mimeType:'application/json'};var b='-------mfs'+Date.now();var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--';var url=fid?'https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';var r=await fetch(url,{method:fid?'PATCH':'POST',headers:{'Authorization':'Bearer '+_gdriveToken,'Content-Type':'multipart/related; boundary='+b},body:body});if(!r.ok){if(r.status===401){_gdriveToken=null;localStorage.removeItem('mfs_spPremium_gtoken');renderCloudState();}var e=null;try{e=await r.json();}catch(x){}throw new Error((e&&e.error&&e.error.message)||'Drive error ('+r.status+')');}try{localStorage.setItem('mfs_spPremium_lastbk',String(Date.now()));}catch(x){}renderBackupSub();}
 window.gdriveBackupNow=gdriveBackupNow;
+function hasUndo(){try{var r=JSON.parse(localStorage.getItem('mfs_sp_Premium_prerestore')||'null');if(!r)return false;if(r.ts&&Date.now()-r.ts>7*86400000){localStorage.removeItem('mfs_sp_Premium_prerestore');return false;}return true;}catch(e){return false;}}
+function renderBackupSub(){var el=document.getElementById('gdrive-sub');if(!el)return;var on=localStorage.getItem('mfs_spPremium_gdrive')==='1'&&!!_gdriveToken;var t=parseInt(localStorage.getItem('mfs_spPremium_lastbk')||'0');if(!on){el.textContent=localStorage.getItem('mfs_spPremium_gdrive')==='1'?'Tap to sign in again':'Back up to your own Google Drive';return;}if(!t){el.textContent='Backs up automatically when you make changes';return;}var d=new Date(t),now=new Date(),y=new Date(now);y.setDate(now.getDate()-1);var hm=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});el.textContent='Last backup: '+(d.toDateString()===now.toDateString()?'today':d.toDateString()===y.toDateString()?'yesterday':(d.getMonth()+1)+'/'+d.getDate())+' at '+hm;}
+function driveBackupBtn(btn){btn.disabled=true;var h=btn.innerHTML;btn.innerHTML='Backing up…';gdriveBackupNow().then(function(){showToast('Backed up to Google Drive ✓');}).catch(function(e){showToast(e.message,true);renderGdriveSection();}).then(function(){btn.disabled=false;btn.innerHTML=h;});}
+window.driveBackupBtn=driveBackupBtn;
 async function gdriveRestore(){if(!_gdriveToken){showToast('Connect Google Drive first.',true);return;}try{var fid=await gdriveFindFile();if(!fid){showToast('No backup found yet.',true);return;}var r=await fetch('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media',{headers:{'Authorization':'Bearer '+_gdriveToken}});if(!r.ok){if(r.status===401)_gdriveToken=null;throw new Error('Drive error ('+r.status+')');}var data=await r.json();if(!data||!Array.isArray(data.assignments)){showToast('Backup looks invalid.',true);return;}openRestoreConfirm(data,'Google Drive');}catch(e){showToast('Restore failed: '+e.message,true);}}
 window.gdriveRestore=gdriveRestore;
-function renderGdriveSection(){var connected=localStorage.getItem('mfs_spPremium_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});s.textContent=connected&&_gdriveToken?'✓ Connected':connected?'Reconnecting...':'Not connected';s.style.color=connected&&_gdriveToken?'var(--acc)':'var(--text3)';if(a)a.style.display=connected&&_gdriveToken?'block':'none';renderCloudState();var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display=localStorage.getItem('mfs_sp_Premium_prerestore')?'block':'none';}
+function renderGdriveSection(){var connected=localStorage.getItem('mfs_spPremium_gdrive')==='1';var s=document.getElementById('gdrive-status');var a=document.getElementById('gdrive-actions');if(!s)return;if(connected&&!_gdriveToken&&_gdriveTokenClient)_gdriveTokenClient.requestAccessToken({prompt:''});var on=connected&&!!_gdriveToken;s.textContent=on?'✓ Connected':connected?'Sign in':'Connect';var card=document.getElementById('backup-sl');if(card)card.classList.toggle('drive-on',on);var hd=document.getElementById('gdrive-head');if(hd)hd.textContent=on?'Connected to Google Drive':connected?'Signed out of Google':'Not connected';renderBackupSub();if(a)a.style.display=connected&&_gdriveToken?'block':'none';renderCloudState();var u=document.getElementById('gdrive-undo-btn');if(u)u.style.display='none';}
 
 
 // ── CLOUD BUTTON + PRINT ──
@@ -912,7 +959,7 @@ function dataSummary(db){var n=0;['assignments','events','courses','classes','Pr
 function openRestoreConfirm(data,label){_pendingRestore=data;var inc=dataSummary(data),cur=dataSummary(DB);document.getElementById('restore-title').textContent='Restore from '+label+'?';document.getElementById('restore-detail').textContent=(inc<cur?'⚠ This backup has fewer items ('+inc+') than your current data ('+cur+'). Double-check before continuing.':'This backup has '+inc+' items. Your current data has '+cur+'. Restoring replaces what you have now — you can undo it right after.');openModal('restore-modal');}
 function confirmRestore(){if(!_pendingRestore){closeModal('restore-modal');return;}try{localStorage.setItem('mfs_sp_Premium_prerestore',JSON.stringify({db:DB,ts:Date.now()}));}catch(e){}DB=_pendingRestore;_pendingRestore=null;sv();ld();closeModal('restore-modal');showToast('Restored!');setTimeout(function(){location.reload();},1200);}
 window.confirmRestore=confirmRestore;
-function undoLastRestore(){try{var raw=localStorage.getItem('mfs_sp_Premium_prerestore');if(!raw){showToast('Nothing to undo.',true);return;}var snap=JSON.parse(raw);DB=snap.db;sv();ld();localStorage.removeItem('mfs_sp_Premium_prerestore');sv();showToast('Restore undone!');setTimeout(function(){location.reload();},1200);}catch(e){showToast('Could not undo.',true);}}
+function undoLastRestore(){try{var raw=localStorage.getItem('mfs_sp_Premium_prerestore');if(!raw){showToast('Nothing to undo.',true);return;}var snap=JSON.parse(raw);spConfirm('Undo the last restore?','Your planner goes back to how it was before you restored'+(snap.ts?' on '+new Date(snap.ts).toLocaleDateString():'')+'.',function(){DB=snap.db;sv();ld();localStorage.removeItem('mfs_sp_Premium_prerestore');sv();showToast('Restore undone!');setTimeout(function(){location.reload();},1200);});var _b=document.querySelector('#spCO .btn-delete');if(_b)_b.textContent='Undo restore';}catch(e){showToast('Could not undo.',true);}}
 window.undoLastRestore=undoLastRestore;
 
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
