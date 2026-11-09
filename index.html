@@ -523,6 +523,16 @@ html.dark .gs-out b{color:var(--acc);}
 .cn-sum{border:1.5px solid #bbb;border-top:2px solid var(--ph);border-radius:0 0 8px 8px;padding:6px 10px;height:1.6in;overflow:hidden;}
 .cn-sum .ln{height:.28in;}
 
+/* ── phone bottom bar: 5 tabs ── */
+.hdr-actions{display:flex;gap:8px;align-items:center;}
+@media (max-width:999px){
+  .nav>.ni[onclick^="go('settings'"]{display:none;}
+  .nav{padding:6px 8px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));}
+  .ni{flex:1;min-width:0;min-height:52px;gap:3px;border-radius:14px;}
+  .ni i{font-size:22px;}
+  .ni span{font-size:10px;letter-spacing:.03em;}
+  .fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));}
+}
 /* ══════════ DESKTOP (1000px and up) ══════════ */
 @media (min-width:1000px){
   html,body{background:var(--bg);}
@@ -619,7 +629,7 @@ html.dark .gs-out b{color:var(--acc);}
 <!-- DASHBOARD -->
 <div class="page active" id="pg-dash">
 <div class="hero-panel">
-  <div class="ph"><div class="ph-left"><div class="ey">Smart Dashboard</div><h1 id="dash-greeting">Good Morning</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+  <div class="ph"><div class="ph-left"><div class="ey">Smart Dashboard</div><h1 id="dash-greeting">Good Morning</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button><button class="hdr-btn" onclick="go('settings')" title="Settings" aria-label="Settings"><i class="ti ti-settings"></i></button></div></div>
   <div class="hero-stats">
     <div class="stat-card"><div class="stat-val" id="d-due">0</div><div class="stat-lbl">Due Soon</div></div>
     <div class="stat-card"><div class="stat-val" id="d-gpa">—</div><div class="stat-lbl">GPA</div></div>
@@ -640,7 +650,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <!-- SEMESTER -->
 <div class="page" id="pg-semester">
-<div class="ph"><div class="ph-left"><div class="ey">Planner</div><h1>Semester</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+<div class="ph"><div class="ph-left"><div class="ey">Planner</div><h1>Semester</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button><button class="hdr-btn" onclick="go('settings')" title="Settings" aria-label="Settings"><i class="ti ti-settings"></i></button></div></div>
 <div class="ps">
   <div id="semester-switcher" style="margin-bottom:12px;"></div>
   <div class="tab-row">
@@ -657,7 +667,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <!-- ASSIGNMENTS -->
 <div class="page" id="pg-assign">
-<div class="ph"><div class="ph-left"><div class="ey">Tasks</div><h1>Assignments</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+<div class="ph"><div class="ph-left"><div class="ey">Tasks</div><h1>Assignments</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button><button class="hdr-btn" onclick="go('settings')" title="Settings" aria-label="Settings"><i class="ti ti-settings"></i></button></div></div>
 <div class="ps">
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchAssign('pending',this)">Pending</button>
@@ -672,7 +682,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <!-- CALENDAR -->
 <div class="page" id="pg-cal">
-<div class="ph"><div class="ph-left"><div class="ey">Calendar</div><h1 id="cal-title">Calendar</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+<div class="ph"><div class="ph-left"><div class="ey">Calendar</div><h1 id="cal-title">Calendar</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button><button class="hdr-btn" onclick="go('settings')" title="Settings" aria-label="Settings"><i class="ti ti-settings"></i></button></div></div>
 <div class="ps">
   <div class="cal-top" id="cal-mode"><button class="tab-btn active" data-m="month" onclick="setCalMode('month')">Month</button><button class="tab-btn" data-m="week" onclick="setCalMode('week')">Week</button><button class="tab-btn ics-btn" onclick="openIcsModal()"><i class="ti ti-calendar-plus"></i>Add to phone calendar</button></div>
   <div id="cal-month-view">
@@ -697,7 +707,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <!-- STUDY TOOLS -->
 <div class="page" id="pg-study">
-<div class="ph"><div class="ph-left"><div class="ey">Premium Tools</div><h1>Study</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+<div class="ph"><div class="ph-left"><div class="ey">Premium Tools</div><h1>Study</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button><button class="hdr-btn" onclick="go('settings')" title="Settings" aria-label="Settings"><i class="ti ti-settings"></i></button></div></div>
 <div class="ps">
   <div class="tab-row" id="study-tabs">
     <button class="tab-btn active" onclick="switchStudy('timer',this)">Timer</button>
@@ -726,7 +736,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <!-- SETTINGS -->
 <div class="page" id="pg-settings">
-<div class="ph"><div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div>
+<div class="ph"><div class="ph-left"><div class="ey">Preferences</div><h1>Settings</h1></div><div class="hdr-actions"><button class="hdr-btn cloud-btn" onclick="cloudTap()" title="Google Drive backup" aria-label="Google Drive backup"><i class="ti ti-cloud"></i><span class="cloud-dot"></span></button></div></div>
 <div class="ps">
 <div class="set-grid">
  <div class="set-col">
@@ -797,7 +807,7 @@ html.dark .gs-out b{color:var(--acc);}
 
 <nav class="nav">
   <div class="nav-brand"><div class="ey">Mobile First Studio</div><div class="nm">Student Planner</div></div>
-  <button class="ni active" onclick="go('dash',this)"><i class="ti ti-layout-dashboard"></i><span data-full="Dashboard">Dash</span></button>
+  <button class="ni active" onclick="go('dash',this)"><i class="ti ti-layout-dashboard"></i><span data-full="Dashboard">Home</span></button>
   <button class="ni" onclick="go('semester',this)"><i class="ti ti-calendar-month"></i><span data-full="Semester">Semester</span></button>
   <button class="ni" onclick="go('assign',this)"><i class="ti ti-clipboard-check"></i><span data-full="Assignments">Tasks</span></button>
   <button class="ni" onclick="go('cal',this)"><i class="ti ti-calendar"></i><span data-full="Calendar">Calendar</span></button>
